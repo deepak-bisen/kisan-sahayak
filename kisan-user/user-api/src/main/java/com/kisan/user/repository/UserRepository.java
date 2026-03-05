@@ -23,4 +23,9 @@ public interface UserRepository extends JpaRepository<User,String> {
      */
     boolean existsByPhoneNumber(String phoneNumber);
 
+    /**
+     * delete if a user exists with the given phone number.
+     * @param phoneNumber The phone number to check.
+     */
+    void deleteByPhoneNumber(String phoneNumber);
 }

@@ -9,6 +9,8 @@
 
     <artifactId>user-app</artifactId>
     <name>user-app</name>
+    <description>Main User App</description>
+
 
     <dependencies>
         <!-- Internal Modules -->
