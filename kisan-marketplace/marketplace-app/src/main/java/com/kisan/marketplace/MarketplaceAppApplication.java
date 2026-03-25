@@ -7,6 +7,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
 @EnableDiscoveryClient
+@EnableFeignClients(basePackages = "com.kisan.marketplace") // This tells Spring to find your Feign Clients
 public class MarketplaceAppApplication {
 
     public static void main(String[] args) {

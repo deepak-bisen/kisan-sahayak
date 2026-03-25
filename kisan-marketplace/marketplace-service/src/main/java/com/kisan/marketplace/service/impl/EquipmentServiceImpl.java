@@ -7,6 +7,7 @@ import com.kisan.marketplace.entity.Equipment;
 import com.kisan.marketplace.repository.EquipmentRepository;
 import com.kisan.marketplace.service.EquipmentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +18,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EquipmentServiceImpl implements EquipmentService {
 
+    @Autowired
     private final EquipmentRepository equipmentRepository;
+
+    @Autowired
     private final UserClient userClient;
 
     @Override
