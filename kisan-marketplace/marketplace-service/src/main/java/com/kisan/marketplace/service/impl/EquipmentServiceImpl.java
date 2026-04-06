@@ -47,6 +47,7 @@ public class EquipmentServiceImpl implements EquipmentService {
                 .hourlyRate(equipmentDTO.getHourlyRate())
                 .dailyRate(equipmentDTO.getDailyRate())
                 .ownerId(equipmentDTO.getOwnerId())
+                .imageUrl(equipmentDTO.getImageUrl())
                 .villageName(user.getVillageName()) // Cached for faster local searches
                 .district(user.getDistrict())       // Cached for faster local searches
                 .isAvailable(true)
@@ -92,6 +93,7 @@ public class EquipmentServiceImpl implements EquipmentService {
         if (equipmentDTO.getHourlyRate() != null) existing.setHourlyRate(equipmentDTO.getHourlyRate());
         if (equipmentDTO.getDailyRate() != null) existing.setDailyRate(equipmentDTO.getDailyRate());
         if (equipmentDTO.getCategory() != null) existing.setCategory(equipmentDTO.getCategory());
+        if (equipmentDTO.getImageUrl() != null) existing.setImageUrl(equipmentDTO.getImageUrl());
 
         // Use object Boolean check to allow updating the boolean flag safely
         existing.setAvailable(equipmentDTO.isAvailable());
@@ -117,6 +119,7 @@ public class EquipmentServiceImpl implements EquipmentService {
                 .hourlyRate(equipment.getHourlyRate())
                 .dailyRate(equipment.getDailyRate())
                 .ownerId(equipment.getOwnerId())
+                .imageUrl(equipment.getImageUrl())
                 .villageName(equipment.getVillageName())
                 .district(equipment.getDistrict())
                 .isAvailable(equipment.isAvailable())

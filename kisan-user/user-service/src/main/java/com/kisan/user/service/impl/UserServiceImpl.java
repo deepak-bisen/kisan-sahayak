@@ -1,5 +1,7 @@
 package com.kisan.user.service.impl;
 
+import com.kisan.user.security.JwtUtil;
+import com.kisan.user.dto.AuthResponseDTO;
 import com.kisan.user.dto.LoginRequestDTO;
 import com.kisan.user.dto.UserDTO;
 import com.kisan.user.entity.User;
@@ -18,6 +20,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
     @Override
     public UserDTO registerUser(UserDTO userDTO) {
@@ -38,14 +41,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO login(LoginRequestDTO request) {
+    public AuthResponseDTO loginUser(LoginRequestDTO request) {
         User user = userRepository.findByPhoneNumber(request.getPhoneNumber())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("Invalid phone number or password."));
 
+        // Compare raw password with hashed database password
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid credentials");
+            throw new RuntimeException("Invalid phone number or password.");
         }
-        return mapToDTO(user);
+
+        // Generate the JWT string!
+        String token = jwtUtil.generateToken(user.getPhoneNumber(), user.getUserId(), user.getRole());
+
+        UserDTO userDTO = mapToDTO(user);
+
+        //return both the token and the user details
+        return AuthResponseDTO.builder()
+                .token(token)
+                .user(userDTO)
+                .build();
     }
 
     @Override
@@ -119,6 +133,7 @@ public class UserServiceImpl implements UserService {
                 .district(user.getDistrict())
                 .state(user.getState())
                 .role(user.getRole())
+                // We don't map password back to DTO for security!
                 .build();
     }
 }

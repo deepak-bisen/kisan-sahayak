@@ -36,6 +36,10 @@ public class Equipment {
     @Column(nullable = false)
     private String ownerId; // Links to userId in User-Service
 
+    // Store the image URL
+    @Column(name = "image_url")
+    private String imageUrl;
+
     // Basic location caching to avoid querying User-Service too often during searches
     private String villageName;
     private String district;

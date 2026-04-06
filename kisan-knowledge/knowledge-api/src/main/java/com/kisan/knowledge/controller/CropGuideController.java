@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
 @RequestMapping("/api/knowledge/guides")
 public interface CropGuideController {
 
@@ -18,7 +17,7 @@ public interface CropGuideController {
     @GetMapping("/{id}")
     public ResponseEntity<CropGuideDTO> getCropGuide(@PathVariable String id);
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<CropGuideDTO>> getAllCropGuides();
 
     @GetMapping("/search/crop/{cropName}")

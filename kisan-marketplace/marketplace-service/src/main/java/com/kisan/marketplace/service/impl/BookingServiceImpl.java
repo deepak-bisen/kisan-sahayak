@@ -41,6 +41,16 @@ public class BookingServiceImpl implements BookingService {
             throw new RuntimeException("Equipment is currently not available for booking.");
         }
 
+        // NEW: 3. Check for specific Date Overlaps!
+        boolean isOverlapping = bookingRepository.hasOverlappingBookings(
+                bookingDTO.getEquipmentId(),
+                bookingDTO.getStartDate(),
+                bookingDTO.getEndDate()
+        );
+
+        if (isOverlapping) {
+            throw new RuntimeException("Equipment is already booked during these dates. Please select different dates.");
+        }
         // 3. Verify Renter exists via User Service (Feign Client)
         UserResponseDTO renter = userClient.getUserById(bookingDTO.getRenterId());
         if (renter == null) {

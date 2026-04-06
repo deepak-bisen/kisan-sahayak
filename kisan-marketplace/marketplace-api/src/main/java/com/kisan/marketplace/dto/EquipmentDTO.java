@@ -32,6 +32,9 @@ public class EquipmentDTO {
         @NotBlank(message = "Owner ID is required")
         private String ownerId;
 
+        //Add image URL to the DTO
+        private String imageUrl;
+
         // Read-only location details (populated by the service)
         private String villageName;
         private String district;
