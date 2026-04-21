@@ -10,6 +10,7 @@
     <artifactId>user-app</artifactId>
     <name>user-app</name>
     <description>Main User App</description>
+    <packaging>jar</packaging>
 
 
     <dependencies>
@@ -24,7 +25,6 @@
             <artifactId>user-service</artifactId>
             <version>${project.version}</version>
         </dependency>
-
     </dependencies>
 
     <build>

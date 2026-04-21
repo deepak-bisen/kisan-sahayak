@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping("/marketplace/api/equipment")
+@RequestMapping("/api/marketplace/equipment")
 public interface EquipmentController {
 
     @PostMapping

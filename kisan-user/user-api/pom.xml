@@ -9,6 +9,7 @@
 
     <artifactId>user-api</artifactId>
     <name>user-api</name>
+    <packaging>jar</packaging>
     <description>Shared DTOs and interfaces for User Service</description>
 
     <dependencies>

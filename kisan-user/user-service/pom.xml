@@ -8,6 +8,7 @@
     </parent>
 
     <artifactId>user-service</artifactId>
+    <packaging>jar</packaging>
     <name>user-service</name>
 
     <dependencies>
@@ -16,7 +17,6 @@
             <artifactId>user-api</artifactId>
             <version>${project.version}</version>
         </dependency>
-
 
         <!-- JWT Dependencies for Token Generation -->
         <dependency>
