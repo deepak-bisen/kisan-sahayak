@@ -10,7 +10,7 @@
     <artifactId>api-gateway</artifactId>
     <packaging>jar</packaging>
 
-    <name>kisan-gateway</name>
+    <name>api-gateway</name>
 
     <dependencies>
         <dependency>

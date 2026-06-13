@@ -14,10 +14,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable) // Disable CSRF for REST APIs
+                .csrf(AbstractHttpConfigurer::disable) // Disable CSRF completely for this service (SPA + JWT)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/register", "/api/users/login").permitAll() // Make these public
-                        .anyRequest().permitAll() // Let our API Gateway handle the actual security!
+                        .requestMatchers("/api/users/register", "/api/users/login").permitAll()
+                        .anyRequest().permitAll()
                 );
         return http.build();
     }

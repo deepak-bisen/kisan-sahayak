@@ -21,6 +21,7 @@
 		<module>kisan-marketplace</module>
 		<module>kisan-knowledge</module>
 		<module>api-gateway</module>
+		<module>discovery-server</module>
 	</modules>
 
 	<properties>
