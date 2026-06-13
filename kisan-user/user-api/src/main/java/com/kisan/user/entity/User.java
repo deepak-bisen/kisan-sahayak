@@ -20,7 +20,7 @@ public class User {
     private String id;
 
     @Column(name = "NAME", columnDefinition = "VARCHAR(30)", nullable = false)
-    private String Name;
+    private String name;
 
     @Column(name = "PHONE_NUMBER", columnDefinition = "VARCHAR(13)", nullable = false)
     private String phoneNumber;

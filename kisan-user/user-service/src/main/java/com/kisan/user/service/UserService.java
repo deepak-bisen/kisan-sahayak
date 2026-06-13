@@ -33,5 +33,5 @@ import java.util.List;
 
        //---delete user---
        void deleteUserByUserId(String userId);
-       void deleteUserByPhone(String phoneNumber);
+//       void deleteUserByPhone(String phoneNumber);
    }

@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = User.builder()
-                .fullName(userDTO.getFullName())
+                .name(userDTO.getFullName())
                 .phoneNumber(userDTO.getPhoneNumber())
                 .password(passwordEncoder.encode(userDTO.getPassword())) // Encrypt!
                 .villageName(userDTO.getVillageName())
@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // Generate the JWT string!
-        String token = jwtUtil.generateToken(user.getPhoneNumber(), user.getUserId(), user.getRole());
+        String token = jwtUtil.generateToken(user.getPhoneNumber(), user.getId(), user.getRole());
 
         UserDTO userDTO = mapToDTO(user);
 
@@ -89,13 +89,14 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(userId);
     }
 
+
     @Override
     public UserDTO updateUser(String userId, UserDTO userDTO) {
         User existingUser = userRepository.findById(userId)
                 .orElseThrow(()-> new RuntimeException("User not found with this id: "+ userId));
 
         //Partial Update: Only fields if they are provided in the DTO
-        if (userDTO.getFullName() != null) existingUser.setFullName(userDTO.getFullName());
+        if (userDTO.getFullName() != null) existingUser.setName(userDTO.getFullName());
         if (userDTO.getVillageName() != null) existingUser.setVillageName(userDTO.getVillageName());
         if (userDTO.getDistrict() != null) existingUser.setDistrict(userDTO.getDistrict());
         if (userDTO.getState() != null) existingUser.setState(userDTO.getState());
@@ -126,8 +127,8 @@ public class UserServiceImpl implements UserService {
 
     private UserDTO mapToDTO(User user){
         return UserDTO.builder()
-                .userId(user.getUserId())
-                .fullName(user.getFullName())
+                .userId(user.getId())
+                .fullName(user.getName())
                 .phoneNumber(user.getPhoneNumber())
                 .villageName(user.getVillageName())
                 .district(user.getDistrict())

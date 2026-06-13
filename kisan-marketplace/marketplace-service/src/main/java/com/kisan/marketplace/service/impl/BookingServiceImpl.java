@@ -67,7 +67,7 @@ public class BookingServiceImpl implements BookingService {
 
         // 5. Build and save the booking
         Booking booking = Booking.builder()
-                .equipmentId(equipment.getEquipmentId())
+                .equipmentId(equipment.getId())
                 .renterId(renter.getUserId())
                 .startDate(bookingDTO.getStartDate())
                 .endDate(bookingDTO.getEndDate())
@@ -116,7 +116,7 @@ public class BookingServiceImpl implements BookingService {
 
  private BookingDTO mapToDTO(Booking booking){
         return BookingDTO.builder()
-                .bookingId(booking.getBookingId())
+                .bookingId(booking.getId())
                 .equipmentId(booking.getEquipmentId())
                 .renterId(booking.getRenterId())
                 .startDate(booking.getStartDate())
