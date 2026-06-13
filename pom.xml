@@ -20,7 +20,7 @@
 		<module>kisan-user</module>
 		<module>kisan-marketplace</module>
 		<module>kisan-knowledge</module>
-		<module>kisan-gateway</module>
+		<module>api-gateway</module>
 	</modules>
 
 	<properties>

@@ -7,7 +7,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>kisan-gateway</artifactId>
+    <artifactId>api-gateway</artifactId>
     <packaging>jar</packaging>
 
     <name>kisan-gateway</name>
