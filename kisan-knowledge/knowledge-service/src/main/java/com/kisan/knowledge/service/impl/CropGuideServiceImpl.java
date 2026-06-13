@@ -94,7 +94,7 @@ public class CropGuideServiceImpl implements CropGuideService {
 
     private  CropGuideDTO mapToDTO(CropGuide cropGuide){
         return CropGuideDTO.builder()
-                .guideId(cropGuide.getGuideId())
+                .guideId(cropGuide.getId())
                 .cropName(cropGuide.getCropName())
                 .season(cropGuide.getSeason())
                 .soilType(cropGuide.getSoilType())

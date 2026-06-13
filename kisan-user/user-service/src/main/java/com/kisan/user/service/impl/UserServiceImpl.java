@@ -8,6 +8,7 @@ import com.kisan.user.entity.User;
 import com.kisan.user.repository.UserRepository;
 import com.kisan.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,13 @@ public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
+    @Autowired
+    UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = new JwtUtil();
+    }
+
     @Override
     public UserDTO registerUser(UserDTO userDTO) {
         if (userRepository.existsByPhoneNumber(userDTO.getPhoneNumber())){
@@ -29,7 +37,7 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = User.builder()
-                .fullName(userDTO.getFullName())
+                .Name(userDTO.getFullName())
                 .phoneNumber(userDTO.getPhoneNumber())
                 .password(passwordEncoder.encode(userDTO.getPassword())) // Encrypt!
                 .villageName(userDTO.getVillageName())
@@ -51,7 +59,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // Generate the JWT string!
-        String token = jwtUtil.generateToken(user.getPhoneNumber(), user.getUserId(), user.getRole());
+        String token = jwtUtil.generateToken(user.getPhoneNumber(), user.getId(), user.getRole());
 
         UserDTO userDTO = mapToDTO(user);
 
@@ -95,7 +103,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(()-> new RuntimeException("User not found with this id: "+ userId));
 
         //Partial Update: Only fields if they are provided in the DTO
-        if (userDTO.getFullName() != null) existingUser.setFullName(userDTO.getFullName());
+        if (userDTO.getFullName() != null) existingUser.setName(userDTO.getFullName());
         if (userDTO.getVillageName() != null) existingUser.setVillageName(userDTO.getVillageName());
         if (userDTO.getDistrict() != null) existingUser.setDistrict(userDTO.getDistrict());
         if (userDTO.getState() != null) existingUser.setState(userDTO.getState());
@@ -118,16 +126,16 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     *@Override
-     *public void deleteUserByPhone(String phoneNumber) {
+     * @Override
+     * public void deleteUserByPhone(String phoneNumber) {
      * userRepository.deleteByPhoneNumber(phoneNumber);
      * }
      */
 
     private UserDTO mapToDTO(User user){
         return UserDTO.builder()
-                .userId(user.getUserId())
-                .fullName(user.getFullName())
+                .userId(user.getId())
+                .fullName(user.getName())
                 .phoneNumber(user.getPhoneNumber())
                 .villageName(user.getVillageName())
                 .district(user.getDistrict())

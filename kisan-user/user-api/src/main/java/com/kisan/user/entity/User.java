@@ -15,28 +15,29 @@ import lombok.NoArgsConstructor;
 public class User {
 
     @Id
+    @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String userId;
+    private String id;
 
-    @Column(nullable = false)
-    private String fullName;
+    @Column(name = "NAME", columnDefinition = "VARCHAR(30)", nullable = false)
+    private String Name;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "PHONE_NUMBER", columnDefinition = "VARCHAR(13)", nullable = false)
     private String phoneNumber;
 
-    @Column(nullable = false)
+    @Column(name = "PASSWORD", columnDefinition = "VARCHAR(20)", nullable = false)
     private String password;
 
-    @Column
+    @Column(name = "ADDRESS", columnDefinition = "VARCHAR(50)", nullable = false)
     private String villageName;
 
-    @Column
+    @Column(name = "District", columnDefinition = "VARCHAR(30)", nullable = false)
     private String district;
 
-    @Column
+    @Column(name = "STATE", columnDefinition = "VARCHAR(30)", nullable = false)
     private String state;
 
-    @Column(nullable = false)
+    @Column(name = "ROLE", columnDefinition = "VARCHAR(20)", nullable = false)
     private String role; // Role can be FARMER, EQUIPMENT_OWNER, or ADMIN
 
     // Latitude and Longitude for location-based services in the marketplace

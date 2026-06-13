@@ -16,8 +16,9 @@ import lombok.NoArgsConstructor;
 public class CropGuide {
 
     @Id
+    @Column(name="ID")
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String guideId;
+    private String id;
 
     @Column(nullable = false, unique = true)
     private String cropName; // e.g., "Wheat", "Rice", "Sugarcane"
