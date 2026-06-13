@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface CropGuideRepository extends JpaRepository<CropGuide, String> {
+public interface CropGuideRepository extends JpaRepository<CropGuide,Integer> {
 
     // Check if a crop guide already exists by name
     boolean existsByCropNameIgnoreCase(String cropName);

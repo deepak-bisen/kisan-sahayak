@@ -16,28 +16,30 @@ import java.math.BigDecimal;
 @Builder
 public class Equipment {
     @Id
+    @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.UUID)
-    public String equipmentId;
+    public String id;
 
-    @Column(nullable = false)
-    public String equipmentName;  // e.g., "Mahindra Tractor 575 DI"
+    @Column(name = "NAME", columnDefinition = "VARCHAR(50)", nullable = false)
+    public String name;  // e.g., "Mahindra Tractor 575 DI"
 
+    @Column(name = "DESCRIPTION", columnDefinition = "VARCHAR(50)", nullable = true)
     private String description;
 
-    @Column(nullable = false)
+    @Column(name = "CATEGORY", columnDefinition = "VARCHAR(50)", nullable = true)
     public String category;  // e.g., TRACTOR, HARVESTER, PLOUGH
 
-    @Column(nullable = false)
+    @Column(name = "HOURLY_RATE", nullable = false)
     private BigDecimal hourlyRate;
 
-    @Column(nullable = false)
+    @Column(name = "DAILY_RATE", nullable = false)
     private BigDecimal dailyRate;
 
-    @Column(nullable = false)
+    @Column(name = "OWNER_ID", columnDefinition = "VARCHAR(40)", nullable = false)
     private String ownerId; // Links to userId in User-Service
 
     // Store the image URL
-    @Column(name = "image_url")
+    @Column(name = "IMAGE_URL", columnDefinition = "VARCHAR(255)", nullable = false)
     private String imageUrl;
 
     // Basic location caching to avoid querying User-Service too often during searches

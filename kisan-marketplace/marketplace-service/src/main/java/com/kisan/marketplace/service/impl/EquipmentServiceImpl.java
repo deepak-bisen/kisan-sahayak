@@ -41,7 +41,7 @@ public class EquipmentServiceImpl implements EquipmentService {
 
         // 3. Build equipment and cache location data from the user profile
         Equipment equipment = Equipment.builder()
-                .equipmentName(equipmentDTO.getName())
+                .name(equipmentDTO.getName())
                 .description(equipmentDTO.getDescription())
                 .category(equipmentDTO.getCategory())
                 .hourlyRate(equipmentDTO.getHourlyRate())
@@ -88,7 +88,7 @@ public class EquipmentServiceImpl implements EquipmentService {
         Equipment existing = equipmentRepository.findById(equipmentId)
                 .orElseThrow(() -> new RuntimeException("Equipment not found"));
 
-        if (equipmentDTO.getName() != null) existing.setEquipmentName(equipmentDTO.getName());
+        if (equipmentDTO.getName() != null) existing.setName(equipmentDTO.getName());
         if (equipmentDTO.getDescription() != null) existing.setDescription(equipmentDTO.getDescription());
         if (equipmentDTO.getHourlyRate() != null) existing.setHourlyRate(equipmentDTO.getHourlyRate());
         if (equipmentDTO.getDailyRate() != null) existing.setDailyRate(equipmentDTO.getDailyRate());
@@ -112,8 +112,8 @@ public class EquipmentServiceImpl implements EquipmentService {
 
     private EquipmentDTO mapToDTO(Equipment equipment) {
         return EquipmentDTO.builder()
-                .equipmentId(equipment.getEquipmentId())
-                .name(equipment.getEquipmentName())
+                .equipmentId(equipment.getId())
+                .name(equipment.getName())
                 .description(equipment.getDescription())
                 .category(equipment.getCategory())
                 .hourlyRate(equipment.getHourlyRate())

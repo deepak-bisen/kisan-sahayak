@@ -15,22 +15,23 @@ import java.time.LocalDate;
 public class Booking {
 
     @Id
+    @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String bookingId;
+    private String id;
 
-    @Column(nullable = false)
+    @Column(name = "EQUIPMENT_ID", columnDefinition = "VARCHAR(40)", nullable = false)
     private String equipmentId; // Which equipment is being booked
 
-    @Column(nullable = false)
+    @Column(name = "RENTER_ID", columnDefinition = "VARCHAR(40)", nullable = false)
     private String renterId; // Links to userId in User-Service (the farmer renting it)
 
-    @Column(nullable = false)
+    @Column(name = "START_DATE", columnDefinition = "DATETIME", nullable = false)
     private LocalDate startDate;
 
-    @Column(nullable = false)
+    @Column(name = "END_DATE", columnDefinition = "DATETIME", nullable = false)
     private LocalDate endDate;
 
-    @Column(nullable = false)
+    @Column(name = "TOTAL_COST", nullable = false)
     private BigDecimal totalCost;
 
     @Column(nullable = false)
