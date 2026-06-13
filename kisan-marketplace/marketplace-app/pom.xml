@@ -42,7 +42,7 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
-                    <mainClass>com.kisan.marketplace.MarketPlaceApplication</mainClass>
+                    <mainClass>com.kisan.marketplace.MarketplaceAppApplication</mainClass>
                 </configuration>
             </plugin>
         </plugins>

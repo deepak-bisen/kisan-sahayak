@@ -16,8 +16,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CropGuideServiceImpl implements CropGuideService {
 
-    @Autowired
-    private CropGuideRepository cropGuideRepository;
+    private final CropGuideRepository cropGuideRepository;
 
 
     @Override
@@ -39,7 +38,7 @@ public class CropGuideServiceImpl implements CropGuideService {
 
     @Override
     public CropGuideDTO getCropGuideById(String guideId) {
-        CropGuide cropGuide = cropGuideRepository.findById(Integer.valueOf(guideId))
+        CropGuide cropGuide = cropGuideRepository.findById(guideId)
                 .orElseThrow(() -> new RuntimeException("Crop Guide not found with id: "+ guideId));
         return mapToDTO(cropGuide);
     }
@@ -70,7 +69,7 @@ public class CropGuideServiceImpl implements CropGuideService {
     @Transactional
     public CropGuideDTO updateCropGuide(String guideId, CropGuideDTO cropGuideDTO) {
 
-        CropGuide existingGuide = cropGuideRepository.findById(Integer.valueOf(guideId))
+        CropGuide existingGuide = cropGuideRepository.findById(guideId)
                 .orElseThrow(()-> new RuntimeException("Crop Guide not found with id: " + guideId));
 
         if (cropGuideDTO.getCropName() != null) existingGuide.setCropName(cropGuideDTO.getCropName());
@@ -86,10 +85,10 @@ public class CropGuideServiceImpl implements CropGuideService {
     @Override
     @Transactional
     public void deleteCropGuide(String guideId) {
-        if (cropGuideRepository.existsById(Integer.valueOf(guideId))){
+        if (!cropGuideRepository.existsById(guideId)) {
             throw new RuntimeException("Crop Guide not found with id: " + guideId);
         }
-       cropGuideRepository.deleteById(Integer.valueOf(guideId));
+        cropGuideRepository.deleteById(guideId);
     }
 
     private  CropGuideDTO mapToDTO(CropGuide cropGuide){

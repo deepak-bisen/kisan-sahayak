@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/knowledge/guides")
 public class CropGuideControllerImpl implements CropGuideController {
 
     private final CropGuideService cropGuideService;
@@ -23,7 +24,7 @@ public class CropGuideControllerImpl implements CropGuideController {
     // Typically protected for ADMIN role later
     @Override
     public ResponseEntity<CropGuideDTO> addCropGuide(CropGuideDTO cropGuideDTO) {
-        return new ResponseEntity<>(cropGuideService.addCropGuide(cropGuideDTO), HttpStatus. CREATED);
+        return new ResponseEntity<>(cropGuideService.addCropGuide(cropGuideDTO), HttpStatus.CREATED);
     }
 
     @Override

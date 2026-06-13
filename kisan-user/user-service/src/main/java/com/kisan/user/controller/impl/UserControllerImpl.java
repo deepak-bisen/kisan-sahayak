@@ -52,7 +52,7 @@ public class UserControllerImpl implements UserController {
 
     @Override
     public ResponseEntity<Void> deleteUserByPhone(String phoneNumber) {
-        userService.getUserByPhoneNumber(phoneNumber);
+        userService.deleteUserByPhone(phoneNumber);
         return ResponseEntity.noContent().build();
     }
 

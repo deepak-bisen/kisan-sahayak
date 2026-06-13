@@ -117,12 +117,14 @@ public class UserServiceImpl implements UserService {
         return mapToDTO(userRepository.save(existingUser));
     }
 
-    /**
-     *@Override
-     *public void deleteUserByPhone(String phoneNumber) {
-     * userRepository.deleteByPhoneNumber(phoneNumber);
-     * }
-     */
+    @Override
+    public void deleteUserByPhone(String phoneNumber) {
+        // Optionally verify existence first for a better error message
+        if (!userRepository.existsByPhoneNumber(phoneNumber)) {
+            throw new RuntimeException("User not found with phone: " + phoneNumber);
+        }
+        userRepository.deleteByPhoneNumber(phoneNumber);
+    }
 
     private UserDTO mapToDTO(User user){
         return UserDTO.builder()

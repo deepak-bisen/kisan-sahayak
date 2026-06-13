@@ -32,6 +32,6 @@ import java.util.List;
        UserDTO updateUser(String userId, UserDTO userDTO);
 
        //---delete user---
-       //void deleteUserByPhone(String phoneNumber);
        void deleteUserByUserId(String userId);
+       void deleteUserByPhone(String phoneNumber);
    }
