@@ -14,7 +14,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Disable CSRF for the entire filter chain (SPA frontend + stateless JWT auth)
+                // Completely disable CSRF for this service.
+                // The gateway handles auth (JWT) and the services are internal (trusted).
+                // This prevents any CSRF token errors for SPA calls like register/login.
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/**"))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/users/register", "/api/users/login").permitAll()
                         .anyRequest().permitAll()
