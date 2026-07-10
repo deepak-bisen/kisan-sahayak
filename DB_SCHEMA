@@ -1,0 +1,38 @@
+CREATE DATABASE kisan_sahayak;
+USE kisan_sahayak;
+
+-- User table for Farmers and Equipment Owners
+CREATE TABLE users (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(100) NOT NULL,
+    phone_number VARCHAR(15) UNIQUE NOT NULL,
+    user_role ENUM('FARMER', 'OWNER', 'ADMIN') DEFAULT 'FARMER',
+    village_name VARCHAR(100),
+    latitude DECIMAL(10, 8),
+    longitude DECIMAL(11, 8),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Equipment table for Buying, Selling, and Renting
+CREATE TABLE equipment (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    owner_id BIGINT,
+    title VARCHAR(150) NOT NULL,
+    category VARCHAR(50), -- e.g., Tractor, Harvester, Tiller
+    listing_type ENUM('SALE', 'RENT') NOT NULL,
+    price DECIMAL(10, 2) NOT NULL, -- Per hour/day for rent or total for sale
+    description TEXT,
+    is_available BOOLEAN DEFAULT TRUE,
+    FOREIGN KEY (owner_id) REFERENCES users(id)
+);
+
+-- Knowledge Hub table for Crops and Medicines
+CREATE TABLE knowledge_hub (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    category ENUM('CROP_VARIETY', 'MEDICINE') NOT NULL,
+    title VARCHAR(200) NOT NULL,
+    description TEXT,
+    benefits TEXT,
+    usage_instructions TEXT,
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);

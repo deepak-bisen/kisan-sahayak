@@ -1,0 +1,109 @@
+<section class="hero">
+  <div class="container hero__grid">
+    <div class="hero__copy">
+      <div class="audience-toggle" role="tablist" aria-label="Choose your role">
+        <button
+          type="button"
+          role="tab"
+          [attr.aria-selected]="audience() === 'FARMER'"
+          class="audience-toggle__btn"
+          [class.is-active]="audience() === 'FARMER'"
+          (click)="setAudience('FARMER')">
+          मैं किसान हूँ
+        </button>
+        <button
+          type="button"
+          role="tab"
+          [attr.aria-selected]="audience() === 'EQUIPMENT_OWNER'"
+          class="audience-toggle__btn"
+          [class.is-active]="audience() === 'EQUIPMENT_OWNER'"
+          (click)="setAudience('EQUIPMENT_OWNER')">
+          मेरे पास उपकरण है
+        </button>
+      </div>
+
+      <p class="eyebrow">{{ active().eyebrow }}</p>
+      <h1 class="hero__headline">{{ active().headline }}</h1>
+      <p class="hero__sub">{{ active().sub }}</p>
+
+      <div class="hero__actions">
+        <a routerLink="/register" class="btn btn-primary">{{ active().cta }}</a>
+        <a routerLink="/login" class="btn btn-ghost">I already have an account</a>
+      </div>
+    </div>
+
+    <div class="hero__art" aria-hidden="true">
+      <div class="tool-card tool-card--1">🚜<span>Tractor</span></div>
+      <div class="tool-card tool-card--2">🌾<span>Crop guide</span></div>
+      <div class="tool-card tool-card--3">🚿<span>Irrigation</span></div>
+      <div class="tool-card tool-card--4">🧑‍🌾<span>Booking</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- Signature element: the "mandi noticeboard" ticker -->
+<div class="noticeboard" aria-label="Live listings ticker">
+  <div class="noticeboard__rail">
+    @for (item of tickerItems; track item) {
+      <span class="noticeboard__item">{{ item }}</span>
+      <span class="noticeboard__dot">✽</span>
+    }
+    <!-- duplicate for seamless loop -->
+    @for (item of tickerItems; track item) {
+      <span class="noticeboard__item">{{ item }}</span>
+      <span class="noticeboard__dot">✽</span>
+    }
+  </div>
+</div>
+
+<section class="features container">
+  <h2 class="section-title">One account, three things you actually need</h2>
+  <div class="feature-grid">
+    <article class="feature-card">
+      <div class="feature-card__icon">🚜</div>
+      <h3>Rent equipment</h3>
+      <p>Browse tractors, tillers and harvesters listed by owners in your district, and book them for the exact dates you need.</p>
+    </article>
+    <article class="feature-card">
+      <div class="feature-card__icon">📋</div>
+      <h3>List your machine</h3>
+      <p>Own equipment that sits idle part of the season? List it once with your village and rate, and start getting booking requests.</p>
+    </article>
+    <article class="feature-card">
+      <div class="feature-card__icon">🌱</div>
+      <h3>Crop guides</h3>
+      <p>Read structured guides on sowing depth, irrigation timing and pest care, organised by crop and season.</p>
+    </article>
+  </div>
+</section>
+
+<section class="how container">
+  <h2 class="section-title">How it works</h2>
+  <ol class="how-steps">
+    <li class="how-step">
+      <span class="how-step__num">01</span>
+      <h3>Create your account</h3>
+      <p>Sign up with your phone number, village and role — farmer or equipment owner.</p>
+    </li>
+    <li class="how-step">
+      <span class="how-step__num">02</span>
+      <h3>Browse or list</h3>
+      <p>Farmers browse nearby equipment. Owners list what they have, with rate and availability.</p>
+    </li>
+    <li class="how-step">
+      <span class="how-step__num">03</span>
+      <h3>Book and grow</h3>
+      <p>Confirm a booking for the dates you need, then check the crop guide for what's next in the season.</p>
+    </li>
+  </ol>
+</section>
+
+<section class="cta-band">
+  <div class="container cta-band__inner">
+    <div>
+      <h2>Ready to get started?</h2>
+      <p>It takes about a minute to register — just your phone number, village and role.</p>
+    </div>
+    <a routerLink="/register" class="btn btn-primary">Create your account</a>
+  </div>
+</section>

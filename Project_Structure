@@ -1,0 +1,10 @@
+kisan-sahayak-backend/
+├── pom.xml (Parent POM)
+├── discovery-server/ (Eureka)
+├── api-gateway/
+├── user-service/
+│   ├── user-api/ (DTOs, Interfaces)
+│   ├── user-service/ (Business Logic)
+│   └── user-app/ (Controller, Repo, Main)
+├── marketplace-service/ (Multi-module)
+└── knowledge-service/ (Multi-module)

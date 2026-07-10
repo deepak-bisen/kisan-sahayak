@@ -1,0 +1,20 @@
+<section class="dash container">
+  <p class="eyebrow">आपका पैनल</p>
+  <h1>Welcome, {{ auth.currentUser()?.fullName }}</h1>
+  <p class="dash__sub">
+    You're logged in as
+    <strong>{{ auth.currentUser()?.role === 'FARMER' ? 'a Farmer' : 'an Equipment Owner' }}</strong>
+    from {{ auth.currentUser()?.villageName }}, {{ auth.currentUser()?.district }}.
+  </p>
+
+  <div class="dash-grid">
+    <div class="dash-card">
+      <h3>🚜 Equipment marketplace</h3>
+      <p>Browsing and booking equipment is coming next — this is where your listings and bookings will live.</p>
+    </div>
+    <div class="dash-card">
+      <h3>🌱 Crop guides</h3>
+      <p>Season-specific crop guides will show up here once the knowledge section is connected.</p>
+    </div>
+  </div>
+</section>

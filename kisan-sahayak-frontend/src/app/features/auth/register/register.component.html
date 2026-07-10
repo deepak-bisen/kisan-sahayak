@@ -1,0 +1,109 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <p class="eyebrow auth-card__eyebrow">नया खाता</p>
+    <h1>Create your account</h1>
+    <p class="auth-card__sub">Takes about a minute. You'll use your phone number to log in.</p>
+
+    @if (serverError()) {
+      <div class="form-banner error">{{ serverError() }}</div>
+    }
+    @if (success()) {
+      <div class="form-banner success">Account created. Taking you to log in…</div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="field">
+        <label for="fullName">Full name</label>
+        <input
+          id="fullName"
+          type="text"
+          formControlName="fullName"
+          placeholder="Ramesh Patel"
+          [class.invalid]="f.fullName.invalid && f.fullName.touched"
+        />
+        @if (f.fullName.invalid && f.fullName.touched) {
+          <span class="field-error">Name must be 3–50 characters.</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="phoneNumber">Phone number</label>
+        <input
+          id="phoneNumber"
+          type="tel"
+          formControlName="phoneNumber"
+          placeholder="98XXXXXXXX"
+          [class.invalid]="f.phoneNumber.invalid && f.phoneNumber.touched"
+        />
+        @if (f.phoneNumber.invalid && f.phoneNumber.touched) {
+          <span class="field-error">Enter a valid 10-digit phone number starting 6-9.</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          placeholder="At least 6 characters"
+          [class.invalid]="f.password.invalid && f.password.touched"
+        />
+        @if (f.password.invalid && f.password.touched) {
+          <span class="field-error">Password must be at least 6 characters.</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="role">I am a</label>
+        <select id="role" formControlName="role">
+          @for (r of roles; track r.value) {
+            <option [value]="r.value">{{ r.label }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="auth-card__row">
+        <div class="field">
+          <label for="villageName">Village</label>
+          <input
+            id="villageName"
+            type="text"
+            formControlName="villageName"
+            placeholder="Village name"
+            [class.invalid]="f.villageName.invalid && f.villageName.touched"
+          />
+        </div>
+        <div class="field">
+          <label for="district">District</label>
+          <input
+            id="district"
+            type="text"
+            formControlName="district"
+            placeholder="District"
+            [class.invalid]="f.district.invalid && f.district.touched"
+          />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="state">State</label>
+        <input
+          id="state"
+          type="text"
+          formControlName="state"
+          placeholder="Madhya Pradesh"
+          [class.invalid]="f.state.invalid && f.state.touched"
+        />
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block" [disabled]="loading()">
+        {{ loading() ? 'Creating account…' : 'Create account' }}
+      </button>
+    </form>
+
+    <p class="auth-card__footer">
+      Already have an account? <a routerLink="/login">Log in</a>
+    </p>
+  </div>
+</div>

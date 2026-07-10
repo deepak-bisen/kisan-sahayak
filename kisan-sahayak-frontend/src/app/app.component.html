@@ -1,0 +1,32 @@
+<header class="shell-header">
+  <div class="container shell-header__row">
+    <a routerLink="/" class="brand">
+      <span class="brand__mark">कि</span>
+      <span class="brand__word">Kisan <em>Sahayak</em></span>
+    </a>
+
+    <nav class="shell-nav">
+      @if (auth.isLoggedIn()) {
+        <a routerLink="/dashboard" class="shell-nav__user">
+          <span class="shell-nav__dot"></span>
+          {{ auth.currentUser()?.fullName }}
+        </a>
+        <button class="btn btn-ghost" (click)="logout()">Log out</button>
+      } @else {
+        <a routerLink="/login" class="btn btn-ghost">Log in</a>
+        <a routerLink="/register" class="btn btn-primary">Register</a>
+      }
+    </nav>
+  </div>
+</header>
+
+<main>
+  <router-outlet />
+</main>
+
+<footer class="shell-footer">
+  <div class="container shell-footer__row">
+    <span>© 2026 Kisan Sahayak — built for farmers &amp; equipment owners.</span>
+    <span class="shell-footer__dim">Madhya Pradesh · India</span>
+  </div>
+</footer>
