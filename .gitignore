@@ -38,3 +38,7 @@ build/
 .env.*.local
 # .env.example is intentionally committed as a template
 
+node_modules
+dist
+.angular
+*.log
