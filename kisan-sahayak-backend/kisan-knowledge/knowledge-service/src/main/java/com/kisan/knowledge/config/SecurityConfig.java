@@ -14,10 +14,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable) // Disable CSRF explicitly using lambda syntax
-                .cors(AbstractHttpConfigurer::disable) // Disable CORS checks which can also trigger 403 Forbidden
+                .csrf(AbstractHttpConfigurer::disable)   // Stateless JWT API
+                // NOT disable CORS here — the gateway already handles it.
+                // Keeping CORS enabled in the service is harmless behind the gateway.
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll() // Let our API Gateway handle the actual JWT security!
+                        .anyRequest().permitAll()
                 );
         return http.build();
     }

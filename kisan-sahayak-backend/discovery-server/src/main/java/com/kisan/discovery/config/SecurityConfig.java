@@ -10,11 +10,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Critical: Eureka clients fail without this
+                .csrf(csrf -> csrf.disable())            // Eureka server + dashboard
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest().permitAll()
                 )
-                .httpBasic(basic -> {}); // Allows the dashboard to load
+                .httpBasic(basic -> {});                 // Allows Eureka dashboard to load
         return http.build();
     }
 }

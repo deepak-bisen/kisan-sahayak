@@ -11,6 +11,7 @@ import java.util.List;
 /**
  * REST Controller for User operations.
  */
+@CrossOrigin(origins = "*")
 @RequestMapping("/api/users")
 public interface UserController {
     @PostMapping("/register")
