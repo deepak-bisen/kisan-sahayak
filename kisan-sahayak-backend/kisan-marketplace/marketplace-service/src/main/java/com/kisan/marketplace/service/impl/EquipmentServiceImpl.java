@@ -7,37 +7,43 @@ import com.kisan.marketplace.entity.Equipment;
 import com.kisan.marketplace.repository.EquipmentRepository;
 import com.kisan.marketplace.service.EquipmentService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
-@RequiredArgsConstructor
 public class EquipmentServiceImpl implements EquipmentService {
 
-    @Autowired
     private final EquipmentRepository equipmentRepository;
+    private final UserClient userClient;
 
     @Autowired
-    private final UserClient userClient;
+    public EquipmentServiceImpl(EquipmentRepository equipmentRepository, UserClient userClient) {
+        this.equipmentRepository = equipmentRepository;
+        this.userClient = userClient;
+    }
 
     @Override
     @Transactional
     public EquipmentDTO addEquipment(EquipmentDTO equipmentDTO) {
+        log.info("Equipment listing request received for ownerId={} equipmentName={}", equipmentDTO.getOwnerId(), equipmentDTO.getName());
+
         // 1. Synchronous inter-service call to verify the owner exists in User Service
         UserResponseDTO user = userClient.getUserById(equipmentDTO.getOwnerId());
 
         if (user == null) {
+            log.warn("Equipment listing failed: owner not found for ownerId={}", equipmentDTO.getOwnerId());
             throw new RuntimeException("Owner not found in the system.");
         }
 
-        // 2. Validate role: Only equipment owners or admins can list items
-        if (!"EQUIPMENT_OWNER".equals(user.getRole()) && !"ADMIN".equals(user.getRole())) {
-            throw new RuntimeException("Only registered EQUIPMENT_OWNERs can list equipment.");
-        }
+        // 2. Allow any registered user to list equipment, including someone who also rents equipment.
+        // The role is no longer used as a hard gate for this action.
 
         // 3. Build equipment and cache location data from the user profile
         Equipment equipment = Equipment.builder()
@@ -51,9 +57,12 @@ public class EquipmentServiceImpl implements EquipmentService {
                 .villageName(user.getVillageName()) // Cached for faster local searches
                 .district(user.getDistrict())       // Cached for faster local searches
                 .isAvailable(true)
+                .createdAt(LocalDateTime.now())
                 .build();
 
-        return mapToDTO(equipmentRepository.save(equipment));
+        Equipment savedEquipment = equipmentRepository.save(equipment);
+        log.info("Equipment listed successfully with equipmentId={} ownerId={}", savedEquipment.getId(), equipmentDTO.getOwnerId());
+        return mapToDTO(savedEquipment);
     }
 
     @Override
@@ -97,6 +106,7 @@ public class EquipmentServiceImpl implements EquipmentService {
 
         // Use object Boolean check to allow updating the boolean flag safely
         existing.setAvailable(equipmentDTO.isAvailable());
+        existing.setUpdatedAt(LocalDateTime.now());
 
         return mapToDTO(equipmentRepository.save(existing));
     }

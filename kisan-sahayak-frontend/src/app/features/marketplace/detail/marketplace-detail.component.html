@@ -1,0 +1,28 @@
+<div class="marketplace container">
+  <div *ngIf="loading()">Loading…</div>
+  <div *ngIf="!loading() && equipment()" class="equipment-detail">
+    <div class="media">
+      <img *ngIf="equipment()!.imageUrl" [src]="equipment()!.imageUrl" alt="{{ equipment()!.name }}" />
+    </div>
+    <h1>{{ equipment()!.name }}</h1>
+    <p class="meta">{{ equipment()!.category }} · {{ equipment()!.villageName || equipment()!.district }}</p>
+    <p class="desc">{{ equipment()!.description }}</p>
+    <p class="rates">Hourly: ₹{{ equipment()!.hourlyRate }} · Daily: ₹{{ equipment()!.dailyRate }}</p>
+  </div>
+</div>
+
+<div class="container" *ngIf="equipment()">
+  <h2>Book this equipment</h2>
+  <form (ngSubmit)="book()">
+    <div class="field">
+      <label for="startDate">Start date</label>
+      <input id="startDate" type="date" [(ngModel)]="startDate" name="startDate" />
+    </div>
+    <div class="field">
+      <label for="endDate">End date</label>
+      <input id="endDate" type="date" [(ngModel)]="endDate" name="endDate" />
+    </div>
+    <button class="btn btn-primary" type="submit">Request booking</button>
+  </form>
+  <div *ngIf="bookingSuccess()" class="form-banner success">Booking request submitted.</div>
+</div>

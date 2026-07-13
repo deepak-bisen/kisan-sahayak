@@ -1,0 +1,31 @@
+<div class="add-equipment">
+  <h1>List Equipment</h1>
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div>
+      <label>Name</label>
+      <input formControlName="name" />
+    </div>
+    <div>
+      <label>Category</label>
+      <input formControlName="category" />
+    </div>
+    <div>
+      <label>Hourly rate</label>
+      <input type="number" formControlName="hourlyRate" />
+    </div>
+    <div>
+      <label>Daily rate</label>
+      <input type="number" formControlName="dailyRate" />
+    </div>
+    <div>
+      <label>Image URL</label>
+      <input formControlName="imageUrl" />
+    </div>
+    <div>
+      <label>Description</label>
+      <textarea formControlName="description"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">List equipment</button>
+  </form>
+</div>

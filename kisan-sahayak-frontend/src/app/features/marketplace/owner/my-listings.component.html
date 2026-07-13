@@ -1,0 +1,21 @@
+<div class="marketplace container">
+  <h1>My Listings</h1>
+  <p *ngIf="loading()">Loading…</p>
+
+  <ul class="equipment-list">
+    <li *ngFor="let e of listings()" class="equipment-card">
+      <a [routerLink]="['/marketplace', e.equipmentId]">
+        <div class="media">
+          <img *ngIf="e.imageUrl" [src]="e.imageUrl" alt="{{ e.name }}" />
+        </div>
+        <h3>{{ e.name }}</h3>
+        <p class="meta">{{ e.category }} · {{ e.villageName || e.district }}</p>
+        <p class="rates">Hourly: ₹{{ e.hourlyRate }} &nbsp; · &nbsp; Daily: ₹{{ e.dailyRate }}</p>
+      </a>
+      <div style="margin-top:8px; display:flex; gap:8px;">
+        <button class="btn btn-ghost" (click)="edit(e.equipmentId!)">Edit</button>
+        <button class="btn btn-ghost" (click)="delete(e.equipmentId!)">Delete</button>
+      </div>
+    </li>
+  </ul>
+</div>

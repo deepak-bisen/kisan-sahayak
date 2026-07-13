@@ -2,6 +2,7 @@ package com.kisan.marketplace.controller.impl;
 
 import com.kisan.marketplace.controller.BookingController;
 import com.kisan.marketplace.dto.BookingDTO;
+import com.kisan.marketplace.enums.Status;
 import com.kisan.marketplace.service.BookingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -35,7 +36,7 @@ public class BookingControllerImpl implements BookingController {
         return ResponseEntity.ok(bookingService.getBookingsByEquipment(equipmentId));
     }
 
-    public ResponseEntity<BookingDTO> updateBookingStatus(String id, String status) {
+    public ResponseEntity<BookingDTO> updateBookingStatus(String id, Status status) {
         return ResponseEntity.ok(bookingService.updateBookingStatus(id, status));
     }
 }

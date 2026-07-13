@@ -1,5 +1,6 @@
 package com.kisan.marketplace.dto;
 
+import com.kisan.marketplace.enums.Status;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -35,5 +36,5 @@ public class BookingDTO {
 
     // These fields are typically calculated/managed by the backend service
     private BigDecimal totalCost;
-    private String status;
+    private Status status;
 }

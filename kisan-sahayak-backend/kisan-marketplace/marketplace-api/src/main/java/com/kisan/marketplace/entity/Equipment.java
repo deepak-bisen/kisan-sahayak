@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "equipments")
@@ -50,4 +51,10 @@ public class Equipment {
 
     @Builder.Default
     private boolean isAvailable = true;
+
+    @Column(name = "CREATED_AT", columnDefinition = "DATETIME",nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "UPDATED_AT", columnDefinition = "DATETIME",nullable = true)
+    private LocalDateTime updatedAt;
 }

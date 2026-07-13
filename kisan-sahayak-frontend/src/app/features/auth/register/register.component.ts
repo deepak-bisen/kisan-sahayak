@@ -3,7 +3,6 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../../core/services/auth.service';
-import { UserRole } from '../../../core/models/user.model';
 
 @Component({
   selector: 'app-register',
@@ -17,11 +16,6 @@ export class RegisterComponent {
   readonly serverError = signal<string | null>(null);
   readonly success = signal(false);
 
-  readonly roles: { value: UserRole; label: string }[] = [
-    { value: 'FARMER', label: 'Farmer' },
-    { value: 'EQUIPMENT_OWNER', label: 'Equipment owner' },
-  ];
-
   form = this.fb.group({
     fullName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
     phoneNumber: ['', [Validators.required, Validators.pattern(/^[6-9][0-9]{9}$/)]],
@@ -29,7 +23,6 @@ export class RegisterComponent {
     villageName: ['', [Validators.required]],
     district: ['', [Validators.required]],
     state: ['', [Validators.required]],
-    role: ['FARMER' as UserRole, [Validators.required]],
   });
 
   constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {}
@@ -56,7 +49,6 @@ export class RegisterComponent {
         villageName: v.villageName!,
         district: v.district!,
         state: v.state!,
-        role: v.role as UserRole,
       })
       .subscribe({
         next: () => {

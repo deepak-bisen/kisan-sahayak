@@ -1,6 +1,7 @@
 package com.kisan.marketplace.controller;
 
 import com.kisan.marketplace.dto.BookingDTO;
+import com.kisan.marketplace.enums.Status;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,5 +29,5 @@ public interface BookingController {
     @PatchMapping("/{id}/status")
     public ResponseEntity<BookingDTO> updateBookingStatus(
             @PathVariable String id,
-            @RequestParam String status);
+            @RequestParam Status status);
 }

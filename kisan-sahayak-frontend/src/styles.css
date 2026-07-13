@@ -198,3 +198,54 @@ button, input, select, textarea {
     scroll-behavior: auto !important;
   }
 }
+
+/* --- Marketplace cards and layout --- */
+.marketplace {
+  padding: 36px 0;
+}
+.marketplace h1 {
+  margin-bottom: 18px;
+}
+.equipment-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.equipment-card {
+  background: linear-gradient(180deg, var(--color-surface) 0%, var(--color-surface-raised) 100%);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.16s var(--ease), box-shadow 0.16s var(--ease);
+}
+.equipment-card:hover { transform: translateY(-6px); box-shadow: 0 10px 30px rgba(10,13,24,0.45); }
+.equipment-card a { color: inherit; text-decoration: none; display: block; }
+.equipment-card .media {
+  height: 140px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #2a3350 0%, #1b2338 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.equipment-card .media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.equipment-card h3 { margin: 10px 0 6px; color: var(--color-cream); }
+.equipment-card .meta { color: var(--color-cream-dim); font-size: 0.9rem; margin-bottom: 8px; }
+.equipment-card .rates { font-weight: 700; color: var(--color-gold); }
+.equipment-card .desc { color: var(--color-cream-dim); font-size: 0.92rem; margin-top: 8px; }
+
+/* Add equipment form styles */
+.add-equipment { padding: 28px 0; }
+.add-equipment form { max-width: 720px; }
+.add-equipment label { display:block; margin-bottom:6px; color:var(--color-cream-dim); }
+.add-equipment input, .add-equipment textarea { width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--color-border); background:var(--color-bg-alt); color:var(--color-cream); }
+.add-equipment textarea { min-height: 120px; }
+

@@ -25,5 +25,33 @@ export const routes: Routes = [
     canActivate: [authGuard],
     title: 'Dashboard — Kisan Sahayak',
   },
+  {
+    path: 'marketplace',
+    loadComponent: () => import('./features/marketplace/list/marketplace-list.component').then((m) => m.MarketplaceListComponent),
+    title: 'Marketplace — Kisan Sahayak',
+  },
+  {
+    path: 'marketplace/add',
+    loadComponent: () => import('./features/marketplace/add/add-equipment.component').then((m) => m.AddEquipmentComponent),
+    canActivate: [authGuard],
+    title: 'List Equipment — Kisan Sahayak',
+  },
+  {
+    path: 'marketplace/mine',
+    loadComponent: () => import('./features/marketplace/owner/my-listings.component').then((m) => m.MyListingsComponent),
+    canActivate: [authGuard],
+    title: 'My Listings — Kisan Sahayak',
+  },
+  {
+    path: 'marketplace/:id',
+    loadComponent: () => import('./features/marketplace/detail/marketplace-detail.component').then((m) => m.MarketplaceDetailComponent),
+    title: 'Equipment — Kisan Sahayak',
+  },
+  {
+    path: 'marketplace/:id/edit',
+    loadComponent: () => import('./features/marketplace/add/add-equipment.component').then((m) => m.AddEquipmentComponent),
+    canActivate: [authGuard],
+    title: 'Edit Equipment — Kisan Sahayak'
+  },
   { path: '**', redirectTo: '' },
 ];

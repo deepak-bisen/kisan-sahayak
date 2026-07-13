@@ -34,34 +34,46 @@ public class UserServiceImpl implements UserService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "User already registered with this number");
         }
 
-        log.info("user registering....");
+        log.info("user registration started...");
+        String resolvedRole = userDTO.getRole() != null ? userDTO.getRole() : "FARMER";
+
         User user = User.builder()
                 .name(userDTO.getFullName())
                 .phoneNumber(userDTO.getPhoneNumber())
                 .password(passwordEncoder.encode(userDTO.getPassword())) // Encrypt!
                 .villageName(userDTO.getVillageName())
                 .district(userDTO.getDistrict())
-                .role(userDTO.getRole())
+                .role(resolvedRole)
                 .build();
 
-        return mapToDTO(userRepository.save(user));
+        User registeredUser = userRepository.save(user);
+       // log.info("user registered successfully");
+        return mapToDTO(registeredUser);
     }
 
     @Override
     @Transactional
     public AuthResponseDTO loginUser(LoginRequestDTO request) {
-        User user = userRepository.findByPhoneNumber(request.getPhoneNumber())
-                .orElseThrow(() -> new RuntimeException("Invalid phone number or password."));
+        String phoneNumber = request.getPhoneNumber();
+        log.info("Login request received for phoneNumber={}", maskPhoneNumber(phoneNumber));
+
+        User user = userRepository.findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> {
+                    log.warn("Login failed: user not found for phoneNumber={}", maskPhoneNumber(phoneNumber));
+                    return new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid phone number or password.");
+                });
 
         // Compare raw password with hashed database password
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid phone number or password.");
+            log.warn("Login failed: invalid password for phoneNumber={}", maskPhoneNumber(phoneNumber));
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid phone number or password.");
         }
 
         // Generate the JWT string!
         String token = jwtUtil.generateToken(user.getPhoneNumber(), user.getId(), user.getRole());
 
         UserDTO userDTO = mapToDTO(user);
+        log.info("Login successful for userId={} role={} phoneNumber={}", user.getId(), user.getRole(), maskPhoneNumber(user.getPhoneNumber()));
 
         //return both the token and the user details
         return AuthResponseDTO.builder()
@@ -95,7 +107,9 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void deleteUserByUserId(String userId) {
+
         userRepository.deleteById(userId);
+        log.info("user deleted successfully with id: "+ userId);
     }
 
 
@@ -134,6 +148,13 @@ public class UserServiceImpl implements UserService {
      * userRepository.deleteByPhoneNumber(phoneNumber);
      * }
      */
+
+    private String maskPhoneNumber(String phoneNumber) {
+        if (phoneNumber == null || phoneNumber.length() <= 4) {
+            return "***";
+        }
+        return phoneNumber.substring(0, 2) + "***" + phoneNumber.substring(phoneNumber.length() - 2);
+    }
 
     private UserDTO mapToDTO(User user){
         return UserDTO.builder()

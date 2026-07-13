@@ -11,7 +11,7 @@ export interface UserDTO {
   villageName: string;
   district: string;
   state: string;
-  role: UserRole;
+  role?: UserRole;
 }
 
 // Matches LoginRequestDTO.java

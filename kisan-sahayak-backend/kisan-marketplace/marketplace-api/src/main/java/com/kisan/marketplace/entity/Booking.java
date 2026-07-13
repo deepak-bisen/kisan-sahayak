@@ -1,5 +1,6 @@
 package com.kisan.marketplace.entity;
 
+import com.kisan.marketplace.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,6 +35,7 @@ public class Booking {
     @Column(name = "TOTAL_COST", nullable = false)
     private BigDecimal totalCost;
 
-    @Column(nullable = false)
-    private String status; // e.g., REQUESTED, CONFIRMED, COMPLETED, CANCELLED
+    @Column(name = "STATUS", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Status status; // e.g., REQUESTED, CONFIRMED, COMPLETED, CANCELLED
 }

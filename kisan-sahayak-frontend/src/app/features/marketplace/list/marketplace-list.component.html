@@ -1,0 +1,28 @@
+<div class="marketplace container">
+  <div class="marketplace__head">
+    <h1>Marketplace</h1>
+    <p class="field-hint">Find equipment nearby — rent by hour or by day.</p>
+    <div class="marketplace__actions">
+      <a *ngIf="auth.isLoggedIn()" routerLink="/marketplace/add" class="btn btn-primary">List equipment</a>
+    </div>
+  </div>
+
+  <p *ngIf="loading()">Loading…</p>
+
+  <div *ngIf="!loading() && equipments().length === 0">No equipment listed yet.</div>
+
+  <ul class="equipment-list">
+    <li *ngFor="let e of equipments()" class="equipment-card">
+      <a [routerLink]="['/marketplace', e.equipmentId]">
+        <div class="media">
+          <img *ngIf="e.imageUrl" [src]="e.imageUrl" alt="{{ e.name }}" />
+          <div *ngIf="!e.imageUrl" class="placeholder">{{ e.category }}</div>
+        </div>
+        <h3>{{ e.name }}</h3>
+        <p class="meta">{{ e.category }} · {{ e.villageName || e.district }}</p>
+        <p class="desc">{{ e.description }}</p>
+        <p class="rates">Hourly: ₹{{ e.hourlyRate }} &nbsp; · &nbsp; Daily: ₹{{ e.dailyRate }}</p>
+      </a>
+    </li>
+  </ul>
+</div>

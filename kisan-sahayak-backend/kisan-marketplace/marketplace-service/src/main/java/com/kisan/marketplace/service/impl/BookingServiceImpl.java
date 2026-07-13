@@ -5,6 +5,7 @@ import com.kisan.marketplace.dto.BookingDTO;
 import com.kisan.marketplace.dto.UserResponseDTO;
 import com.kisan.marketplace.entity.Booking;
 import com.kisan.marketplace.entity.Equipment;
+import com.kisan.marketplace.enums.Status;
 import com.kisan.marketplace.repository.BookingRepository;
 import com.kisan.marketplace.repository.EquipmentRepository;
 import com.kisan.marketplace.service.BookingService;
@@ -72,7 +73,7 @@ public class BookingServiceImpl implements BookingService {
                 .startDate(bookingDTO.getStartDate())
                 .endDate(bookingDTO.getEndDate())
                 .totalCost(totalCost)
-                .status("REQUESTED") // Initial state
+                .status(Status.REQUESTED) // Initial state
                 .build();
 
         return mapToDTO(bookingRepository.save(booking));
@@ -101,12 +102,12 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public BookingDTO updateBookingStatus(String bookingId, String status) {
+    public BookingDTO updateBookingStatus(String bookingId, Status status) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
 
         // Allowable statuses: REQUESTED, CONFIRMED, COMPLETED, CANCELLED
-        if (!status.matches("^(REQUESTED|CONFIRMED|COMPLETED|CANCELLED)$")) {
+        if (!status.equals(Status.REQUESTED) || !status.equals(Status.CANCELLED) || !status.equals(Status.CONFIRMED) || !status.equals(Status.COMPLETED)) {
             throw new RuntimeException("Invalid status update.");
         }
 

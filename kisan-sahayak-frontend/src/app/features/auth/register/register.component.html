@@ -54,15 +54,6 @@
         }
       </div>
 
-      <div class="field">
-        <label for="role">I am a</label>
-        <select id="role" formControlName="role">
-          @for (r of roles; track r.value) {
-            <option [value]="r.value">{{ r.label }}</option>
-          }
-        </select>
-      </div>
-
       <div class="auth-card__row">
         <div class="field">
           <label for="villageName">Village</label>

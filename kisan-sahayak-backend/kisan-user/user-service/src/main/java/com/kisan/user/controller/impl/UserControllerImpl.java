@@ -6,12 +6,14 @@ import com.kisan.user.dto.LoginRequestDTO;
 import com.kisan.user.dto.UserDTO;
 import com.kisan.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class UserControllerImpl implements UserController {
@@ -20,13 +22,18 @@ public class UserControllerImpl implements UserController {
 
     @Override
     public ResponseEntity<UserDTO> registerUser(UserDTO userDTO) {
-        return new ResponseEntity<>(userService.registerUser(userDTO), HttpStatus.CREATED);
+        log.info("POST /api/users/register received for phoneNumber={}", userDTO != null ? userDTO.getPhoneNumber() : "null");
+        UserDTO response = userService.registerUser(userDTO);
+        log.info("POST /api/users/register completed for userId={}", response.getUserId());
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @Override
     public ResponseEntity<AuthResponseDTO> loginUser(LoginRequestDTO loginRequest) {
-        // Now returns AuthResponseDTO which includes the JWT token
-        return ResponseEntity.ok(userService.loginUser(loginRequest));
+        log.info("POST /api/users/login received for phoneNumber={}", loginRequest != null ? loginRequest.getPhoneNumber() : "null");
+        AuthResponseDTO response = userService.loginUser(loginRequest);
+        log.info("POST /api/users/login completed for userId={}", response.getUser() != null ? response.getUser().getUserId() : "unknown");
+        return ResponseEntity.ok(response);
     }
 
     @Override

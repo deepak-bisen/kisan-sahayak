@@ -1,6 +1,7 @@
 package com.kisan.marketplace.service;
 
 import com.kisan.marketplace.dto.BookingDTO;
+import com.kisan.marketplace.enums.Status;
 
 import java.util.List;
 
@@ -9,5 +10,5 @@ public interface BookingService {
     BookingDTO getBookingById(String bookingId);
     List<BookingDTO> getBookingsByRenter(String renterId);
     List<BookingDTO> getBookingsByEquipment(String equipmentId);
-    BookingDTO updateBookingStatus(String bookingId, String status);
+    BookingDTO updateBookingStatus(String bookingId, Status status);
 }

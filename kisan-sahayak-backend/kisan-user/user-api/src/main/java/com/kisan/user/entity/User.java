@@ -34,7 +34,7 @@ public class User {
     @Column(name = "District", columnDefinition = "VARCHAR(30)", nullable = false)
     private String district;
 
-    @Column(name = "STATE", columnDefinition = "VARCHAR(30)", nullable = false)
+    @Column(name = "STATE", columnDefinition = "VARCHAR(30)", nullable = true)
     private String state;
 
     @Column(name = "ROLE", columnDefinition = "VARCHAR(20)", nullable = false)

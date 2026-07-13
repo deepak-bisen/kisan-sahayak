@@ -34,7 +34,6 @@ import lombok.*;
         @NotBlank(message = "State is required")
         private String state;
 
-        @NotBlank(message = "Role is required")
         @Pattern(regexp = "^(FARMER|EQUIPMENT_OWNER|ADMIN)$", message = "Role must be FARMER, EQUIPMENT_OWNER, or ADMIN")
         private String role;
 
