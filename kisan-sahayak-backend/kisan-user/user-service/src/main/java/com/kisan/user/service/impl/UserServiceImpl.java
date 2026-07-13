@@ -8,12 +8,17 @@ import com.kisan.user.entity.User;
 import com.kisan.user.repository.UserRepository;
 import com.kisan.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -23,11 +28,13 @@ public class UserServiceImpl implements UserService {
     private final JwtUtil jwtUtil;
 
     @Override
+    @Transactional
     public UserDTO registerUser(UserDTO userDTO) {
         if (userRepository.existsByPhoneNumber(userDTO.getPhoneNumber())){
-            throw new RuntimeException("User already registered with this number");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "User already registered with this number");
         }
 
+        log.info("user registering....");
         User user = User.builder()
                 .name(userDTO.getFullName())
                 .phoneNumber(userDTO.getPhoneNumber())
@@ -41,6 +48,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public AuthResponseDTO loginUser(LoginRequestDTO request) {
         User user = userRepository.findByPhoneNumber(request.getPhoneNumber())
                 .orElseThrow(() -> new RuntimeException("Invalid phone number or password."));
@@ -85,12 +93,14 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
+    @Transactional
     public void deleteUserByUserId(String userId) {
         userRepository.deleteById(userId);
     }
 
 
     @Override
+    @Transactional
     public UserDTO updateUser(String userId, UserDTO userDTO) {
         User existingUser = userRepository.findById(userId)
                 .orElseThrow(()-> new RuntimeException("User not found with this id: "+ userId));

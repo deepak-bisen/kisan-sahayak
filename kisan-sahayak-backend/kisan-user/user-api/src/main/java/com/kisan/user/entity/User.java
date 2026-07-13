@@ -25,7 +25,7 @@ public class User {
     @Column(name = "PHONE_NUMBER", columnDefinition = "VARCHAR(13)", nullable = false)
     private String phoneNumber;
 
-    @Column(name = "PASSWORD", columnDefinition = "VARCHAR(20)", nullable = false)
+    @Column(name = "PASSWORD", columnDefinition = "VARCHAR(200)", nullable = false)
     private String password;
 
     @Column(name = "ADDRESS", columnDefinition = "VARCHAR(50)", nullable = false)

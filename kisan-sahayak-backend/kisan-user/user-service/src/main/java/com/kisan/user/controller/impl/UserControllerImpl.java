@@ -8,12 +8,10 @@ import com.kisan.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequiredArgsConstructor
 public class UserControllerImpl implements UserController {
@@ -22,7 +20,7 @@ public class UserControllerImpl implements UserController {
 
     @Override
     public ResponseEntity<UserDTO> registerUser(UserDTO userDTO) {
-        return new ResponseEntity<>(userService.registerUser(userDTO), HttpStatus.OK);
+        return new ResponseEntity<>(userService.registerUser(userDTO), HttpStatus.CREATED);
     }
 
     @Override

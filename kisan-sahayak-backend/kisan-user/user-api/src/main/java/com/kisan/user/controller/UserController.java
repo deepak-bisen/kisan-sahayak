@@ -3,6 +3,7 @@ package com.kisan.user.controller;
 import com.kisan.user.dto.AuthResponseDTO;
 import com.kisan.user.dto.LoginRequestDTO;
 import com.kisan.user.dto.UserDTO;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,11 +12,10 @@ import java.util.List;
 /**
  * REST Controller for User operations.
  */
-@CrossOrigin(origins = "*")
 @RequestMapping("/api/users")
 public interface UserController {
     @PostMapping("/register")
-    public ResponseEntity<UserDTO> registerUser(@RequestBody UserDTO userDTO);
+    public ResponseEntity<UserDTO> registerUser(@Valid @RequestBody UserDTO userDTO);
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDTO> loginUser(@RequestBody LoginRequestDTO loginRequest);
