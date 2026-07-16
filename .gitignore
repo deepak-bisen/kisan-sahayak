@@ -38,6 +38,10 @@ build/
 .env.*.local
 # .env.example is intentionally committed as a template
 
+#prevent images being uploaded to git
+uploads/*
+!uploads/.gitkeep
+
 node_modules
 dist
 .angular

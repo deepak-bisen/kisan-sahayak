@@ -6,12 +6,19 @@ import com.kisan.marketplace.dto.UserResponseDTO;
 import com.kisan.marketplace.entity.Equipment;
 import com.kisan.marketplace.repository.EquipmentRepository;
 import com.kisan.marketplace.service.EquipmentService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.UUID;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +30,9 @@ public class EquipmentServiceImpl implements EquipmentService {
     private final EquipmentRepository equipmentRepository;
     private final UserClient userClient;
 
+    @Value("${upload.dir}")
+    private String uploadDir;
+
     @Autowired
     public EquipmentServiceImpl(EquipmentRepository equipmentRepository, UserClient userClient) {
         this.equipmentRepository = equipmentRepository;
@@ -31,7 +41,7 @@ public class EquipmentServiceImpl implements EquipmentService {
 
     @Override
     @Transactional
-    public EquipmentDTO addEquipment(EquipmentDTO equipmentDTO) {
+    public EquipmentDTO addEquipment(EquipmentDTO equipmentDTO, MultipartFile image) {
         log.info("Equipment listing request received for ownerId={} equipmentName={}", equipmentDTO.getOwnerId(), equipmentDTO.getName());
 
         // 1. Synchronous inter-service call to verify the owner exists in User Service
@@ -45,6 +55,34 @@ public class EquipmentServiceImpl implements EquipmentService {
         // 2. Allow any registered user to list equipment, including someone who also rents equipment.
         // The role is no longer used as a hard gate for this action.
 
+        //Storing image URLs
+        String imageUrl = null;
+
+        if (image != null && !image.isEmpty()) {
+            String fileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
+
+            Path uploadPath = Paths.get(uploadDir);
+
+            if (!Files.exists(uploadPath)) {
+                try {
+                    Files.createDirectories(uploadPath);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            try {
+                Files.copy(
+                        image.getInputStream(),
+                        uploadPath.resolve(fileName),
+                        StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            imageUrl = "/uploads/" + fileName;
+        }
+
         // 3. Build equipment and cache location data from the user profile
         Equipment equipment = Equipment.builder()
                 .name(equipmentDTO.getName())
@@ -53,7 +91,7 @@ public class EquipmentServiceImpl implements EquipmentService {
                 .hourlyRate(equipmentDTO.getHourlyRate())
                 .dailyRate(equipmentDTO.getDailyRate())
                 .ownerId(equipmentDTO.getOwnerId())
-                .imageUrl(equipmentDTO.getImageUrl())
+                .imageUrl(imageUrl)
                 .villageName(user.getVillageName()) // Cached for faster local searches
                 .district(user.getDistrict())       // Cached for faster local searches
                 .isAvailable(true)

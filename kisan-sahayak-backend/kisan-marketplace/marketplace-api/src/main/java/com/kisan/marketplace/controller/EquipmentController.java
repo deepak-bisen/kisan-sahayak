@@ -2,16 +2,20 @@ package com.kisan.marketplace.controller;
 
 import com.kisan.marketplace.dto.EquipmentDTO;
 import jakarta.validation.Valid;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @RequestMapping("/api/marketplace/equipment")
 public interface EquipmentController {
 
-    @PostMapping
-    ResponseEntity<EquipmentDTO> addEquipment(@Valid @RequestBody EquipmentDTO equipmentDTO);
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    ResponseEntity<EquipmentDTO> addEquipment(
+            @RequestPart("equipment") @Valid EquipmentDTO equipmentDTO,
+            @RequestPart("image") MultipartFile image);
 
     @GetMapping("/{id}")
     ResponseEntity<EquipmentDTO> getEquipment(@PathVariable("id") String id);

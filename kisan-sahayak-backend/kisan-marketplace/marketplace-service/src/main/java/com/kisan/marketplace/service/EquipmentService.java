@@ -1,11 +1,12 @@
 package com.kisan.marketplace.service;
 
 import com.kisan.marketplace.dto.EquipmentDTO;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface EquipmentService {
-    EquipmentDTO addEquipment(EquipmentDTO equipmentDTO);
+    EquipmentDTO addEquipment(EquipmentDTO equipmentDTO, MultipartFile image);
     EquipmentDTO getEquipmentById(String equipmentId);
     List<EquipmentDTO> getAllEquipment();
     List<EquipmentDTO> getEquipmentByOwner(String ownerId);

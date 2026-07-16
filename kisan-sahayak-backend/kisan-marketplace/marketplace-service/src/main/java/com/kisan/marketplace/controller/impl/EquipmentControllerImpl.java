@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -18,43 +19,48 @@ public class EquipmentControllerImpl implements EquipmentController {
 
     private final EquipmentService equipmentService;
 
-    @PostMapping
-    public ResponseEntity<EquipmentDTO> addEquipment(@Valid @RequestBody EquipmentDTO equipmentDTO) {
-        return new ResponseEntity<>(equipmentService.addEquipment(equipmentDTO), HttpStatus.CREATED);
+//    @PostMapping
+//    public ResponseEntity<EquipmentDTO> addEquipment(@Valid @RequestBody EquipmentDTO equipmentDTO) {
+//        return new ResponseEntity<>(equipmentService.addEquipment(equipmentDTO), HttpStatus.CREATED);
+//    }
+
+    @Override
+    public ResponseEntity<EquipmentDTO> addEquipment(EquipmentDTO equipmentDTO, MultipartFile image) {
+        return new ResponseEntity<>(equipmentService.addEquipment(equipmentDTO, image), HttpStatus.CREATED);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<EquipmentDTO> getEquipment(@PathVariable String id) {
+    @Override
+    public ResponseEntity<EquipmentDTO> getEquipment(String id) {
         return ResponseEntity.ok(equipmentService.getEquipmentById(id));
     }
 
-    @GetMapping
+    @Override
     public ResponseEntity<List<EquipmentDTO>> getAllEquipment() {
         return ResponseEntity.ok(equipmentService.getAllEquipment());
     }
 
-    @GetMapping("/owner/{ownerId}")
-    public ResponseEntity<List<EquipmentDTO>> getEquipmentByOwner(@PathVariable String ownerId) {
+    @Override
+    public ResponseEntity<List<EquipmentDTO>> getEquipmentByOwner(String ownerId) {
         return ResponseEntity.ok(equipmentService.getEquipmentByOwner(ownerId));
     }
 
-    @GetMapping("/search/category/{category}")
-    public ResponseEntity<List<EquipmentDTO>> searchByCategory(@PathVariable String category) {
+    @Override
+    public ResponseEntity<List<EquipmentDTO>> searchByCategory(String category) {
         return ResponseEntity.ok(equipmentService.searchAvailableByCategory(category));
     }
 
-    @GetMapping("/search/village/{villageName}")
-    public ResponseEntity<List<EquipmentDTO>> searchByVillage(@PathVariable String villageName) {
+    @Override
+    public ResponseEntity<List<EquipmentDTO>> searchByVillage(String villageName) {
         return ResponseEntity.ok(equipmentService.searchAvailableByVillage(villageName));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<EquipmentDTO> updateEquipment(@PathVariable String id, @RequestBody EquipmentDTO equipmentDTO) {
+    @Override
+    public ResponseEntity<EquipmentDTO> updateEquipment(String id, EquipmentDTO equipmentDTO) {
         return ResponseEntity.ok(equipmentService.updateEquipment(id, equipmentDTO));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEquipment(@PathVariable String id) {
+    @Override
+    public ResponseEntity<Void> deleteEquipment(String id) {
         equipmentService.deleteEquipment(id);
         return ResponseEntity.noContent().build();
     }
