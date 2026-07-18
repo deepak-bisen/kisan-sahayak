@@ -40,7 +40,10 @@
 
     <div class="field">
       <label for="image">Image</label>
-      <input id="image" type="file" accept="image/*" (change)="onFileSelected($event)" />
+      <input id="image" type="file" accept="image/jpeg,image/png,image/webp" (change)="onFileSelected($event)" />
+      @if (imageError()) {
+        <span class="field-error">{{ imageError() }}</span>
+      }
       <div *ngIf="previewUrl()" class="image-preview">
         <img [src]="previewUrl()" alt="Preview" />
         <button type="button" class="image-preview__remove" (click)="clearImage()">✕</button>

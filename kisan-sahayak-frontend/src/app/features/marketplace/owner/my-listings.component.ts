@@ -29,5 +29,9 @@ export class MyListingsComponent implements OnInit {
   }
 
   edit(id: string) { this.router.navigate(['/marketplace', id, 'edit']); }
-  delete(id: string) { this.svc.delete(id).subscribe({ next: () => this.load(this.auth.currentUser()!.userId!), error: () => {} }); }
+
+  delete(id: string): void {
+    if (!confirm('Are you sure you want to delete this equipment listing?')) return;
+    this.svc.delete(id).subscribe({ next: () => this.load(this.auth.currentUser()!.userId!), error: () => {} });
+  }
 }

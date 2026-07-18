@@ -19,6 +19,19 @@ export const routes: Routes = [
     title: 'Create account — Kisan Sahayak',
   },
   {
+    path: 'knowledge',
+    loadComponent: () =>
+      import('./features/knowledge/list/knowledge-list.component').then((m) => m.KnowledgeListComponent),
+    title: 'Knowledge Hub — Kisan Sahayak',
+  },
+  {
+    path: 'profile',
+    loadComponent: () =>
+      import('./features/profile/profile.component').then((m) => m.ProfileComponent),
+    canActivate: [authGuard],
+    title: 'Profile — Kisan Sahayak',
+  },
+  {
     path: 'dashboard',
     loadComponent: () =>
       import('./features/dashboard/dashboard.component').then((m) => m.DashboardComponent),

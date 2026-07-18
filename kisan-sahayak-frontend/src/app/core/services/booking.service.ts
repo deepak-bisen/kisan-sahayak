@@ -36,4 +36,8 @@ export class BookingService {
   updateStatus(id: string, status: string) {
     return this.http.patch<BookingDTO>(`${this.base}/${id}/status`, null, { params: new HttpParams().set('status', status), ...this.authHeaders() });
   }
+
+  cancelByRenter(id: string, renterId: string) {
+    return this.http.patch<BookingDTO>(`${this.base}/${id}/cancel`, null, { params: new HttpParams().set('renterId', renterId), ...this.authHeaders() });
+  }
 }

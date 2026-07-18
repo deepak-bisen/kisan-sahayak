@@ -24,6 +24,7 @@ interface BookingWithEquipment {
 export class MyBookingsComponent implements OnInit {
   readonly loading = signal(false);
   readonly bookings = signal<BookingWithEquipment[]>([]);
+  readonly cancellingId = signal<string | null>(null);
 
   constructor(
     private bookingSvc: BookingService,
@@ -45,6 +46,25 @@ export class MyBookingsComponent implements OnInit {
       case 'CANCELLED': return 'var(--color-clay)';
       default: return 'var(--color-cream-dim)';
     }
+  }
+
+  cancel(bookingId: string): void {
+    const user = this.auth.currentUser();
+    if (!user?.userId) return;
+    this.cancellingId.set(bookingId);
+    this.bookingSvc.cancelByRenter(bookingId, user.userId).subscribe({
+      next: () => {
+        this.bookings.update((items) =>
+          items.map((item) =>
+            item.booking.bookingId === bookingId
+              ? { ...item, booking: { ...item.booking, status: 'CANCELLED' as BookingStatus } }
+              : item
+          )
+        );
+        this.cancellingId.set(null);
+      },
+      error: () => this.cancellingId.set(null),
+    });
   }
 
   private load(renterId: string): void {

@@ -2,7 +2,12 @@
   <p class="eyebrow">मेरी बुकिंग</p>
   <h1>My Bookings</h1>
 
-  <p *ngIf="loading()">Loading…</p>
+  <div *ngIf="loading()" class="booking-list">
+    <div class="skeleton-card" *ngFor="let _ of [1,2]">
+      <div class="skeleton-line skeleton-line--h3"></div>
+      <div class="skeleton-line skeleton-line--short"></div>
+    </div>
+  </div>
 
   <div *ngIf="!loading() && bookings().length === 0" class="empty-state">
     <p class="field-hint">No bookings yet. <a routerLink="/marketplace">Browse equipment</a> to rent.</p>
@@ -26,6 +31,14 @@
       </div>
       <div class="booking-card__actions">
         <a [routerLink]="['/marketplace', item.booking.equipmentId]" class="btn btn-ghost">View equipment</a>
+        <button
+          *ngIf="item.booking.status === 'REQUESTED'"
+          class="btn btn-danger btn-sm"
+          [disabled]="cancellingId() === item.booking.bookingId"
+          (click)="cancel(item.booking.bookingId!)"
+        >
+          {{ cancellingId() === item.booking.bookingId ? 'Cancelling…' : 'Cancel' }}
+        </button>
       </div>
     </li>
   </ul>

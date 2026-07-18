@@ -15,6 +15,7 @@
       <div class="shell-nav__inner" (click)="closeMenu()">
         <a routerLink="/" class="btn btn-ghost">Home</a>
         <a routerLink="/marketplace" class="btn btn-ghost">Marketplace</a>
+        <a routerLink="/knowledge" class="btn btn-ghost">Knowledge Hub</a>
         @if (auth.isLoggedIn()) {
           <a routerLink="/bookings" class="btn btn-ghost">My Bookings</a>
           <a routerLink="/bookings/manage" class="btn btn-ghost">Manage</a>
@@ -22,6 +23,7 @@
             <span class="shell-nav__dot"></span>
             {{ auth.currentUser()?.fullName }}
           </a>
+          <a routerLink="/profile" class="btn btn-ghost">Profile</a>
           <button class="btn btn-ghost" (click)="logout()">Log out</button>
         } @else {
           <a routerLink="/login" class="btn btn-ghost">Log in</a>

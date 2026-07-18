@@ -30,4 +30,9 @@ public interface BookingController {
     public ResponseEntity<BookingDTO> updateBookingStatus(
             @PathVariable String id,
             @RequestParam Status status);
+
+    @PatchMapping("/{id}/cancel")
+    public ResponseEntity<BookingDTO> cancelBooking(
+            @PathVariable String id,
+            @RequestParam String renterId);
 }

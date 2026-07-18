@@ -1,5 +1,5 @@
 import { Injectable, computed, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AuthResponseDTO, LoginRequestDTO, UserDTO } from '../models/user.model';
@@ -39,6 +39,12 @@ export class AuthService {
 
   getToken(): string | null {
     return localStorage.getItem(TOKEN_KEY);
+  }
+
+  updateProfile(userId: string, payload: Partial<UserDTO>): Observable<UserDTO> {
+    const token = this.getToken();
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
+    return this.http.put<UserDTO>(`${this.baseUrl}/update/${userId}`, payload, { headers });
   }
 
   private readStoredUser(): UserDTO | null {

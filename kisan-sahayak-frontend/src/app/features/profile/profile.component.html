@@ -1,0 +1,45 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <p class="eyebrow">प्रोफ़ाइल</p>
+    <h1>Edit Profile</h1>
+
+    @if (success()) {
+      <div class="form-banner success">{{ success() }}</div>
+    }
+    @if (serverError()) {
+      <div class="form-banner error">{{ serverError() }}</div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="field">
+        <label for="fullName">Full name</label>
+        <input id="fullName" formControlName="fullName" [class.invalid]="f.fullName.invalid && f.fullName.touched" />
+      </div>
+
+      <div class="auth-card__row">
+        <div class="field">
+          <label for="villageName">Village</label>
+          <input id="villageName" formControlName="villageName" />
+        </div>
+        <div class="field">
+          <label for="district">District</label>
+          <input id="district" formControlName="district" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="state">State</label>
+        <input id="state" formControlName="state" />
+      </div>
+
+      <div class="field">
+        <label for="password">New password (leave blank to keep current)</label>
+        <input id="password" type="password" formControlName="password" placeholder="At least 6 characters" />
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block" [disabled]="loading()">
+        {{ loading() ? 'Saving…' : 'Save changes' }}
+      </button>
+    </form>
+  </div>
+</div>

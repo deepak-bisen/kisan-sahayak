@@ -39,4 +39,8 @@ public class BookingControllerImpl implements BookingController {
     public ResponseEntity<BookingDTO> updateBookingStatus(String id, Status status) {
         return ResponseEntity.ok(bookingService.updateBookingStatus(id, status));
     }
+
+    public ResponseEntity<BookingDTO> cancelBooking(String id, String renterId) {
+        return ResponseEntity.ok(bookingService.cancelBookingByRenter(id, renterId));
+    }
 }

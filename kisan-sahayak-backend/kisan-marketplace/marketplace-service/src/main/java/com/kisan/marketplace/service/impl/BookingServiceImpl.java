@@ -117,6 +117,23 @@ public class BookingServiceImpl implements BookingService {
         return mapToDTO(bookingRepository.save(booking));
     }
 
+    @Override
+    @Transactional
+    public BookingDTO cancelBookingByRenter(String bookingId, String renterId) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        if (!booking.getRenterId().equals(renterId)) {
+            throw new RuntimeException("You can only cancel your own bookings.");
+        }
+        if (booking.getStatus() != Status.REQUESTED) {
+            throw new RuntimeException("Only REQUESTED bookings can be cancelled.");
+        }
+
+        booking.setStatus(Status.CANCELLED);
+        return mapToDTO(bookingRepository.save(booking));
+    }
+
  private BookingDTO mapToDTO(Booking booking){
         return BookingDTO.builder()
                 .bookingId(booking.getId())

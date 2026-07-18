@@ -1,9 +1,12 @@
-import { Component, OnInit, signal, effect, OnDestroy } from '@angular/core';
+import { Component, OnInit, signal, OnDestroy } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EquipmentService } from '../../../core/services/equipment.service';
 import { AuthService } from '../../../core/services/auth.service';
+
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
 @Component({
   selector: 'app-add-equipment',
@@ -16,6 +19,7 @@ export class AddEquipmentComponent implements OnInit, OnDestroy {
   readonly loading = signal(false);
   readonly selectedFile = signal<File | null>(null);
   readonly previewUrl = signal<string | null>(null);
+  readonly imageError = signal<string | null>(null);
 
   form = this.fb.group({
     name: ['', [Validators.required]],
@@ -63,8 +67,23 @@ export class AddEquipmentComponent implements OnInit, OnDestroy {
   }
 
   onFileSelected(event: Event): void {
+    this.imageError.set(null);
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0] ?? null;
+
+    if (file) {
+      if (!ALLOWED_TYPES.includes(file.type)) {
+        this.imageError.set('Only JPEG, PNG, and WebP images are allowed.');
+        input.value = '';
+        return;
+      }
+      if (file.size > MAX_IMAGE_SIZE) {
+        this.imageError.set('Image must be less than 5 MB.');
+        input.value = '';
+        return;
+      }
+    }
+
     this.selectedFile.set(file);
 
     const old = this.previewUrl();
@@ -74,6 +93,7 @@ export class AddEquipmentComponent implements OnInit, OnDestroy {
   }
 
   clearImage(): void {
+    this.imageError.set(null);
     this.selectedFile.set(null);
     const old = this.previewUrl();
     if (old?.startsWith('blob:')) URL.revokeObjectURL(old);

@@ -7,20 +7,30 @@
     from {{ auth.currentUser()?.villageName }}, {{ auth.currentUser()?.district }}.
   </p>
 
-  <div class="dash-grid">
-    <div class="dash-card">
-      <h3>🚜 My Bookings</h3>
-      <p>View all your equipment booking requests and their status.</p>
-      <a routerLink="/bookings" class="btn btn-ghost" style="margin-top:12px">View bookings</a>
+  <div *ngIf="loading()" class="dash-grid">
+    <div class="dash-card dash-card--skeleton" *ngFor="let _ of [1,2,3]">
+      <div class="skeleton-line skeleton-line--h3"></div>
+      <div class="skeleton-line"></div>
     </div>
-    <div class="dash-card">
-      <h3>📋 My Listings</h3>
-      <p>Manage equipment you've listed for rent.</p>
+  </div>
+
+  <div *ngIf="!loading()" class="dash-grid">
+    <div class="dash-card dash-card--stat">
+      <span class="dash-stat-number">{{ listingsCount() }}</span>
+      <h3>Equipment Listed</h3>
+      <p>Items you've put up for rent.</p>
       <a routerLink="/marketplace/mine" class="btn btn-ghost" style="margin-top:12px">View listings</a>
     </div>
-    <div class="dash-card">
-      <h3>📦 Manage Bookings</h3>
-      <p>Review and respond to booking requests on your equipment.</p>
+    <div class="dash-card dash-card--stat">
+      <span class="dash-stat-number">{{ myBookingsCount() }}</span>
+      <h3>My Bookings</h3>
+      <p>Equipment you've rented from others.</p>
+      <a routerLink="/bookings" class="btn btn-ghost" style="margin-top:12px">View bookings</a>
+    </div>
+    <div class="dash-card dash-card--stat">
+      <span class="dash-stat-number">{{ ownerRequestsCount() }}</span>
+      <h3>Booking Requests</h3>
+      <p>Requests from renters for your equipment.</p>
       <a routerLink="/bookings/manage" class="btn btn-ghost" style="margin-top:12px">Manage</a>
     </div>
   </div>

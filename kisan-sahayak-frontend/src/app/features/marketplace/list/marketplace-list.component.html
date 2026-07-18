@@ -30,7 +30,13 @@
     </div>
   </div>
 
-  <p *ngIf="loading()">Loading…</p>
+  <div *ngIf="loading()" class="equipment-list">
+    <div class="skeleton-card" *ngFor="let _ of [1,2,3]">
+      <div class="skeleton-line skeleton-line--h3"></div>
+      <div class="skeleton-line skeleton-line--short"></div>
+      <div class="skeleton-line"></div>
+    </div>
+  </div>
 
   <div *ngIf="!loading() && filtered().length === 0">
     <p class="field-hint" style="text-align:center;padding:48px 0">No equipment matches your filters.</p>

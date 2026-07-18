@@ -11,4 +11,5 @@ public interface BookingService {
     List<BookingDTO> getBookingsByRenter(String renterId);
     List<BookingDTO> getBookingsByEquipment(String equipmentId);
     BookingDTO updateBookingStatus(String bookingId, Status status);
+    BookingDTO cancelBookingByRenter(String bookingId, String renterId);
 }

@@ -1,5 +1,10 @@
 <div class="marketplace container">
-  <div *ngIf="loading()">Loading…</div>
+  <div *ngIf="loading()" class="skeleton-card">
+    <div class="skeleton-line skeleton-line--h1"></div>
+    <div class="skeleton-line skeleton-line--short"></div>
+    <div class="skeleton-line"></div>
+    <div class="skeleton-line skeleton-line--short"></div>
+  </div>
 
   <div *ngIf="!loading() && equipment()" class="equipment-detail">
     <div class="media">
