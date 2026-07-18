@@ -15,7 +15,7 @@ public interface EquipmentController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<EquipmentDTO> addEquipment(
             @RequestPart("equipment") @Valid EquipmentDTO equipmentDTO,
-            @RequestPart("image") MultipartFile image);
+            @RequestPart(value = "image", required = false) MultipartFile image);
 
     @GetMapping("/{id}")
     ResponseEntity<EquipmentDTO> getEquipment(@PathVariable("id") String id);
@@ -37,4 +37,7 @@ public interface EquipmentController {
 
     @DeleteMapping("/{id}")
     ResponseEntity<Void> deleteEquipment(@PathVariable("id") String id);
+
+    @DeleteMapping("/owner/{ownerId}")
+    ResponseEntity<Void> deleteEquipmentByOwner(@PathVariable("ownerId") String ownerId);
 }

@@ -64,4 +64,10 @@ public class EquipmentControllerImpl implements EquipmentController {
         equipmentService.deleteEquipment(id);
         return ResponseEntity.noContent().build();
     }
+
+    @Override
+    public ResponseEntity<Void> deleteEquipmentByOwner(String ownerId) {
+        equipmentService.deleteEquipmentByOwner(ownerId);
+        return ResponseEntity.noContent().build();
+    }
 }

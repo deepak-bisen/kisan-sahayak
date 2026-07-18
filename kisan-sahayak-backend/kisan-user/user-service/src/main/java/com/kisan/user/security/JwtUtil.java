@@ -37,10 +37,10 @@ public class JwtUtil {
         }
     }
 
-    public String generateToken(String phone, String userId, String role) {
+    public String generateToken(String phone, String userId, String roles) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", userId);
-        claims.put("role", role);
+        claims.put("roles", roles);
         return createToken(claims, phone);
     }
 

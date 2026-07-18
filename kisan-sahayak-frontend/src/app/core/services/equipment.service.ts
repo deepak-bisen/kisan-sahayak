@@ -43,8 +43,6 @@ export class EquipmentService {
 
     if (image) {
       formData.append('image', image, image.name);
-    } else {
-      formData.append('image', new Blob([], { type: 'application/octet-stream' }), 'image');
     }
 
     return this.http.post<EquipmentDTO>(this.base, formData, this.authHeaders()).pipe(

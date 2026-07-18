@@ -89,11 +89,8 @@ export class MarketplaceDetailComponent implements OnInit {
       },
       error: (err: HttpErrorResponse) => {
         this.bookingLoading.set(false);
-        this.bookingError.set(
-          err.status === 400
-            ? 'Invalid dates. Please check and try again.'
-            : err.error?.message || 'Could not submit booking. Please try again.'
-        );
+        const msg = err.error?.message || err.error?.error || '';
+        this.bookingError.set(msg || 'Could not submit booking. Please try again.');
       },
     });
   }

@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestClient;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final RestClient restClient;
 
     @Override
     @Transactional
@@ -35,15 +37,15 @@ public class UserServiceImpl implements UserService {
         }
 
         log.info("user registration started...");
-        String resolvedRole = userDTO.getRole() != null ? userDTO.getRole() : "FARMER";
+        String roles = resolveRoles(userDTO.getRoles());
 
         User user = User.builder()
                 .name(userDTO.getFullName())
                 .phoneNumber(userDTO.getPhoneNumber())
-                .password(passwordEncoder.encode(userDTO.getPassword())) // Encrypt!
+                .password(passwordEncoder.encode(userDTO.getPassword()))
                 .villageName(userDTO.getVillageName())
                 .district(userDTO.getDistrict())
-                .role(resolvedRole)
+                .roles(roles)
                 .build();
 
         User registeredUser = userRepository.save(user);
@@ -69,11 +71,10 @@ public class UserServiceImpl implements UserService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid phone number or password.");
         }
 
-        // Generate the JWT string!
-        String token = jwtUtil.generateToken(user.getPhoneNumber(), user.getId(), user.getRole());
+        String token = jwtUtil.generateToken(user.getPhoneNumber(), user.getId(), user.getRoles());
 
         UserDTO userDTO = mapToDTO(user);
-        log.info("Login successful for userId={} role={} phoneNumber={}", user.getId(), user.getRole(), maskPhoneNumber(user.getPhoneNumber()));
+        log.info("Login successful for userId={} roles={} phoneNumber={}", user.getId(), user.getRoles(), maskPhoneNumber(user.getPhoneNumber()));
 
         //return both the token and the user details
         return AuthResponseDTO.builder()
@@ -107,9 +108,17 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void deleteUserByUserId(String userId) {
+        try {
+            restClient.delete()
+                    .uri("/api/marketplace/equipment/owner/{ownerId}", userId)
+                    .retrieve()
+                    .toBodilessEntity();
+        } catch (Exception e) {
+            log.warn("Failed to cascade-delete equipment for userId={}: {}", userId, e.getMessage());
+        }
 
         userRepository.deleteById(userId);
-        log.info("user deleted successfully with id: "+ userId);
+        log.info("user deleted successfully with id: " + userId);
     }
 
 
@@ -119,12 +128,11 @@ public class UserServiceImpl implements UserService {
         User existingUser = userRepository.findById(userId)
                 .orElseThrow(()-> new RuntimeException("User not found with this id: "+ userId));
 
-        //Partial Update: Only fields if they are provided in the DTO
         if (userDTO.getFullName() != null) existingUser.setName(userDTO.getFullName());
         if (userDTO.getVillageName() != null) existingUser.setVillageName(userDTO.getVillageName());
         if (userDTO.getDistrict() != null) existingUser.setDistrict(userDTO.getDistrict());
         if (userDTO.getState() != null) existingUser.setState(userDTO.getState());
-        if (userDTO.getRole() != null) existingUser.setRole(userDTO.getRole());
+        if (userDTO.getRoles() != null) existingUser.setRoles(resolveRoles(userDTO.getRoles()));
 
         // Handle phone number update (careful with uniqueness)
         if (userDTO.getPhoneNumber() != null && !userDTO.getPhoneNumber().equals(existingUser.getPhoneNumber())){
@@ -161,9 +169,13 @@ public class UserServiceImpl implements UserService {
                 .phoneNumber(user.getPhoneNumber())
                 .villageName(user.getVillageName())
                 .district(user.getDistrict())
-                .state(user.getState())
-                .role(user.getRole())
-                // We don't map password back to DTO for security!
+                .state(user.getState() != null ? user.getState() : "")
+                .roles(user.getRoleList())
                 .build();
+    }
+
+    private String resolveRoles(List<String> roles) {
+        if (roles == null || roles.isEmpty()) return "FARMER";
+        return String.join(",", roles);
     }
 }

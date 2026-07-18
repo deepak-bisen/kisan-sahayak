@@ -35,29 +35,23 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<Map<String, String>> handleResponseStatusException(ResponseStatusException ex) {
         Map<String, String> errorResponse = new HashMap<>();
-        errorResponse.put("error", ex.getReason());
+        errorResponse.put("message", ex.getReason());
         errorResponse.put("status", String.valueOf(ex.getStatusCode().value()));
         return new ResponseEntity<>(errorResponse, ex.getStatusCode());
     }
 
-    /**
-     * Handles business logic errors, such as "User not found" or "Invalid credentials".
-     */
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, String>> handleRuntimeException(RuntimeException ex) {
         Map<String, String> errorResponse = new HashMap<>();
-        errorResponse.put("error", ex.getMessage());
+        errorResponse.put("message", ex.getMessage());
         errorResponse.put("status", "400");
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    /**
-     * Fallback for any unexpected system errors.
-     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleGeneralException(Exception ex) {
         Map<String, String> errorResponse = new HashMap<>();
-        errorResponse.put("error", "An unexpected system error occurred");
+        errorResponse.put("message", "An unexpected system error occurred");
         errorResponse.put("details", ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }

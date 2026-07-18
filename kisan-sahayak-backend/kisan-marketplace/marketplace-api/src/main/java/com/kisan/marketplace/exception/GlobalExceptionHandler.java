@@ -36,9 +36,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, String>> handleRuntimeException(RuntimeException ex){
         Map<String, String> error = new HashMap<>();
-        error.put("error",ex.getMessage());
+        error.put("message", ex.getMessage());
         error.put("status", "400");
-        return new ResponseEntity<>(error,HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
     /**
@@ -47,8 +47,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleGeneralException(Exception ex){
         Map<String, String> error = new HashMap<>();
-        error.put("error", "An unexpected error occurred in the Marketplace Service");
-        error.put("details",ex.getMessage());
-        return new ResponseEntity<>(error,HttpStatus.INTERNAL_SERVER_ERROR);
+        error.put("message", "An unexpected error occurred in the Marketplace Service");
+        error.put("details", ex.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

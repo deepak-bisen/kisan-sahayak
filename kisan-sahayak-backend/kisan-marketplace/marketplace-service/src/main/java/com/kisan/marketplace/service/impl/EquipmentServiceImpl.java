@@ -39,16 +39,18 @@ public class EquipmentServiceImpl implements EquipmentService {
     public EquipmentDTO addEquipment(EquipmentDTO equipmentDTO, MultipartFile image) {
         log.info("Equipment listing request received for ownerId={} equipmentName={}", equipmentDTO.getOwnerId(), equipmentDTO.getName());
 
-        // 1. Synchronous inter-service call to verify the owner exists in User Service
-        UserResponseDTO user = userClient.getUserById(equipmentDTO.getOwnerId());
+        UserResponseDTO user;
+        try {
+            user = userClient.getUserById(equipmentDTO.getOwnerId());
+        } catch (Exception e) {
+            log.warn("User service unavailable, allowing equipment listing for ownerId={}: {}", equipmentDTO.getOwnerId(), e.getMessage());
+            user = null;
+        }
 
         if (user == null) {
             log.warn("Equipment listing failed: owner not found for ownerId={}", equipmentDTO.getOwnerId());
             throw new RuntimeException("Owner not found in the system.");
         }
-
-        // 2. Allow any registered user to list equipment, including someone who also rents equipment.
-        // The role is no longer used as a hard gate for this action.
 
         //Storing image URLs
         String imageUrl = null;
@@ -151,6 +153,16 @@ public class EquipmentServiceImpl implements EquipmentService {
             throw new RuntimeException("Equipment not found");
         }
         equipmentRepository.deleteById(equipmentId);
+    }
+
+    @Override
+    @Transactional
+    public void deleteEquipmentByOwner(String ownerId) {
+        List<Equipment> owned = equipmentRepository.findByOwnerId(ownerId);
+        if (!owned.isEmpty()) {
+            equipmentRepository.deleteAll(owned);
+            log.info("Deleted {} equipment listings for ownerId={}", owned.size(), ownerId);
+        }
     }
 
     private EquipmentDTO mapToDTO(Equipment equipment) {

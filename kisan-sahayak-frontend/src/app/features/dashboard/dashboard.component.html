@@ -3,7 +3,7 @@
   <h1>Welcome, {{ auth.currentUser()?.fullName }}</h1>
   <p class="dash__sub">
     You're logged in as
-    <strong>{{ auth.currentUser()?.role === 'FARMER' ? 'a Farmer' : 'an Equipment Owner' }}</strong>
+    <strong>{{ (auth.currentUser()?.roles || []).join(', ') || 'a Farmer' }}</strong>
     from {{ auth.currentUser()?.villageName }}, {{ auth.currentUser()?.district }}.
   </p>
 

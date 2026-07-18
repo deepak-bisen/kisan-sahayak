@@ -6,6 +6,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Entity
 @Table(name = "USERS")
 @Data
@@ -34,13 +39,24 @@ public class User {
     @Column(name = "District", columnDefinition = "VARCHAR(30)", nullable = false)
     private String district;
 
-    @Column(name = "STATE", columnDefinition = "VARCHAR(30)", nullable = true)
+    @Column(name = "STATE", columnDefinition = "VARCHAR(30)")
     private String state;
 
-    @Column(name = "ROLE", columnDefinition = "VARCHAR(20)", nullable = false)
-    private String role; // Role can be FARMER, EQUIPMENT_OWNER, or ADMIN
+    @Column(name = "ROLE", columnDefinition = "VARCHAR(50)", nullable = false)
+    private String roles;
 
-    // Latitude and Longitude for location-based services in the marketplace
     private Double latitude;
     private Double longitude;
+
+    public List<String> getRoleList() {
+        if (roles == null || roles.isBlank()) return Collections.emptyList();
+        return Arrays.stream(roles.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.toList());
+    }
+
+    public boolean hasRole(String role) {
+        return getRoleList().contains(role);
+    }
 }

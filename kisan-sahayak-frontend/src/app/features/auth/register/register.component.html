@@ -18,20 +18,21 @@
           <button
             type="button"
             class="role-toggle__btn"
-            [class.is-active]="form.value.role === 'FARMER'"
-            (click)="form.patchValue({ role: 'FARMER' })"
+            [class.is-active]="selectedRoles().includes('FARMER')"
+            (click)="toggleRole('FARMER')"
           >
             🌾 Farmer
           </button>
           <button
             type="button"
             class="role-toggle__btn"
-            [class.is-active]="form.value.role === 'EQUIPMENT_OWNER'"
-            (click)="form.patchValue({ role: 'EQUIPMENT_OWNER' })"
+            [class.is-active]="selectedRoles().includes('EQUIPMENT_OWNER')"
+            (click)="toggleRole('EQUIPMENT_OWNER')"
           >
             🚜 Equipment Owner
           </button>
         </div>
+        <span class="field-hint">Select all that apply. You can change this later.</span>
       </div>
 
       <div class="field">

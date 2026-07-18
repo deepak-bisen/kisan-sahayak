@@ -14,4 +14,5 @@ public interface EquipmentService {
     List<EquipmentDTO> searchAvailableByVillage(String villageName);
     EquipmentDTO updateEquipment(String equipmentId, EquipmentDTO equipmentDTO);
     void deleteEquipment(String equipmentId);
+    void deleteEquipmentByOwner(String ownerId);
 }

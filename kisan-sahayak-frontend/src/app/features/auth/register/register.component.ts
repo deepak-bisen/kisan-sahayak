@@ -3,6 +3,7 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../../core/services/auth.service';
+import { UserRole } from '../../../core/models/user.model';
 
 @Component({
   selector: 'app-register',
@@ -15,6 +16,7 @@ export class RegisterComponent {
   readonly loading = signal(false);
   readonly serverError = signal<string | null>(null);
   readonly success = signal(false);
+  readonly selectedRoles = signal<UserRole[]>(['FARMER']);
 
   form = this.fb.group({
     fullName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
@@ -23,13 +25,22 @@ export class RegisterComponent {
     villageName: ['', [Validators.required]],
     district: ['', [Validators.required]],
     state: ['', [Validators.required]],
-    role: ['FARMER', [Validators.required]],
   });
 
   constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {}
 
   get f() {
     return this.form.controls;
+  }
+
+  toggleRole(role: UserRole): void {
+    this.selectedRoles.update((roles) => {
+      if (roles.includes(role)) {
+        const next = roles.filter((r) => r !== role);
+        return next.length === 0 ? [role] : next;
+      }
+      return [...roles, role];
+    });
   }
 
   submit(): void {
@@ -50,7 +61,7 @@ export class RegisterComponent {
         villageName: v.villageName!,
         district: v.district!,
         state: v.state!,
-        role: v.role as 'FARMER' | 'EQUIPMENT_OWNER' | undefined,
+        roles: this.selectedRoles(),
       })
       .subscribe({
         next: () => {

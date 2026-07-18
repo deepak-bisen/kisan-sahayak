@@ -16,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -47,7 +48,7 @@ class UserServiceImplTest {
                 .villageName("Village")
                 .district("District")
                 .state("State")
-                .role("FARMER")
+                .roles(List.of("FARMER"))
                 .build();
 
         when(userRepository.existsByPhoneNumber("9876543210")).thenReturn(true);
@@ -76,7 +77,7 @@ class UserServiceImplTest {
 
         UserDTO response = userService.registerUser(request);
 
-        assertEquals("FARMER", response.getRole());
+        assertEquals(List.of("FARMER"), response.getRoles());
     }
 
     @Test
@@ -93,7 +94,7 @@ class UserServiceImplTest {
                 .villageName("Village")
                 .district("District")
                 .state("State")
-                .role("FARMER")
+                .roles("FARMER")
                 .build();
 
         when(userRepository.findByPhoneNumber("9876543210")).thenReturn(Optional.of(user));

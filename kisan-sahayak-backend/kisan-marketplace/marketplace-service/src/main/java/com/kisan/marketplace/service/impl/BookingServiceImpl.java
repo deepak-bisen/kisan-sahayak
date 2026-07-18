@@ -10,6 +10,7 @@ import com.kisan.marketplace.repository.BookingRepository;
 import com.kisan.marketplace.repository.EquipmentRepository;
 import com.kisan.marketplace.service.BookingService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
@@ -52,8 +54,13 @@ public class BookingServiceImpl implements BookingService {
         if (isOverlapping) {
             throw new RuntimeException("Equipment is already booked during these dates. Please select different dates.");
         }
-        // 3. Verify Renter exists via User Service (Feign Client)
-        UserResponseDTO renter = userClient.getUserById(bookingDTO.getRenterId());
+        UserResponseDTO renter;
+        try {
+            renter = userClient.getUserById(bookingDTO.getRenterId());
+        } catch (Exception e) {
+            log.warn("User service unavailable while verifying renter: {}", e.getMessage());
+            throw new RuntimeException("Unable to verify your account. Please try again later.");
+        }
         if (renter == null) {
             throw new RuntimeException("Renter profile not found in the system.");
         }
