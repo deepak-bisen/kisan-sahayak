@@ -5,18 +5,29 @@
       <span class="brand__word">Kisan <em>Sahayak</em></span>
     </a>
 
-    <nav class="shell-nav">
-      <a routerLink="/marketplace" class="btn btn-ghost">Marketplace</a>
-      @if (auth.isLoggedIn()) {
-        <a routerLink="/dashboard" class="shell-nav__user">
-          <span class="shell-nav__dot"></span>
-          {{ auth.currentUser()?.fullName }}
-        </a>
-        <button class="btn btn-ghost" (click)="logout()">Log out</button>
-      } @else {
-        <a routerLink="/login" class="btn btn-ghost">Log in</a>
-        <a routerLink="/register" class="btn btn-primary">Register</a>
-      }
+    <button class="hamburger" (click)="toggleMenu()" [attr.aria-expanded]="menuOpen()" aria-label="Menu">
+      <span class="hamburger__line"></span>
+      <span class="hamburger__line"></span>
+      <span class="hamburger__line"></span>
+    </button>
+
+    <nav class="shell-nav" [class.is-open]="menuOpen()">
+      <div class="shell-nav__inner" (click)="closeMenu()">
+        <a routerLink="/" class="btn btn-ghost">Home</a>
+        <a routerLink="/marketplace" class="btn btn-ghost">Marketplace</a>
+        @if (auth.isLoggedIn()) {
+          <a routerLink="/bookings" class="btn btn-ghost">My Bookings</a>
+          <a routerLink="/bookings/manage" class="btn btn-ghost">Manage</a>
+          <a routerLink="/dashboard" class="shell-nav__user">
+            <span class="shell-nav__dot"></span>
+            {{ auth.currentUser()?.fullName }}
+          </a>
+          <button class="btn btn-ghost" (click)="logout()">Log out</button>
+        } @else {
+          <a routerLink="/login" class="btn btn-ghost">Log in</a>
+          <a routerLink="/register" class="btn btn-primary">Register</a>
+        }
+      </div>
     </nav>
   </div>
 </header>

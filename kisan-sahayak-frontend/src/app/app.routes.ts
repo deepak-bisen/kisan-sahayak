@@ -53,5 +53,17 @@ export const routes: Routes = [
     canActivate: [authGuard],
     title: 'Edit Equipment — Kisan Sahayak'
   },
+  {
+    path: 'bookings',
+    loadComponent: () => import('./features/bookings/my-bookings.component').then((m) => m.MyBookingsComponent),
+    canActivate: [authGuard],
+    title: 'My Bookings — Kisan Sahayak',
+  },
+  {
+    path: 'bookings/manage',
+    loadComponent: () => import('./features/bookings/owner-bookings.component').then((m) => m.OwnerBookingsComponent),
+    canActivate: [authGuard],
+    title: 'Manage Bookings — Kisan Sahayak',
+  },
   { path: '**', redirectTo: '' },
 ];

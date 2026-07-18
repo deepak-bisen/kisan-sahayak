@@ -1,6 +1,7 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { EquipmentService } from '../../../core/services/equipment.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { EquipmentDTO } from '../../../core/models/equipment.model';
@@ -8,14 +9,55 @@ import { EquipmentDTO } from '../../../core/models/equipment.model';
 @Component({
   selector: 'app-marketplace-list',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, FormsModule],
   templateUrl: './marketplace-list.component.html',
 })
 export class MarketplaceListComponent implements OnInit {
   readonly equipments = signal<EquipmentDTO[]>([]);
   readonly loading = signal(false);
 
-  constructor(private svc: EquipmentService, private router: Router, public auth: AuthService) {}
+  readonly searchQuery = signal('');
+  readonly selectedCategory = signal('');
+  readonly selectedVillage = signal('');
+
+  readonly categories = computed(() => {
+    const seen = new Set<string>();
+    const cats: string[] = [];
+    for (const e of this.equipments()) {
+      if (!seen.has(e.category)) {
+        seen.add(e.category);
+        cats.push(e.category);
+      }
+    }
+    return cats.sort();
+  });
+
+  readonly villages = computed(() => {
+    const seen = new Set<string>();
+    const v: string[] = [];
+    for (const e of this.equipments()) {
+      const name = e.villageName || e.district || '';
+      if (name && !seen.has(name)) {
+        seen.add(name);
+        v.push(name);
+      }
+    }
+    return v.sort();
+  });
+
+  readonly filtered = computed(() => {
+    const query = this.searchQuery().toLowerCase().trim();
+    const cat = this.selectedCategory();
+    const village = this.selectedVillage();
+    return this.equipments().filter((e) => {
+      if (query && !e.name.toLowerCase().includes(query) && !(e.description || '').toLowerCase().includes(query)) return false;
+      if (cat && e.category !== cat) return false;
+      if (village && (e.villageName || e.district) !== village) return false;
+      return true;
+    });
+  });
+
+  constructor(public svc: EquipmentService, private router: Router, public auth: AuthService) {}
 
   ngOnInit(): void {
     this.load();

@@ -1,0 +1,26 @@
+.equipment-detail .media {
+  height: 280px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: linear-gradient(180deg, #EDE7DF 0%, #E4DBD0 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.equipment-detail .media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.equipment-detail .rates {
+  font-weight: 700;
+  color: var(--color-gold);
+  font-size: 1.05rem;
+  display: flex;
+  gap: 4px;
+}
+
+@media (max-width: 640px) {
+  .equipment-detail .media { height: 200px; }
+}

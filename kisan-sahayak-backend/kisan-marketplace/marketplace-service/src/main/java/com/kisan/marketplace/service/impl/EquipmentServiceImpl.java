@@ -6,8 +6,8 @@ import com.kisan.marketplace.dto.UserResponseDTO;
 import com.kisan.marketplace.entity.Equipment;
 import com.kisan.marketplace.repository.EquipmentRepository;
 import com.kisan.marketplace.service.EquipmentService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class EquipmentServiceImpl implements EquipmentService {
 
     private final EquipmentRepository equipmentRepository;
@@ -32,12 +33,6 @@ public class EquipmentServiceImpl implements EquipmentService {
 
     @Value("${upload.dir}")
     private String uploadDir;
-
-    @Autowired
-    public EquipmentServiceImpl(EquipmentRepository equipmentRepository, UserClient userClient) {
-        this.equipmentRepository = equipmentRepository;
-        this.userClient = userClient;
-    }
 
     @Override
     @Transactional

@@ -7,21 +7,46 @@
     </div>
   </div>
 
+  <div class="search-bar">
+    <div class="search-bar__field search-bar__query">
+      <input
+        type="search"
+        placeholder="Search by name or description…"
+        [ngModel]="searchQuery()"
+        (ngModelChange)="searchQuery.set($event)"
+      />
+    </div>
+    <div class="search-bar__field">
+      <select [ngModel]="selectedCategory()" (ngModelChange)="selectedCategory.set($event)">
+        <option value="">All categories</option>
+        <option *ngFor="let c of categories()" [value]="c">{{ c }}</option>
+      </select>
+    </div>
+    <div class="search-bar__field">
+      <select [ngModel]="selectedVillage()" (ngModelChange)="selectedVillage.set($event)">
+        <option value="">All villages</option>
+        <option *ngFor="let v of villages()" [value]="v">{{ v }}</option>
+      </select>
+    </div>
+  </div>
+
   <p *ngIf="loading()">Loading…</p>
 
-  <div *ngIf="!loading() && equipments().length === 0">No equipment listed yet.</div>
+  <div *ngIf="!loading() && filtered().length === 0">
+    <p class="field-hint" style="text-align:center;padding:48px 0">No equipment matches your filters.</p>
+  </div>
 
-  <ul class="equipment-list">
-    <li *ngFor="let e of equipments()" class="equipment-card">
+  <ul *ngIf="!loading() && filtered().length" class="equipment-list">
+    <li *ngFor="let e of filtered()" class="equipment-card">
       <a [routerLink]="['/marketplace', e.equipmentId]">
         <div class="media">
-          <img *ngIf="e.imageUrl" [src]="e.imageUrl" alt="{{ e.name }}" />
+          <img *ngIf="e.imageUrl" [src]="svc.resolveImageUrl(e.imageUrl)" alt="{{ e.name }}" />
           <div *ngIf="!e.imageUrl" class="placeholder">{{ e.category }}</div>
         </div>
         <h3>{{ e.name }}</h3>
         <p class="meta">{{ e.category }} · {{ e.villageName || e.district }}</p>
         <p class="desc">{{ e.description }}</p>
-        <p class="rates">Hourly: ₹{{ e.hourlyRate }} &nbsp; · &nbsp; Daily: ₹{{ e.dailyRate }}</p>
+        <p class="rates">₹{{ e.hourlyRate }}/hr &nbsp;·&nbsp; ₹{{ e.dailyRate }}/day</p>
       </a>
     </li>
   </ul>

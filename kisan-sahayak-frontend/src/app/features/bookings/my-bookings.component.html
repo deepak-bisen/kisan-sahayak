@@ -1,0 +1,32 @@
+<div class="marketplace container">
+  <p class="eyebrow">मेरी बुकिंग</p>
+  <h1>My Bookings</h1>
+
+  <p *ngIf="loading()">Loading…</p>
+
+  <div *ngIf="!loading() && bookings().length === 0" class="empty-state">
+    <p class="field-hint">No bookings yet. <a routerLink="/marketplace">Browse equipment</a> to rent.</p>
+  </div>
+
+  <ul *ngIf="!loading() && bookings().length" class="booking-list">
+    <li *ngFor="let item of bookings()" class="booking-card">
+      <div class="booking-card__head">
+        <h3>{{ item.equipment?.name || item.booking.equipmentId }}</h3>
+        <span class="booking-status" [style.--status-color]="statusColor(item.booking.status)">
+          {{ item.booking.status }}
+        </span>
+      </div>
+      <div class="booking-card__body">
+        <span>
+          {{ item.booking.startDate }} → {{ item.booking.endDate }}
+        </span>
+        <span *ngIf="item.booking.totalCost">
+          ₹{{ item.booking.totalCost }}
+        </span>
+      </div>
+      <div class="booking-card__actions">
+        <a [routerLink]="['/marketplace', item.booking.equipmentId]" class="btn btn-ghost">View equipment</a>
+      </div>
+    </li>
+  </ul>
+</div>

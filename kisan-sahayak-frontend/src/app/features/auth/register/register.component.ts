@@ -23,6 +23,7 @@ export class RegisterComponent {
     villageName: ['', [Validators.required]],
     district: ['', [Validators.required]],
     state: ['', [Validators.required]],
+    role: ['FARMER', [Validators.required]],
   });
 
   constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {}
@@ -49,6 +50,7 @@ export class RegisterComponent {
         villageName: v.villageName!,
         district: v.district!,
         state: v.state!,
+        role: v.role as 'FARMER' | 'EQUIPMENT_OWNER' | undefined,
       })
       .subscribe({
         next: () => {

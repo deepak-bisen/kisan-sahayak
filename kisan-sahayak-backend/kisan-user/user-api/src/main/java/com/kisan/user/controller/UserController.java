@@ -36,8 +36,8 @@ public interface UserController {
     @DeleteMapping("/delete/{userId}")
     public ResponseEntity<Void> deleteUser(@PathVariable String userId);
 
-//    @DeleteMapping("/phone/{phoneNumber}")
-//    public ResponseEntity<Void> deleteUserByPhone(@PathVariable String phoneNumber);
+    @DeleteMapping("/phone/{phoneNumber}")
+    public ResponseEntity<Void> deleteUserByPhone(@PathVariable String phoneNumber);
 
 
     @PutMapping("/update/{userId}")

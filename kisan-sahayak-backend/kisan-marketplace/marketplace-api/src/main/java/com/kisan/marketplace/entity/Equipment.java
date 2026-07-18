@@ -19,16 +19,16 @@ public class Equipment {
     @Id
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.UUID)
-    public String id;
+    private String id;
 
     @Column(name = "NAME", columnDefinition = "VARCHAR(50)", nullable = false)
-    public String name;  // e.g., "Mahindra Tractor 575 DI"
+    private String name;  // e.g., "Mahindra Tractor 575 DI"
 
-    @Column(name = "DESCRIPTION", columnDefinition = "VARCHAR(50)", nullable = true)
+    @Column(name = "DESCRIPTION", columnDefinition = "VARCHAR(255)", nullable = true)
     private String description;
 
     @Column(name = "CATEGORY", columnDefinition = "VARCHAR(50)", nullable = true)
-    public String category;  // e.g., TRACTOR, HARVESTER, PLOUGH
+    private String category;  // e.g., TRACTOR, HARVESTER, PLOUGH
 
     @Column(name = "HOURLY_RATE", nullable = false)
     private BigDecimal hourlyRate;

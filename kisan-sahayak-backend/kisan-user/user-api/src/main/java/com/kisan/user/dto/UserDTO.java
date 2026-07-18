@@ -1,15 +1,16 @@
 package com.kisan.user.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public class UserDTO {
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class UserDTO {
 
         private String userId;
 
@@ -23,6 +24,7 @@ import lombok.*;
 
         @NotBlank(message = "Password is required")
         @Size(min = 6, message = "Password must be at least 6 characters long")
+        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
         private String password;
 
         @NotBlank(message = "Village name is required")

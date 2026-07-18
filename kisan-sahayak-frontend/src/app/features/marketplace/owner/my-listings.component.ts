@@ -15,7 +15,7 @@ export class MyListingsComponent implements OnInit {
   readonly listings = signal<EquipmentDTO[]>([]);
   readonly loading = signal(false);
 
-  constructor(private svc: EquipmentService, private auth: AuthService, private router: Router) {}
+  constructor(public svc: EquipmentService, private auth: AuthService, private router: Router) {}
 
   ngOnInit(): void {
     const user = this.auth.currentUser();

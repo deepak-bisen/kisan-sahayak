@@ -1,28 +1,80 @@
 <div class="marketplace container">
   <div *ngIf="loading()">Loading…</div>
+
   <div *ngIf="!loading() && equipment()" class="equipment-detail">
     <div class="media">
-      <img *ngIf="equipment()!.imageUrl" [src]="equipment()!.imageUrl" alt="{{ equipment()!.name }}" />
+      <img *ngIf="equipment()!.imageUrl" [src]="svc.resolveImageUrl(equipment()!.imageUrl)" alt="{{ equipment()!.name }}" />
+      <div *ngIf="!equipment()!.imageUrl" class="placeholder">{{ equipment()!.category }}</div>
     </div>
     <h1>{{ equipment()!.name }}</h1>
     <p class="meta">{{ equipment()!.category }} · {{ equipment()!.villageName || equipment()!.district }}</p>
     <p class="desc">{{ equipment()!.description }}</p>
-    <p class="rates">Hourly: ₹{{ equipment()!.hourlyRate }} · Daily: ₹{{ equipment()!.dailyRate }}</p>
+    <p class="rates">
+      <span>₹{{ equipment()!.hourlyRate }} / hour</span>
+      <span> · </span>
+      <span>₹{{ equipment()!.dailyRate }} / day</span>
+    </p>
   </div>
 </div>
 
-<div class="container" *ngIf="equipment()">
+<div class="container" *ngIf="equipment() && !loading()">
   <h2>Book this equipment</h2>
-  <form (ngSubmit)="book()">
-    <div class="field">
-      <label for="startDate">Start date</label>
-      <input id="startDate" type="date" [(ngModel)]="startDate" name="startDate" />
-    </div>
-    <div class="field">
-      <label for="endDate">End date</label>
-      <input id="endDate" type="date" [(ngModel)]="endDate" name="endDate" />
-    </div>
-    <button class="btn btn-primary" type="submit">Request booking</button>
-  </form>
-  <div *ngIf="bookingSuccess()" class="form-banner success">Booking request submitted.</div>
+
+  <ng-container *ngIf="!auth.isLoggedIn()">
+    <p class="field-hint"><a routerLink="/login">Log in</a> to request a booking.</p>
+  </ng-container>
+
+  <ng-container *ngIf="isOwner()">
+    <p class="field-hint">You own this equipment. You cannot book your own listing.</p>
+  </ng-container>
+
+  <ng-container *ngIf="auth.isLoggedIn() && !isOwner() && !bookingSuccess()">
+    <form (ngSubmit)="book()" #bookingForm="ngForm">
+      <div class="auth-card__row">
+        <div class="field">
+          <label for="startDate">Start date</label>
+          <input
+            id="startDate"
+            type="date"
+            [(ngModel)]="startDate"
+            name="startDate"
+            [attr.min]="today"
+            required
+          />
+        </div>
+        <div class="field">
+          <label for="endDate">End date</label>
+          <input
+            id="endDate"
+            type="date"
+            [(ngModel)]="endDate"
+            name="endDate"
+            [attr.min]="startDate || today"
+            required
+          />
+        </div>
+      </div>
+
+      <p *ngIf="dateInvalid()" class="field-error">End date cannot be before start date.</p>
+
+      <p *ngIf="estimatedCost() !== null && startDate && endDate && !dateInvalid()" class="field-hint">
+        Estimated cost: <strong>₹{{ estimatedCost() }}</strong>
+        ({{ bookingDays() }} day(s))
+      </p>
+
+      <div *ngIf="bookingError()" class="form-banner error">{{ bookingError() }}</div>
+
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="bookingLoading() || !startDate || !endDate || dateInvalid()"
+      >
+        {{ bookingLoading() ? 'Submitting…' : 'Request booking' }}
+      </button>
+    </form>
+  </ng-container>
+
+  <div *ngIf="bookingSuccess()" class="form-banner success">
+    Booking request submitted! The owner will review it shortly.
+  </div>
 </div>

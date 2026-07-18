@@ -1,12 +1,17 @@
 <div class="marketplace container">
-  <h1>My Listings</h1>
+  <div class="marketplace__head">
+    <h1>My Listings</h1>
+    <div class="marketplace__actions">
+      <a routerLink="/marketplace/add" class="btn btn-primary">List equipment</a>
+    </div>
+  </div>
   <p *ngIf="loading()">Loading…</p>
 
   <ul class="equipment-list">
     <li *ngFor="let e of listings()" class="equipment-card">
       <a [routerLink]="['/marketplace', e.equipmentId]">
         <div class="media">
-          <img *ngIf="e.imageUrl" [src]="e.imageUrl" alt="{{ e.name }}" />
+          <img *ngIf="e.imageUrl" [src]="svc.resolveImageUrl(e.imageUrl)" alt="{{ e.name }}" />
         </div>
         <h3>{{ e.name }}</h3>
         <p class="meta">{{ e.category }} · {{ e.villageName || e.district }}</p>

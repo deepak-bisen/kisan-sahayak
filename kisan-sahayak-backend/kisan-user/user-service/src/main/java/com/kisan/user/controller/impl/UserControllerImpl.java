@@ -57,11 +57,11 @@ public class UserControllerImpl implements UserController {
         return ResponseEntity.noContent().build();
     }
 
-//    @Override
-//    public ResponseEntity<Void> deleteUserByPhone(String phoneNumber) {
-//        userService.deleteUserByPhone(phoneNumber);
-//        return ResponseEntity.noContent().build();
-//    }
+    @Override
+    public ResponseEntity<Void> deleteUserByPhone(String phoneNumber) {
+        userService.deleteUserByPhone(phoneNumber);
+        return ResponseEntity.noContent().build();
+    }
 
     @Override
     public ResponseEntity<UserDTO> updateUser(String userId, UserDTO userDTO) {

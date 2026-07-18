@@ -1,31 +1,59 @@
 <div class="add-equipment">
-  <h1>List Equipment</h1>
-  <form [formGroup]="form" (ngSubmit)="submit()">
-    <div>
-      <label>Name</label>
-      <input formControlName="name" />
-    </div>
-    <div>
-      <label>Category</label>
-      <input formControlName="category" />
-    </div>
-    <div>
-      <label>Hourly rate</label>
-      <input type="number" formControlName="hourlyRate" />
-    </div>
-    <div>
-      <label>Daily rate</label>
-      <input type="number" formControlName="dailyRate" />
-    </div>
-    <div>
-      <label>Image URL</label>
-      <input formControlName="imageUrl" />
-    </div>
-    <div>
-      <label>Description</label>
-      <textarea formControlName="description"></textarea>
+  <p class="eyebrow">{{ editingId() ? 'Edit listing' : 'नई सूची' }}</p>
+  <h1>{{ editingId() ? 'Edit Equipment' : 'List Equipment' }}</h1>
+
+  <p *ngIf="loading()">Loading equipment details…</p>
+
+  <form *ngIf="!loading()" [formGroup]="form" (ngSubmit)="submit()">
+    <div class="field">
+      <label for="name">Name</label>
+      <input id="name" formControlName="name" placeholder="e.g. Tractor 50HP" [class.invalid]="f.name.invalid && f.name.touched" />
+      @if (f.name.invalid && f.name.touched) {
+        <span class="field-error">Name is required.</span>
+      }
     </div>
 
-    <button type="submit" class="btn btn-primary">List equipment</button>
+    <div class="field">
+      <label for="category">Category</label>
+      <input id="category" formControlName="category" placeholder="e.g. Tractor, Harvester, Thresher" [class.invalid]="f.category.invalid && f.category.touched" />
+      @if (f.category.invalid && f.category.touched) {
+        <span class="field-error">Category is required.</span>
+      }
+    </div>
+
+    <div class="form-row">
+      <div class="field">
+        <label for="hourlyRate">Hourly rate (₹)</label>
+        <input id="hourlyRate" type="number" formControlName="hourlyRate" placeholder="500" [class.invalid]="f.hourlyRate.invalid && f.hourlyRate.touched" />
+        @if (f.hourlyRate.invalid && f.hourlyRate.touched) {
+          <span class="field-error">Required.</span>
+        }
+      </div>
+      <div class="field">
+        <label for="dailyRate">Daily rate (₹)</label>
+        <input id="dailyRate" type="number" formControlName="dailyRate" placeholder="2500" [class.invalid]="f.dailyRate.invalid && f.dailyRate.touched" />
+        @if (f.dailyRate.invalid && f.dailyRate.touched) {
+          <span class="field-error">Required.</span>
+        }
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="image">Image</label>
+      <input id="image" type="file" accept="image/*" (change)="onFileSelected($event)" />
+      <div *ngIf="previewUrl()" class="image-preview">
+        <img [src]="previewUrl()" alt="Preview" />
+        <button type="button" class="image-preview__remove" (click)="clearImage()">✕</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="description">Description</label>
+      <textarea id="description" formControlName="description" placeholder="Describe your equipment, condition, and any details a renter should know."></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-block" [disabled]="form.invalid">
+      {{ editingId() ? 'Save changes' : 'List equipment' }}
+    </button>
   </form>
 </div>

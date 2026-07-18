@@ -1,0 +1,53 @@
+<div class="marketplace container">
+  <p class="eyebrow">बुकिंग प्रबंधन</p>
+  <h1>Manage Bookings</h1>
+  <p class="field-hint">Review and respond to booking requests for your equipment.</p>
+
+  <p *ngIf="loading()">Loading…</p>
+
+  <div *ngIf="!loading() && items().length === 0" class="empty-state">
+    <p class="field-hint">No bookings for your equipment yet.</p>
+  </div>
+
+  <div *ngFor="let item of items()" class="owner-group">
+    <h2 class="owner-group__title">
+      <a [routerLink]="['/marketplace', item.equipment.equipmentId]">{{ item.equipment.name }}</a>
+      <span class="field-hint">{{ item.equipment.villageName || item.equipment.district }}</span>
+    </h2>
+
+    <div *ngIf="!item.bookings.length" class="field-hint" style="padding:8px 0 16px">
+      No bookings for this equipment yet.
+    </div>
+
+    <ul *ngIf="item.bookings.length" class="booking-list">
+      <li *ngFor="let b of item.bookings" class="booking-card">
+        <div class="booking-card__head">
+          <span class="booking-status" [style.--status-color]="statusColor(b.status)">
+            {{ b.status }}
+          </span>
+          <span class="booking-card__cost" *ngIf="b.totalCost">₹{{ b.totalCost }}</span>
+        </div>
+        <div class="booking-card__body">
+          <span>{{ b.startDate }} → {{ b.endDate }}</span>
+          <span class="field-hint">Renter: {{ b.renterId | slice:0:8 }}…</span>
+        </div>
+        <div class="booking-card__actions" *ngIf="b.status === 'REQUESTED'">
+          <button
+            class="btn btn-primary"
+            [disabled]="updating() === b.bookingId"
+            (click)="updateStatus(b.bookingId!, 'CONFIRMED')"
+          >
+            {{ updating() === b.bookingId ? 'Updating…' : 'Confirm' }}
+          </button>
+          <button
+            class="btn btn-ghost"
+            [disabled]="updating() === b.bookingId"
+            (click)="updateStatus(b.bookingId!, 'CANCELLED')"
+          >
+            Cancel
+          </button>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>

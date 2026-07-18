@@ -13,6 +13,28 @@
 
     <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
       <div class="field">
+        <label>I am a</label>
+        <div class="role-toggle">
+          <button
+            type="button"
+            class="role-toggle__btn"
+            [class.is-active]="form.value.role === 'FARMER'"
+            (click)="form.patchValue({ role: 'FARMER' })"
+          >
+            🌾 Farmer
+          </button>
+          <button
+            type="button"
+            class="role-toggle__btn"
+            [class.is-active]="form.value.role === 'EQUIPMENT_OWNER'"
+            (click)="form.patchValue({ role: 'EQUIPMENT_OWNER' })"
+          >
+            🚜 Equipment Owner
+          </button>
+        </div>
+      </div>
+
+      <div class="field">
         <label for="fullName">Full name</label>
         <input
           id="fullName"

@@ -142,12 +142,10 @@ public class UserServiceImpl implements UserService {
         return mapToDTO(userRepository.save(existingUser));
     }
 
-    /**
-     *@Override
-     *public void deleteUserByPhone(String phoneNumber) {
-     * userRepository.deleteByPhoneNumber(phoneNumber);
-     * }
-     */
+    @Override
+    public void deleteUserByPhone(String phoneNumber) {
+        userRepository.deleteByPhoneNumber(phoneNumber);
+    }
 
     private String maskPhoneNumber(String phoneNumber) {
         if (phoneNumber == null || phoneNumber.length() <= 4) {

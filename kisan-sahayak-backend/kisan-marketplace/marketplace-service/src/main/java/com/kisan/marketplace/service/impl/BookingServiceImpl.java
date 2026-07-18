@@ -106,11 +106,6 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
 
-        // Allowable statuses: REQUESTED, CONFIRMED, COMPLETED, CANCELLED
-        if (!status.equals(Status.REQUESTED) || !status.equals(Status.CANCELLED) || !status.equals(Status.CONFIRMED) || !status.equals(Status.COMPLETED)) {
-            throw new RuntimeException("Invalid status update.");
-        }
-
         booking.setStatus(status);
         return mapToDTO(bookingRepository.save(booking));
     }
