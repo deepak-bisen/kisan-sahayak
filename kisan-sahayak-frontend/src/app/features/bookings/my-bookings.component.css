@@ -40,6 +40,13 @@
   border: 1px solid color-mix(in srgb, var(--status-color) 40%, transparent);
 }
 
+.booking-card__meta {
+  font-size: 0.82rem;
+  color: var(--color-cream-dim);
+  display: block;
+  margin-top: 2px;
+}
+
 .booking-card__body {
   display: flex;
   justify-content: space-between;

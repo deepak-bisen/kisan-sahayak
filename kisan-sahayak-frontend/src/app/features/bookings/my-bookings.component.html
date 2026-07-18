@@ -16,7 +16,14 @@
   <ul *ngIf="!loading() && bookings().length" class="booking-list">
     <li *ngFor="let item of bookings()" class="booking-card">
       <div class="booking-card__head">
-        <h3>{{ item.equipment?.name || item.booking.equipmentId }}</h3>
+        <div>
+          <h3>{{ item.equipment?.name || 'Equipment' }}</h3>
+          <span class="booking-card__meta">
+            {{ item.equipment?.category || '' }}
+            {{ item.equipment?.category && (item.equipment?.villageName || item.equipment?.district) ? '·' : '' }}
+            {{ item.equipment?.villageName || item.equipment?.district || '' }}
+          </span>
+        </div>
         <span class="booking-status" [style.--status-color]="statusColor(item.booking.status)">
           {{ item.booking.status }}
         </span>
