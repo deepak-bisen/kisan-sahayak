@@ -37,4 +37,10 @@ public class CropGuide {
 
     @Column(columnDefinition = "TEXT")
     private String diseaseManagement; // Tips on handling common pests
+
+    @Column(name = "IMAGE_URL")
+    private String imageUrl;
+
+    @Column(name = "VIDEO_URL")
+    private String videoUrl;
 }

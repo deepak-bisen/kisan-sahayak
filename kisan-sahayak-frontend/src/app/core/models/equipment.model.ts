@@ -6,6 +6,7 @@ export interface EquipmentDTO {
   hourlyRate: number;
   dailyRate: number;
   ownerId: string;
+  ownerName?: string;
   imageUrl?: string;
   villageName?: string;
   district?: string;

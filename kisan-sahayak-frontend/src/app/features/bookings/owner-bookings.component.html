@@ -34,7 +34,7 @@
         </div>
         <div class="booking-card__body">
           <span>{{ b.startDate }} → {{ b.endDate }}</span>
-          <span class="field-hint">Renter ID: {{ b.renterId | slice:0:8 }}…</span>
+          <span class="field-hint">{{ bookingDays(b) }} day{{ bookingDays(b) > 1 ? 's' : '' }}</span>
         </div>
         <div class="booking-card__actions" *ngIf="b.status === 'REQUESTED'">
           <button

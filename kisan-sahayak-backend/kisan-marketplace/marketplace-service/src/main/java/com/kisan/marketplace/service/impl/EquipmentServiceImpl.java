@@ -80,7 +80,7 @@ public class EquipmentServiceImpl implements EquipmentService {
             imageUrl = "/uploads/" + fileName;
         }
 
-        // 3. Build equipment and cache location data from the user profile
+        // 3. Build equipment and cache owner data from the user profile
         Equipment equipment = Equipment.builder()
                 .name(equipmentDTO.getName())
                 .description(equipmentDTO.getDescription())
@@ -88,6 +88,7 @@ public class EquipmentServiceImpl implements EquipmentService {
                 .hourlyRate(equipmentDTO.getHourlyRate())
                 .dailyRate(equipmentDTO.getDailyRate())
                 .ownerId(equipmentDTO.getOwnerId())
+                .ownerName(user.getFullName())
                 .imageUrl(imageUrl)
                 .villageName(user.getVillageName()) // Cached for faster local searches
                 .district(user.getDistrict())       // Cached for faster local searches
@@ -102,8 +103,20 @@ public class EquipmentServiceImpl implements EquipmentService {
 
     @Override
     public EquipmentDTO getEquipmentById(String equipmentId) {
-        return mapToDTO(equipmentRepository.findById(equipmentId)
-                .orElseThrow(() -> new RuntimeException("Equipment not found with id: " + equipmentId)));
+        Equipment equipment = equipmentRepository.findById(equipmentId)
+                .orElseThrow(() -> new RuntimeException("Equipment not found with id: " + equipmentId));
+        if (equipment.getOwnerName() == null) {
+            try {
+                UserResponseDTO owner = userClient.getUserById(equipment.getOwnerId());
+                if (owner != null) {
+                    equipment.setOwnerName(owner.getFullName());
+                    equipmentRepository.save(equipment);
+                }
+            } catch (Exception e) {
+                log.warn("Could not fetch owner name for equipment {}: {}", equipmentId, e.getMessage());
+            }
+        }
+        return mapToDTO(equipment);
     }
 
     @Override
@@ -174,6 +187,7 @@ public class EquipmentServiceImpl implements EquipmentService {
                 .hourlyRate(equipment.getHourlyRate())
                 .dailyRate(equipment.getDailyRate())
                 .ownerId(equipment.getOwnerId())
+                .ownerName(equipment.getOwnerName())
                 .imageUrl(equipment.getImageUrl())
                 .villageName(equipment.getVillageName())
                 .district(equipment.getDistrict())

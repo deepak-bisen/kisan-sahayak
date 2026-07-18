@@ -36,6 +36,9 @@
 
   <div *ngIf="!loading() && guides().length" class="guide-list">
     <div *ngFor="let g of guides()" class="guide-card">
+      <div *ngIf="g.imageUrl" class="guide-media">
+        <img [src]="g.imageUrl" alt="{{ g.cropName }}" />
+      </div>
       <h3>{{ g.cropName }}</h3>
       <p class="meta">
         {{ g.season }} · {{ g.soilType }} · {{ g.durationInDays }} days
@@ -47,6 +50,12 @@
       <div *ngIf="g.diseaseManagement" class="guide-section">
         <strong>Disease Management</strong>
         <p>{{ g.diseaseManagement }}</p>
+      </div>
+      <div *ngIf="g.videoUrl" class="guide-section">
+        <strong>Video</strong>
+        <div class="guide-video">
+          <video [src]="g.videoUrl" controls class="guide-video__player"></video>
+        </div>
       </div>
     </div>
   </div>

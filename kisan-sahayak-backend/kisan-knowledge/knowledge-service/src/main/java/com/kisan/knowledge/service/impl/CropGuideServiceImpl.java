@@ -32,6 +32,8 @@ public class CropGuideServiceImpl implements CropGuideService {
                 .durationInDays(cropGuideDTO.getDurationInDays())
                 .bestPractices(cropGuideDTO.getBestPractices())
                 .diseaseManagement(cropGuideDTO.getDiseaseManagement())
+                .imageUrl(cropGuideDTO.getImageUrl())
+                .videoUrl(cropGuideDTO.getVideoUrl())
                 .build();
         return mapToDTO(cropGuideRepository.save(cropGuide));
     }
@@ -78,6 +80,8 @@ public class CropGuideServiceImpl implements CropGuideService {
         if (cropGuideDTO.getDurationInDays() != null) existingGuide.setDurationInDays(cropGuideDTO.getDurationInDays());
         if (cropGuideDTO.getBestPractices() != null) existingGuide.setBestPractices(cropGuideDTO.getBestPractices());
         if (cropGuideDTO.getDiseaseManagement() != null) existingGuide.setDiseaseManagement(cropGuideDTO.getDiseaseManagement());
+        if (cropGuideDTO.getImageUrl() != null) existingGuide.setImageUrl(cropGuideDTO.getImageUrl());
+        if (cropGuideDTO.getVideoUrl() != null) existingGuide.setVideoUrl(cropGuideDTO.getVideoUrl());
 
         return mapToDTO(cropGuideRepository.save(existingGuide));
     }
@@ -100,6 +104,8 @@ public class CropGuideServiceImpl implements CropGuideService {
                 .durationInDays(cropGuide.getDurationInDays())
                 .bestPractices(cropGuide.getBestPractices())
                 .diseaseManagement(cropGuide.getDiseaseManagement())
+                .imageUrl(cropGuide.getImageUrl())
+                .videoUrl(cropGuide.getVideoUrl())
                 .build();
     }
 }

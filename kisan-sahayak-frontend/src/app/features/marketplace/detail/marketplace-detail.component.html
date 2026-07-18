@@ -14,16 +14,32 @@
     <h1>{{ equipment()!.name }}</h1>
     <p class="meta">{{ equipment()!.category }} · {{ equipment()!.villageName || equipment()!.district }}</p>
     <p class="desc">{{ equipment()!.description }}</p>
-    <p class="rates">
-      <span>₹{{ equipment()!.hourlyRate }} / hour</span>
-      <span> · </span>
-      <span>₹{{ equipment()!.dailyRate }} / day</span>
-    </p>
+
+    <div class="owner-card">
+      <div class="owner-card__avatar">{{ (equipment()!.ownerName || 'O')[0] }}</div>
+      <div class="owner-card__info">
+        <strong>{{ equipment()!.ownerName || 'Equipment Owner' }}</strong>
+        <span>{{ equipment()!.villageName }}{{ equipment()!.villageName && equipment()!.district ? ' , ' : '' }}{{ equipment()!.district }}</span>
+      </div>
+    </div>
   </div>
 </div>
 
-<div class="container" *ngIf="equipment() && !loading()">
-  <h2>Book this equipment</h2>
+<div class="container booking-section" *ngIf="equipment() && !loading()">
+
+  <div class="booking-section__pricing">
+    <h2>Pricing</h2>
+    <div class="booking-section__rates">
+      <div class="rate-card">
+        <span class="rate-card__value">₹{{ equipment()!.hourlyRate }}</span>
+        <span class="rate-card__label">per hour</span>
+      </div>
+      <div class="rate-card rate-card--daily">
+        <span class="rate-card__value">₹{{ equipment()!.dailyRate }}</span>
+        <span class="rate-card__label">per day</span>
+      </div>
+    </div>
+  </div>
 
   <ng-container *ngIf="!auth.isLoggedIn()">
     <p class="field-hint"><a routerLink="/login">Log in</a> to request a booking.</p>
@@ -33,8 +49,21 @@
     <p class="field-hint">You own this equipment. You cannot book your own listing.</p>
   </ng-container>
 
+  <div class="booking-section__avail" *ngIf="bookedRanges().length">
+    <h2>Already booked</h2>
+    <div class="avail-list">
+      @for (r of bookedRanges(); track r.start + r.end) {
+        <div class="avail-item">
+          <span class="avail-item__dates">{{ r.start }} → {{ r.end }}</span>
+        </div>
+      }
+    </div>
+  </div>
+
   <ng-container *ngIf="auth.isLoggedIn() && !isOwner() && !bookingSuccess()">
-    <form (ngSubmit)="book()" #bookingForm="ngForm">
+    <form (ngSubmit)="book()" #bookingForm="ngForm" class="booking-section__form">
+      <h2>Book this equipment</h2>
+
       <div class="auth-card__row">
         <div class="field">
           <label for="startDate">Start date</label>
@@ -62,17 +91,31 @@
 
       <p *ngIf="dateInvalid()" class="field-error">End date cannot be before start date.</p>
 
-      <p *ngIf="estimatedCost() !== null && startDate && endDate && !dateInvalid()" class="field-hint">
-        Estimated cost: <strong>₹{{ estimatedCost() }}</strong>
-        ({{ bookingDays() }} day(s))
+      <p *ngIf="startDate && endDate && dateOverlap()" class="field-error">
+        Selected dates overlap with an existing booking. Please choose different dates.
       </p>
+
+      <div *ngIf="startDate && endDate && !dateInvalid() && !dateOverlap()" class="booking-section__summary">
+        <div class="summary-row">
+          <span>Duration</span>
+          <strong>{{ bookingDays() }} day{{ bookingDays() > 1 ? 's' : '' }}</strong>
+        </div>
+        <div class="summary-row">
+          <span>Daily rate</span>
+          <strong>₹{{ equipment()!.dailyRate }}</strong>
+        </div>
+        <div class="summary-row summary-row--total">
+          <span>Estimated total</span>
+          <strong>₹{{ estimatedCost() }}</strong>
+        </div>
+      </div>
 
       <div *ngIf="bookingError()" class="form-banner error">{{ bookingError() }}</div>
 
       <button
         type="submit"
         class="btn btn-primary"
-        [disabled]="bookingLoading() || !startDate || !endDate || dateInvalid()"
+        [disabled]="bookingLoading() || !startDate || !endDate || dateInvalid() || dateOverlap()"
       >
         {{ bookingLoading() ? 'Submitting…' : 'Request booking' }}
       </button>

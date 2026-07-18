@@ -38,6 +38,13 @@ export class OwnerBookingsComponent implements OnInit {
     this.load(user.userId);
   }
 
+  bookingDays(b: BookingDTO): number {
+    if (!b.startDate || !b.endDate) return 0;
+    const start = new Date(b.startDate);
+    const end = new Date(b.endDate);
+    return Math.max(1, Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1);
+  }
+
   statusColor(status?: BookingStatus): string {
     switch (status) {
       case 'REQUESTED': return 'var(--color-gold)';

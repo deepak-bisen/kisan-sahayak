@@ -16,6 +16,10 @@
 .dash-card h3 { margin-bottom: 8px; font-size: 1.05rem; }
 .dash-card p { margin: 0; font-size: 0.92rem; }
 
+.dash-card--wide {
+  grid-column: 1 / -1;
+}
+
 @media (max-width: 640px) {
   .dash-grid { grid-template-columns: 1fr; }
 }

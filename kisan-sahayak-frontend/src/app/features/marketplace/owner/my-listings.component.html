@@ -28,8 +28,23 @@
       </a>
       <div style="margin-top:8px; display:flex; gap:8px;">
         <button class="btn btn-ghost" (click)="edit(e.equipmentId!)">Edit</button>
-        <button class="btn btn-ghost" (click)="delete(e.equipmentId!)">Delete</button>
+        <button class="btn btn-ghost" (click)="promptDelete(e)" [disabled]="deletingId() === e.equipmentId">
+          {{ deletingId() === e.equipmentId ? 'Deleting...' : 'Delete' }}
+        </button>
       </div>
     </li>
   </ul>
 </div>
+
+@if (confirmDelete(); as item) {
+  <div class="dialog-overlay" (click)="cancelDelete()">
+    <div class="dialog-box" (click)="$event.stopPropagation()">
+      <h3>Delete "{{ item.name }}"?</h3>
+      <p class="field-hint">This action cannot be undone. All bookings for this equipment will also be affected.</p>
+      <div class="dialog-actions">
+        <button class="btn btn-ghost" (click)="cancelDelete()">Cancel</button>
+        <button class="btn btn-primary" style="background:#dc2626;border-color:#dc2626;" (click)="doDelete(item.equipmentId!)">Delete</button>
+      </div>
+    </div>
+  </div>
+}

@@ -41,6 +41,18 @@ export class AuthService {
     return localStorage.getItem(TOKEN_KEY);
   }
 
+  hasRole(role: string): boolean {
+    return this.currentUser()?.roles?.includes(role as any) ?? false;
+  }
+
+  getAllUsers(): Observable<UserDTO[]> {
+    return this.http.get<UserDTO[]>(`${this.baseUrl}/all`);
+  }
+
+  deleteUser(userId: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${userId}`);
+  }
+
   updateProfile(userId: string, payload: Partial<UserDTO>): Observable<UserDTO> {
     const token = this.getToken();
     const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;

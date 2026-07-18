@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
+import { adminGuard } from './core/guards/admin.guard';
 
 export const routes: Routes = [
   {
@@ -77,6 +78,12 @@ export const routes: Routes = [
     loadComponent: () => import('./features/bookings/owner-bookings.component').then((m) => m.OwnerBookingsComponent),
     canActivate: [authGuard],
     title: 'Manage Bookings — Kisan Sahayak',
+  },
+  {
+    path: 'admin',
+    loadComponent: () => import('./features/admin/admin.component').then((m) => m.AdminComponent),
+    canActivate: [authGuard, adminGuard],
+    title: 'Admin Panel — Kisan Sahayak',
   },
   { path: '**', redirectTo: '' },
 ];

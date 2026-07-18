@@ -33,4 +33,6 @@ public class CropGuideDTO {
     private String bestPractices;
 
     private String diseaseManagement;
+    private String imageUrl;
+    private String videoUrl;
 }

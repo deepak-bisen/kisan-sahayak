@@ -19,6 +19,8 @@ export class MarketplaceListComponent implements OnInit {
   readonly searchQuery = signal('');
   readonly selectedCategory = signal('');
   readonly selectedVillage = signal('');
+  readonly sortBy = signal<'name-asc' | 'name-desc' | 'price-asc' | 'price-desc'>('name-asc');
+  readonly availableOnly = signal(false);
 
   readonly categories = computed(() => {
     const seen = new Set<string>();
@@ -49,12 +51,25 @@ export class MarketplaceListComponent implements OnInit {
     const query = this.searchQuery().toLowerCase().trim();
     const cat = this.selectedCategory();
     const village = this.selectedVillage();
-    return this.equipments().filter((e) => {
+    const avail = this.availableOnly();
+    const sort = this.sortBy();
+
+    let result = this.equipments().filter((e) => {
       if (query && !e.name.toLowerCase().includes(query) && !(e.description || '').toLowerCase().includes(query)) return false;
       if (cat && e.category !== cat) return false;
       if (village && (e.villageName || e.district) !== village) return false;
+      if (avail && !e.isAvailable) return false;
       return true;
     });
+
+    switch (sort) {
+      case 'price-asc': result = result.sort((a, b) => Number(a.dailyRate) - Number(b.dailyRate)); break;
+      case 'price-desc': result = result.sort((a, b) => Number(b.dailyRate) - Number(a.dailyRate)); break;
+      case 'name-asc': result = result.sort((a, b) => a.name.localeCompare(b.name)); break;
+      case 'name-desc': result = result.sort((a, b) => b.name.localeCompare(a.name)); break;
+    }
+
+    return result;
   });
 
   constructor(public svc: EquipmentService, private router: Router, public auth: AuthService) {}

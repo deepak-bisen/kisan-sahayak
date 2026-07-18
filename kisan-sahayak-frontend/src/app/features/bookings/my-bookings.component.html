@@ -32,8 +32,9 @@
         <span>
           {{ item.booking.startDate }} → {{ item.booking.endDate }}
         </span>
-        <span *ngIf="item.booking.totalCost">
-          ₹{{ item.booking.totalCost }}
+        <span>
+          {{ bookingDays(item.booking) }} day{{ bookingDays(item.booking) > 1 ? 's' : '' }}
+          · ₹{{ item.booking.totalCost }}
         </span>
       </div>
       <div class="booking-card__actions">

@@ -6,4 +6,6 @@ export interface CropGuideDTO {
   durationInDays: number;
   bestPractices: string;
   diseaseManagement?: string;
+  imageUrl?: string;
+  videoUrl?: string;
 }

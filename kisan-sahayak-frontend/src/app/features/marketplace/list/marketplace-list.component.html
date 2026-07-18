@@ -28,6 +28,18 @@
         <option *ngFor="let v of villages()" [value]="v">{{ v }}</option>
       </select>
     </div>
+    <div class="search-bar__field">
+      <select [ngModel]="sortBy()" (ngModelChange)="sortBy.set($event)">
+        <option value="name-asc">Name A–Z</option>
+        <option value="name-desc">Name Z–A</option>
+        <option value="price-asc">Price: Low–High</option>
+        <option value="price-desc">Price: High–Low</option>
+      </select>
+    </div>
+    <label class="search-bar__check">
+      <input type="checkbox" [ngModel]="availableOnly()" (ngModelChange)="availableOnly.set($event)" />
+      Available only
+    </label>
   </div>
 
   <div *ngIf="loading()" class="equipment-list">

@@ -39,6 +39,9 @@ public class Equipment {
     @Column(name = "OWNER_ID", columnDefinition = "VARCHAR(40)", nullable = false)
     private String ownerId; // Links to userId in User-Service
 
+    @Column(name = "OWNER_NAME")
+    private String ownerName; // Cached at creation from user service
+
     // Store the image URL
     @Column(name = "IMAGE_URL", columnDefinition = "VARCHAR(255)", nullable = false)
     private String imageUrl;

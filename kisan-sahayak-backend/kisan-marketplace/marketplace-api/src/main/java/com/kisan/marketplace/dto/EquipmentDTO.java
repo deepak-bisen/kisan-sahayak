@@ -29,14 +29,16 @@ public class EquipmentDTO {
         @Positive(message = "Rate must be positive")
         private BigDecimal dailyRate;
 
-        @NotBlank(message = "Owner ID is required")
-        private String ownerId;
+    @NotBlank(message = "Owner ID is required")
+    private String ownerId;
 
-        //Add image URL to the DTO
-        private String imageUrl;
+    private String ownerName;
 
-        // Read-only location details (populated by the service)
-        private String villageName;
-        private String district;
-        private boolean isAvailable;
+    //Add image URL to the DTO
+    private String imageUrl;
+
+    // Read-only location details (populated by the service)
+    private String villageName;
+    private String district;
+    private boolean isAvailable;
     }

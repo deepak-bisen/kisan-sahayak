@@ -1,6 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { AuthService } from './core/services/auth.service';
+import { NotificationService } from './core/services/notification.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
@@ -14,7 +15,11 @@ import { CommonModule } from '@angular/common';
 export class AppComponent {
   readonly menuOpen = signal(false);
 
-  constructor(public auth: AuthService, private router: Router) {}
+  constructor(
+    public auth: AuthService,
+    public notif: NotificationService,
+    private router: Router,
+  ) {}
 
   toggleMenu(): void {
     this.menuOpen.update((v) => !v);
@@ -22,10 +27,12 @@ export class AppComponent {
 
   closeMenu(): void {
     this.menuOpen.set(false);
+    this.notif.closeDropdown();
   }
 
   logout(): void {
     this.closeMenu();
+    this.notif.closeDropdown();
     this.auth.logout();
     this.router.navigate(['/']);
   }

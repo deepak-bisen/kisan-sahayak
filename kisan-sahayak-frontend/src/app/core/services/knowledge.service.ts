@@ -25,4 +25,16 @@ export class KnowledgeService {
   searchBySeason(season: string): Observable<CropGuideDTO[]> {
     return this.http.get<CropGuideDTO[]>(`${this.base}/search/season/${encodeURIComponent(season)}`);
   }
+
+  create(guide: CropGuideDTO): Observable<CropGuideDTO> {
+    return this.http.post<CropGuideDTO>(this.base, guide);
+  }
+
+  update(id: string, guide: CropGuideDTO): Observable<CropGuideDTO> {
+    return this.http.put<CropGuideDTO>(`${this.base}/${id}`, guide);
+  }
+
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.base}/${id}`);
+  }
 }

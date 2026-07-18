@@ -9,6 +9,7 @@ import com.kisan.marketplace.enums.Status;
 import com.kisan.marketplace.repository.BookingRepository;
 import com.kisan.marketplace.repository.EquipmentRepository;
 import com.kisan.marketplace.service.BookingService;
+import com.kisan.marketplace.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final EquipmentRepository equipmentRepository;
     private final UserClient userClient;
+    private final NotificationService notificationService;
 
     @Override
     @Transactional
@@ -83,7 +85,20 @@ public class BookingServiceImpl implements BookingService {
                 .status(Status.REQUESTED) // Initial state
                 .build();
 
-        return mapToDTO(bookingRepository.save(booking));
+        BookingDTO saved = mapToDTO(bookingRepository.save(booking));
+
+        try {
+            notificationService.create(
+                    equipment.getOwnerId(),
+                    "BOOKING_REQUESTED",
+                    renter.getFullName() + " requested to rent " + equipment.getName() + " from " + bookingDTO.getStartDate() + " to " + bookingDTO.getEndDate(),
+                    booking.getId()
+            );
+        } catch (Exception e) {
+            log.warn("Failed to create notification: {}", e.getMessage());
+        }
+
+        return saved;
     }
 
     @Override
@@ -113,8 +128,27 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
 
+        Equipment equipment = equipmentRepository.findById(booking.getEquipmentId())
+                .orElse(null);
+
         booking.setStatus(status);
-        return mapToDTO(bookingRepository.save(booking));
+        BookingDTO updated = mapToDTO(bookingRepository.save(booking));
+
+        try {
+            String msg;
+            if (status == Status.CONFIRMED) {
+                msg = "Your booking request for " + (equipment != null ? equipment.getName() : "equipment") + " has been confirmed!";
+            } else if (status == Status.COMPLETED) {
+                msg = "Your rental of " + (equipment != null ? equipment.getName() : "equipment") + " has been marked as completed.";
+            } else {
+                msg = "Your booking for " + (equipment != null ? equipment.getName() : "equipment") + " has been " + status.name().toLowerCase() + ".";
+            }
+            notificationService.create(booking.getRenterId(), "BOOKING_" + status.name(), msg, bookingId);
+        } catch (Exception e) {
+            log.warn("Failed to create notification: {}", e.getMessage());
+        }
+
+        return updated;
     }
 
     @Override
@@ -130,8 +164,25 @@ public class BookingServiceImpl implements BookingService {
             throw new RuntimeException("Only REQUESTED bookings can be cancelled.");
         }
 
+        Equipment equipment = equipmentRepository.findById(booking.getEquipmentId()).orElse(null);
+
         booking.setStatus(Status.CANCELLED);
-        return mapToDTO(bookingRepository.save(booking));
+        BookingDTO updated = mapToDTO(bookingRepository.save(booking));
+
+        try {
+            if (equipment != null) {
+                notificationService.create(
+                        equipment.getOwnerId(),
+                        "BOOKING_CANCELLED",
+                        "A booking for " + equipment.getName() + " has been cancelled by the renter.",
+                        bookingId
+                );
+            }
+        } catch (Exception e) {
+            log.warn("Failed to create notification: {}", e.getMessage());
+        }
+
+        return updated;
     }
 
  private BookingDTO mapToDTO(Booking booking){

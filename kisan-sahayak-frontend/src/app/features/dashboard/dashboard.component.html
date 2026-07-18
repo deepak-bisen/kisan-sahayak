@@ -33,5 +33,27 @@
       <p>Requests from renters for your equipment.</p>
       <a routerLink="/bookings/manage" class="btn btn-ghost" style="margin-top:12px">Manage</a>
     </div>
+
+    <div class="dash-card dash-card--stat">
+      <span class="dash-stat-number">₹{{ totalEarnings() }}</span>
+      <h3>Total Earnings</h3>
+      <p>From confirmed &amp; completed bookings on your equipment.</p>
+    </div>
+    <div class="dash-card dash-card--stat">
+      <span class="dash-stat-number">{{ activeRentals() }}</span>
+      <h3>Active Rentals</h3>
+      <p>Equipment you're currently renting (confirmed).</p>
+    </div>
+    <div class="dash-card dash-card--stat">
+      <span class="dash-stat-number">{{ ownerRequestsCount() }}</span>
+      <h3>Pending Requests</h3>
+      <p>Awaiting your response on your equipment.</p>
+    </div>
+
+    <div *ngIf="topEquipment()" class="dash-card dash-card--stat dash-card--wide">
+      <span class="dash-stat-number">{{ topEquipment()!.count }}</span>
+      <h3>Most Rented: {{ topEquipment()!.name }}</h3>
+      <p>Your most popular equipment by booking count.</p>
+    </div>
   </div>
 </section>

@@ -22,6 +22,7 @@ export class MarketplaceDetailComponent implements OnInit {
   readonly bookingLoading = signal(false);
   readonly bookingSuccess = signal(false);
   readonly bookingError = signal<string | null>(null);
+  readonly existingBookings = signal<BookingDTO[]>([]);
 
   startDate = '';
   endDate = '';
@@ -52,6 +53,23 @@ export class MarketplaceDetailComponent implements OnInit {
     return Number(e.dailyRate) * this.bookingDays();
   });
 
+  readonly dateOverlap = computed(() => {
+    if (!this.startDate || !this.endDate) return false;
+    const s = new Date(this.startDate);
+    const e = new Date(this.endDate);
+    return this.existingBookings().some((b) => {
+      const bs = new Date(b.startDate);
+      const be = new Date(b.endDate);
+      return s <= be && e >= bs;
+    });
+  });
+
+  readonly bookedRanges = computed(() => {
+    return this.existingBookings()
+      .filter((b) => b.status === 'CONFIRMED' || b.status === 'REQUESTED')
+      .map((b) => ({ start: b.startDate, end: b.endDate }));
+  });
+
   constructor(
     private route: ActivatedRoute,
     public svc: EquipmentService,
@@ -64,8 +82,18 @@ export class MarketplaceDetailComponent implements OnInit {
     if (!id) return;
     this.loading.set(true);
     this.svc.getById(id).subscribe({
-      next: (e) => { this.equipment.set(e); this.loading.set(false); },
+      next: (e) => {
+        this.equipment.set(e);
+        this.loading.set(false);
+        this.loadBookings(id);
+      },
       error: () => this.loading.set(false),
+    });
+  }
+
+  loadBookings(equipmentId: string): void {
+    this.bookingSvc.getByEquipment(equipmentId).subscribe({
+      next: (list) => this.existingBookings.set(list),
     });
   }
 
@@ -86,6 +114,7 @@ export class MarketplaceDetailComponent implements OnInit {
       next: () => {
         this.bookingLoading.set(false);
         this.bookingSuccess.set(true);
+        this.loadBookings(this.equipment()!.equipmentId!);
       },
       error: (err: HttpErrorResponse) => {
         this.bookingLoading.set(false);
