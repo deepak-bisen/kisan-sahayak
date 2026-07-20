@@ -60,4 +60,14 @@ public class Equipment {
 
     @Column(name = "UPDATED_AT", columnDefinition = "DATETIME",nullable = true)
     private LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }

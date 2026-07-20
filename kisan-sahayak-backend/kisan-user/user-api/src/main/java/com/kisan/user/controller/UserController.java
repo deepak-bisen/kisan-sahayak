@@ -44,5 +44,5 @@ public interface UserController {
 
 
     @PutMapping("/update/{userId}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable String userId,@RequestBody UserDTO userDTO);
+    public ResponseEntity<UserDTO> updateUser(@PathVariable String userId,@Valid @RequestBody UserDTO userDTO);
 }

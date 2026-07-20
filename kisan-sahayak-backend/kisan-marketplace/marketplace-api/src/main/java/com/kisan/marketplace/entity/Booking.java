@@ -26,10 +26,10 @@ public class Booking {
     @Column(name = "RENTER_ID", columnDefinition = "VARCHAR(40)", nullable = false)
     private String renterId; // Links to userId in User-Service (the farmer renting it)
 
-    @Column(name = "START_DATE", columnDefinition = "DATETIME", nullable = false)
+    @Column(name = "START_DATE", columnDefinition = "DATE", nullable = false)
     private LocalDate startDate;
 
-    @Column(name = "END_DATE", columnDefinition = "DATETIME", nullable = false)
+    @Column(name = "END_DATE", columnDefinition = "DATE", nullable = false)
     private LocalDate endDate;
 
     @Column(name = "TOTAL_COST", nullable = false)

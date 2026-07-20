@@ -192,6 +192,7 @@ public class UserServiceImpl implements UserService {
                 .district(user.getDistrict())
                 .state(user.getState() != null ? user.getState() : "")
                 .roles(user.getRoleList())
+                .password(null)
                 .build();
     }
 

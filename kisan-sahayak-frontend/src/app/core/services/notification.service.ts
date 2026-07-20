@@ -1,6 +1,6 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, OnDestroy, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap, interval, switchMap, startWith } from 'rxjs';
+import { Observable, tap, interval, switchMap, startWith, Subscription } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { NotificationDTO } from '../models/notification.model';
 import { AuthService } from './auth.service';
@@ -8,19 +8,41 @@ import { AuthService } from './auth.service';
 const POLL_INTERVAL = 30_000; // 30 seconds
 
 @Injectable({ providedIn: 'root' })
-export class NotificationService {
+export class NotificationService implements OnDestroy {
   private readonly base = `${environment.apiUrl}/marketplace/notifications`;
+  private pollingSub: Subscription | null = null;
 
   readonly unreadCount = signal(0);
   readonly notifications = signal<NotificationDTO[]>([]);
   readonly showDropdown = signal(false);
 
   constructor(private http: HttpClient, private auth: AuthService) {
-    if (auth.isLoggedIn()) {
-      interval(POLL_INTERVAL).pipe(startWith(0), switchMap(() => this.fetchUnreadCount())).subscribe({
-        next: (c) => this.unreadCount.set(c),
-      });
-    }
+    this.auth.currentUser.subscribe((user) => {
+      if (user) {
+        this.startPolling();
+      } else {
+        this.stopPolling();
+        this.unreadCount.set(0);
+        this.notifications.set([]);
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.stopPolling();
+  }
+
+  private startPolling(): void {
+    this.stopPolling();
+    this.pollingSub = interval(POLL_INTERVAL).pipe(
+      startWith(0),
+      switchMap(() => this.fetchUnreadCount()),
+    ).subscribe({ next: (c) => this.unreadCount.set(c) });
+  }
+
+  private stopPolling(): void {
+    this.pollingSub?.unsubscribe();
+    this.pollingSub = null;
   }
 
   private fetchUnreadCount(): Observable<number> {

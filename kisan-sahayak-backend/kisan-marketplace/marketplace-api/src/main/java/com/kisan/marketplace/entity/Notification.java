@@ -38,4 +38,9 @@ public class Notification {
 
     @Column(name = "CREATED_AT", nullable = false)
     private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 }

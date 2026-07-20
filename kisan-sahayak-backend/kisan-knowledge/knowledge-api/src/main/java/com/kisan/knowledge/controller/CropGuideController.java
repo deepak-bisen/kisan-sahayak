@@ -28,7 +28,7 @@ public interface CropGuideController {
 
     // Typically protected for ADMIN role later
     @PutMapping("/{id}")
-    public ResponseEntity<CropGuideDTO> updateCropGuide(@PathVariable String id, @RequestBody CropGuideDTO cropGuideDTO);
+    public ResponseEntity<CropGuideDTO> updateCropGuide(@PathVariable String id, @Valid @RequestBody CropGuideDTO cropGuideDTO);
 
     // Typically protected for ADMIN role later
     @DeleteMapping("/{id}")

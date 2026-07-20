@@ -30,11 +30,11 @@ export class KnowledgeListComponent implements OnInit {
     const season = this.selectedSeason();
 
     if (season) {
-      this.svc.searchBySeason(season).subscribe({ next: (r) => { this.guides.set(r); this.loading.set(false); }, error: () => this.loading.set(false) });
+      this.svc.searchBySeason(season).subscribe({ next: (r) => { this.guides.set(r); this.loading.set(false); }, error: (e) => { console.error('Failed to load guides:', e); this.loading.set(false); } });
     } else if (query) {
-      this.svc.searchByCrop(query).subscribe({ next: (r) => { this.guides.set(r); this.loading.set(false); }, error: () => this.loading.set(false) });
+      this.svc.searchByCrop(query).subscribe({ next: (r) => { this.guides.set(r); this.loading.set(false); }, error: (e) => { console.error('Failed to search guides:', e); this.loading.set(false); } });
     } else {
-      this.svc.getAll().subscribe({ next: (r) => { this.guides.set(r); this.loading.set(false); }, error: () => this.loading.set(false) });
+      this.svc.getAll().subscribe({ next: (r) => { this.guides.set(r); this.loading.set(false); }, error: (e) => { console.error('Failed to load guides:', e); this.loading.set(false); } });
     }
   }
 }

@@ -64,11 +64,13 @@ public class UserControllerImpl implements UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @Override
-    public ResponseEntity<Void> deleteUserByPhone(String phoneNumber) {
-        userService.deleteUserByPhone(phoneNumber);
-        return ResponseEntity.noContent().build();
-    }
+//    @Override
+//    public ResponseEntity<Void> deleteUserByPhone(String phoneNumber) {
+//        userService.deleteUserByPhone(phoneNumber);
+//        return ResponseEntity.noContent().build();
+//    }
+    // deleteUserByPhone is disabled until JWT auth is fully wired — any caller
+    // knowing a phone number could delete an arbitrary account.
 
     @Override
     public ResponseEntity<UserDTO> updateUser(String userId, UserDTO userDTO) {
