@@ -1,6 +1,25 @@
 # Kisan Sahayak — Farm Equipment Rental Platform
-
+# (किसान सहायक) 🌾🚜
 A full-stack microservice platform connecting farmers to rent and list agricultural equipment. Built with Spring Boot (microservices) and Angular.
+ 
+---
+ 
+## 🌟 Key Features
+ 
+### 🚜 Equipment Marketplace & Rental Booking
+- **List Equipment:** Farmers and equipment owners can list machinery (tractors, tillers, harvesters, sprayers) with hourly/daily pricing, availability, and images.
+- **Rental Bookings:** Renters can search available machinery, schedule booking dates, calculate estimated costs, and track booking statuses (`PENDING`, `APPROVED`, `REJECTED`, `COMPLETED`, `CANCELLED`).
+- **Owner Dashboard:** Equipment owners can review, approve, or decline incoming rental requests for their machinery.
+### 📚 Crop Knowledge & Advisory Hub
+- **Crop Guides:** Comprehensive library of crop management guides featuring optimal sowing times, soil requirements, irrigation schedules, disease management, and harvesting advice.
+- **Search & Filter:** Easily discover crop guides based on season (Kharif, Rabi, Zaid) or crop type.
+### 🔐 Security & Identity Management
+- **Role-Based Access Control (RBAC):** Distinct permissions for Farmers, Equipment Owners, and System Administrators (`ROLE_USER`, `ROLE_ADMIN`).
+- **JWT Authentication:** Stateless authentication secured with JSON Web Tokens across all API endpoints and microservices.
+### 🔔 Real-time Notifications & User Management
+- **Booking Alerts:** Automated notification delivery to owners and renters upon booking creation, approval, or status update.
+- **User Profiles:** Seamless management of farmer profiles, contact details, and listing history.
+---
 
 ## Architecture
 
