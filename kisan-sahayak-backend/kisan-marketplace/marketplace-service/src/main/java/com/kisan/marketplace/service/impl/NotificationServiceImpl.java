@@ -62,6 +62,12 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     @Transactional
+    public void deleteByUser(String userId) {
+        notificationRepository.deleteByUserId(userId);
+    }
+
+    @Override
+    @Transactional
     public void markAllAsRead(String userId) {
         List<Notification> unread = notificationRepository.findByUserIdAndIsReadFalseOrderByCreatedAtDesc(userId);
         unread.forEach(n -> n.setRead(true));

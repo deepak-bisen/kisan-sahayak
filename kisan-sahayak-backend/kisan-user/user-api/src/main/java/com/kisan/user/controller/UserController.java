@@ -26,6 +26,9 @@ public interface UserController {
     @GetMapping("/phone/{phoneNumber}")
     public ResponseEntity<UserDTO> getUserByPhone(@PathVariable String phoneNumber);
 
+    @PostMapping("/refresh")
+    public ResponseEntity<String> refreshToken(@RequestBody String token);
+
     @GetMapping
     public ResponseEntity<List<UserDTO>> getAllUsers();
 

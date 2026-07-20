@@ -43,4 +43,9 @@ public class BookingControllerImpl implements BookingController {
     public ResponseEntity<BookingDTO> cancelBooking(String id, String renterId) {
         return ResponseEntity.ok(bookingService.cancelBookingByRenter(id, renterId));
     }
+
+    public ResponseEntity<Void> deleteBookingsByRenter(String renterId) {
+        bookingService.deleteBookingsByRenter(renterId);
+        return ResponseEntity.noContent().build();
+    }
 }

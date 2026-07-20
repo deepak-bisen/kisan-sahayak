@@ -18,6 +18,12 @@ public interface BookingRepository extends JpaRepository<Booking, String> {
     // Find all bookings for a specific piece of equipment (for the owner to manage)
     List<Booking> findByEquipmentId(String equipmentId);
 
+    // Delete all bookings for a given equipment
+    void deleteByEquipmentId(String equipmentId);
+
+    // Delete all bookings for a given renter
+    void deleteByRenterId(String renterId);
+
     // NEW QUERY: Checks if there is any overlapping booking for the given date that isn't cancelled.
     @Query("SELECT COUNT(b) > 0 FROM Booking b WHERE b.equipmentId = :equipmentId " +
             "AND b.status IN ('REQUESTED', 'CONFIRMED') " +

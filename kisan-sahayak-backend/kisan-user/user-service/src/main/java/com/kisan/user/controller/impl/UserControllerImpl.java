@@ -47,6 +47,13 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
+    public ResponseEntity<String> refreshToken(String token) {
+        log.info("POST /api/users/refresh received");
+        String newToken = userService.refreshToken(token);
+        return ResponseEntity.ok(newToken);
+    }
+
+    @Override
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }

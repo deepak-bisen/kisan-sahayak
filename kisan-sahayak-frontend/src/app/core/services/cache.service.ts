@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
+const MAX_ENTRIES = 100;
+
 interface CacheEntry<T> {
   data: T;
   expiry: number;
+  createdAt: number;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -21,7 +24,10 @@ export class CacheService {
   }
 
   set<T>(key: string, data: T, ttlMs: number): void {
-    this.store.set(key, { data, expiry: Date.now() + ttlMs });
+    if (this.store.size >= MAX_ENTRIES) {
+      this.evictOldest();
+    }
+    this.store.set(key, { data, expiry: Date.now() + ttlMs, createdAt: Date.now() });
   }
 
   clear(): void {
@@ -32,5 +38,17 @@ export class CacheService {
     for (const key of this.store.keys()) {
       if (key.startsWith(prefix)) this.store.delete(key);
     }
+  }
+
+  private evictOldest(): void {
+    let oldestKey: string | null = null;
+    let oldestTime = Infinity;
+    for (const [key, entry] of this.store.entries()) {
+      if (entry.createdAt < oldestTime) {
+        oldestTime = entry.createdAt;
+        oldestKey = key;
+      }
+    }
+    if (oldestKey) this.store.delete(oldestKey);
   }
 }

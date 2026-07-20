@@ -17,4 +17,6 @@ public interface NotificationService {
     void markAsRead(String id);
 
     void markAllAsRead(String userId);
+
+    void deleteByUser(String userId);
 }

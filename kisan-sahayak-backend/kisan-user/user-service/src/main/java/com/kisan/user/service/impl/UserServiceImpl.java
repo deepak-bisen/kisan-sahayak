@@ -49,7 +49,6 @@ public class UserServiceImpl implements UserService {
                 .build();
 
         User registeredUser = userRepository.save(user);
-       // log.info("user registered successfully");
         return mapToDTO(registeredUser);
     }
 
@@ -104,6 +103,10 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public String refreshToken(String token) {
+        return jwtUtil.refreshToken(token);
+    }
 
     @Override
     @Transactional
@@ -115,6 +118,24 @@ public class UserServiceImpl implements UserService {
                     .toBodilessEntity();
         } catch (Exception e) {
             log.warn("Failed to cascade-delete equipment for userId={}: {}", userId, e.getMessage());
+        }
+
+        try {
+            restClient.delete()
+                    .uri("/api/marketplace/bookings/renter/{renterId}", userId)
+                    .retrieve()
+                    .toBodilessEntity();
+        } catch (Exception e) {
+            log.warn("Failed to cascade-delete bookings for userId={}: {}", userId, e.getMessage());
+        }
+
+        try {
+            restClient.delete()
+                    .uri("/api/marketplace/notifications/user/{userId}", userId)
+                    .retrieve()
+                    .toBodilessEntity();
+        } catch (Exception e) {
+            log.warn("Failed to cascade-delete notifications for userId={}: {}", userId, e.getMessage());
         }
 
         userRepository.deleteById(userId);

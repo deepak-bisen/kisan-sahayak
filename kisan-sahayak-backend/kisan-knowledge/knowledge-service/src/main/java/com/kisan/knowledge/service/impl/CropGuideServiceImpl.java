@@ -5,7 +5,6 @@ import com.kisan.knowledge.entity.CropGuide;
 import com.kisan.knowledge.repository.CropGuideRepository;
 import com.kisan.knowledge.service.CropGuideService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +38,7 @@ public class CropGuideServiceImpl implements CropGuideService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CropGuideDTO getCropGuideById(String guideId) {
         CropGuide cropGuide = cropGuideRepository.findById(guideId)
                 .orElseThrow(() -> new RuntimeException("Crop Guide not found with id: "+ guideId));
@@ -46,6 +46,7 @@ public class CropGuideServiceImpl implements CropGuideService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CropGuideDTO> getAllCropGuides() {
         return cropGuideRepository.findAll().stream()
                 .map(this::mapToDTO)
@@ -53,6 +54,7 @@ public class CropGuideServiceImpl implements CropGuideService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CropGuideDTO> searchByCropName(String cropName) {
         return cropGuideRepository.findByCropNameContainingIgnoreCase(cropName).stream()
                 .map(this::mapToDTO)
@@ -73,6 +75,12 @@ public class CropGuideServiceImpl implements CropGuideService {
 
         CropGuide existingGuide = cropGuideRepository.findById(guideId)
                 .orElseThrow(()-> new RuntimeException("Crop Guide not found with id: " + guideId));
+
+        if (cropGuideDTO.getCropName() != null
+                && !cropGuideDTO.getCropName().equalsIgnoreCase(existingGuide.getCropName())
+                && cropGuideRepository.existsByCropNameIgnoreCase(cropGuideDTO.getCropName())) {
+            throw new RuntimeException("A guide for the crop '" + cropGuideDTO.getCropName() + "' already exists.");
+        }
 
         if (cropGuideDTO.getCropName() != null) existingGuide.setCropName(cropGuideDTO.getCropName());
         if (cropGuideDTO.getSeason() != null) existingGuide.setSeason(cropGuideDTO.getSeason());

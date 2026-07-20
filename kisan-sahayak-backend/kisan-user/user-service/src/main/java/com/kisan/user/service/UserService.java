@@ -31,6 +31,8 @@ import java.util.List;
         */
        UserDTO updateUser(String userId, UserDTO userDTO);
 
+       String refreshToken(String token);
+
        //---delete user---
        void deleteUserByUserId(String userId);
        void deleteUserByPhone(String phoneNumber);

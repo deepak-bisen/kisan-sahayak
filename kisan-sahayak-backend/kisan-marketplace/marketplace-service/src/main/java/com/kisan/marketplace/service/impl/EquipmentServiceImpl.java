@@ -4,7 +4,10 @@ import com.kisan.marketplace.client.UserClient;
 import com.kisan.marketplace.dto.EquipmentDTO;
 import com.kisan.marketplace.dto.UserResponseDTO;
 import com.kisan.marketplace.entity.Equipment;
+import com.kisan.marketplace.entity.Booking;
+import com.kisan.marketplace.repository.BookingRepository;
 import com.kisan.marketplace.repository.EquipmentRepository;
+import com.kisan.marketplace.repository.NotificationRepository;
 import com.kisan.marketplace.service.EquipmentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +32,8 @@ import java.util.stream.Collectors;
 public class EquipmentServiceImpl implements EquipmentService {
 
     private final EquipmentRepository equipmentRepository;
+    private final BookingRepository bookingRepository;
+    private final NotificationRepository notificationRepository;
     private final UserClient userClient;
 
     @Value("${upload.dir}")
@@ -141,7 +146,7 @@ public class EquipmentServiceImpl implements EquipmentService {
 
     @Override
     @Transactional
-    public EquipmentDTO updateEquipment(String equipmentId, EquipmentDTO equipmentDTO) {
+    public EquipmentDTO updateEquipment(String equipmentId, EquipmentDTO equipmentDTO, MultipartFile image) {
         Equipment existing = equipmentRepository.findById(equipmentId)
                 .orElseThrow(() -> new RuntimeException("Equipment not found"));
 
@@ -150,7 +155,25 @@ public class EquipmentServiceImpl implements EquipmentService {
         if (equipmentDTO.getHourlyRate() != null) existing.setHourlyRate(equipmentDTO.getHourlyRate());
         if (equipmentDTO.getDailyRate() != null) existing.setDailyRate(equipmentDTO.getDailyRate());
         if (equipmentDTO.getCategory() != null) existing.setCategory(equipmentDTO.getCategory());
-        if (equipmentDTO.getImageUrl() != null) existing.setImageUrl(equipmentDTO.getImageUrl());
+
+        // Handle image replacement
+        if (image != null && !image.isEmpty()) {
+            String fileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
+            Path uploadPath = Paths.get(uploadDir);
+            if (!Files.exists(uploadPath)) {
+                try {
+                    Files.createDirectories(uploadPath);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            try {
+                Files.copy(image.getInputStream(), uploadPath.resolve(fileName), StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            existing.setImageUrl("/uploads/" + fileName);
+        }
 
         // Use object Boolean check to allow updating the boolean flag safely
         existing.setAvailable(equipmentDTO.isAvailable());
@@ -165,6 +188,7 @@ public class EquipmentServiceImpl implements EquipmentService {
         if (!equipmentRepository.existsById(equipmentId)) {
             throw new RuntimeException("Equipment not found");
         }
+        cascadeDeleteBookings(equipmentId);
         equipmentRepository.deleteById(equipmentId);
     }
 
@@ -173,9 +197,20 @@ public class EquipmentServiceImpl implements EquipmentService {
     public void deleteEquipmentByOwner(String ownerId) {
         List<Equipment> owned = equipmentRepository.findByOwnerId(ownerId);
         if (!owned.isEmpty()) {
+            for (Equipment eq : owned) {
+                cascadeDeleteBookings(eq.getId());
+            }
             equipmentRepository.deleteAll(owned);
             log.info("Deleted {} equipment listings for ownerId={}", owned.size(), ownerId);
         }
+    }
+
+    private void cascadeDeleteBookings(String equipmentId) {
+        List<Booking> bookings = bookingRepository.findByEquipmentId(equipmentId);
+        for (Booking b : bookings) {
+            notificationRepository.deleteByRelatedId(b.getId());
+        }
+        bookingRepository.deleteByEquipmentId(equipmentId);
     }
 
     private EquipmentDTO mapToDTO(Equipment equipment) {

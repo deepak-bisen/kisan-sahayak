@@ -7,7 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-@ComponentScan(basePackages = "com.kisan.knowledgecd ")
+@ComponentScan(basePackages = "com.kisan.knowledge")
 public class KnowledgeAppApplication
 {
     public static void main( String[] args )

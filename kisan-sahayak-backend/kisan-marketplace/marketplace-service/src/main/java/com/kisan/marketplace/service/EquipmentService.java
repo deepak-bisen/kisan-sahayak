@@ -12,7 +12,7 @@ public interface EquipmentService {
     List<EquipmentDTO> getEquipmentByOwner(String ownerId);
     List<EquipmentDTO> searchAvailableByCategory(String category);
     List<EquipmentDTO> searchAvailableByVillage(String villageName);
-    EquipmentDTO updateEquipment(String equipmentId, EquipmentDTO equipmentDTO);
+    EquipmentDTO updateEquipment(String equipmentId, EquipmentDTO equipmentDTO, MultipartFile image);
     void deleteEquipment(String equipmentId);
     void deleteEquipmentByOwner(String ownerId);
 }

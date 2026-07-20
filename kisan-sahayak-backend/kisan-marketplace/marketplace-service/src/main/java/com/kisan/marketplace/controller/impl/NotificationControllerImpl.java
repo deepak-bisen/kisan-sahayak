@@ -41,4 +41,10 @@ public class NotificationControllerImpl implements NotificationController {
         notificationService.markAllAsRead(userId);
         return ResponseEntity.noContent().build();
     }
+
+    @Override
+    public ResponseEntity<Void> deleteByUser(String userId) {
+        notificationService.deleteByUser(userId);
+        return ResponseEntity.noContent().build();
+    }
 }

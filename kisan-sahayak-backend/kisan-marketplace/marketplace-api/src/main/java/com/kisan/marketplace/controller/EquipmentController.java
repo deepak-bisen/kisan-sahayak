@@ -32,8 +32,11 @@ public interface EquipmentController {
     @GetMapping("/search/village/{villageName}")
     ResponseEntity<List<EquipmentDTO>> searchByVillage(@PathVariable("villageName") String villageName);
 
-    @PutMapping("/{id}")
-    ResponseEntity<EquipmentDTO> updateEquipment(@PathVariable("id") String id, @RequestBody EquipmentDTO equipmentDTO);
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    ResponseEntity<EquipmentDTO> updateEquipment(
+            @PathVariable("id") String id,
+            @RequestPart("equipment") @Valid EquipmentDTO equipmentDTO,
+            @RequestPart(value = "image", required = false) MultipartFile image);
 
     @DeleteMapping("/{id}")
     ResponseEntity<Void> deleteEquipment(@PathVariable("id") String id);

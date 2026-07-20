@@ -18,7 +18,7 @@ export class KnowledgeListComponent implements OnInit {
 
   readonly seasons = ['Rabi', 'Kharif', 'Zaid'];
 
-  constructor(private svc: KnowledgeService) {}
+  constructor(public svc: KnowledgeService) {}
 
   ngOnInit(): void {
     this.load();

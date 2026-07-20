@@ -35,4 +35,7 @@ public interface BookingController {
     public ResponseEntity<BookingDTO> cancelBooking(
             @PathVariable String id,
             @RequestParam String renterId);
+
+    @DeleteMapping("/renter/{renterId}")
+    public ResponseEntity<Void> deleteBookingsByRenter(@PathVariable String renterId);
 }

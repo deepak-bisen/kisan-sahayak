@@ -41,5 +41,28 @@
         {{ loading() ? 'Saving…' : 'Save changes' }}
       </button>
     </form>
+
+    <hr style="margin:32px 0; border:none; border-top:1px solid var(--color-border);" />
+
+    <div style="text-align:center;">
+      <button class="btn btn-ghost" style="color:var(--color-clay);border-color:var(--color-clay);" (click)="confirmDelete.set(true)">
+        Delete account
+      </button>
+    </div>
   </div>
 </div>
+
+@if (confirmDelete()) {
+  <div class="dialog-overlay" (click)="confirmDelete.set(false)">
+    <div class="dialog-box" (click)="$event.stopPropagation()">
+      <h3>Delete your account?</h3>
+      <p class="field-hint">This action is permanent. Your profile, listings, and all associated data will be removed.</p>
+      <div class="dialog-actions">
+        <button class="btn btn-ghost" (click)="confirmDelete.set(false)">Cancel</button>
+        <button class="btn btn-primary" style="background:#dc2626;border-color:#dc2626;" [disabled]="deleting()" (click)="deleteAccount()">
+          {{ deleting() ? 'Deleting…' : 'Delete my account' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

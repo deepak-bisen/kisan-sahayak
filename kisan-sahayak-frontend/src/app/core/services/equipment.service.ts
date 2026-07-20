@@ -50,8 +50,13 @@ export class EquipmentService {
     );
   }
 
-  update(id: string, e: EquipmentDTO): Observable<EquipmentDTO> {
-    return this.http.put<EquipmentDTO>(`${this.base}/${id}`, e, this.authHeaders()).pipe(
+  update(id: string, e: EquipmentDTO, image?: File): Observable<EquipmentDTO> {
+    const formData = new FormData();
+    formData.append('equipment', new Blob([JSON.stringify(e)], { type: 'application/json' }), 'equipment');
+    if (image) {
+      formData.append('image', image, image.name);
+    }
+    return this.http.put<EquipmentDTO>(`${this.base}/${id}`, formData, this.authHeaders()).pipe(
       tap(() => this.cache.clearPrefix(this.cachePrefix)),
     );
   }

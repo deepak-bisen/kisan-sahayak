@@ -10,11 +10,20 @@ import { AuthService } from '../../core/services/auth.service';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './profile.component.html',
+  styles: [`
+    .dialog-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:1000; }
+    .dialog-box { background:#fff; padding:24px; border-radius:12px; max-width:420px; width:90%; box-shadow:0 8px 32px rgba(0,0,0,0.2); }
+    .dialog-box h3 { margin:0 0 8px; font-size:1.1rem; color:#1a1a2e; }
+    .dialog-box .field-hint { margin:0 0 20px; }
+    .dialog-actions { display:flex; gap:12px; justify-content:flex-end; }
+  `],
 })
 export class ProfileComponent implements OnInit {
   readonly loading = signal(false);
   readonly success = signal<string | null>(null);
   readonly serverError = signal<string | null>(null);
+  readonly confirmDelete = signal(false);
+  readonly deleting = signal(false);
 
   form = this.fb.group({
     fullName: ['', [Validators.required, Validators.minLength(3)]],
@@ -69,6 +78,23 @@ export class ProfileComponent implements OnInit {
       error: (err: HttpErrorResponse) => {
         this.loading.set(false);
         this.serverError.set(err.error?.message || 'Failed to update profile.');
+      },
+    });
+  }
+
+  deleteAccount(): void {
+    const user = this.auth.currentUser();
+    if (!user?.userId) return;
+    this.deleting.set(true);
+    this.auth.deleteUser(user.userId).subscribe({
+      next: () => {
+        this.auth.logout();
+        this.router.navigate(['/']);
+      },
+      error: () => {
+        this.deleting.set(false);
+        this.confirmDelete.set(false);
+        this.serverError.set('Failed to delete account. Please try again.');
       },
     });
   }

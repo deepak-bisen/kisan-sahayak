@@ -23,4 +23,7 @@ public interface NotificationController {
 
     @PatchMapping("/user/{userId}/read-all")
     ResponseEntity<Void> markAllAsRead(@PathVariable String userId);
+
+    @DeleteMapping("/user/{userId}")
+    ResponseEntity<Void> deleteByUser(@PathVariable String userId);
 }

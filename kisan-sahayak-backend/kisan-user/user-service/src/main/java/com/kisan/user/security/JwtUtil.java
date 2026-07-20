@@ -2,6 +2,8 @@ package com.kisan.user.security;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -53,6 +55,23 @@ public class JwtUtil {
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    public Claims extractAllClaims(String token) {
+        try {
+            return Jwts.parserBuilder().setSigningKey(getSignKey()).build()
+                    .parseClaimsJws(token).getBody();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims();
+        }
+    }
+
+    public String refreshToken(String oldToken) {
+        Claims claims = extractAllClaims(oldToken);
+        String phone = claims.getSubject();
+        String userId = claims.get("userId", String.class);
+        String roles = claims.get("roles", String.class);
+        return generateToken(phone, userId, roles);
     }
 
     private Key getSignKey() {

@@ -3,7 +3,6 @@ package com.kisan.marketplace.controller.impl;
 import com.kisan.marketplace.controller.EquipmentController;
 import com.kisan.marketplace.dto.EquipmentDTO;
 import com.kisan.marketplace.service.EquipmentService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +17,6 @@ import java.util.List;
 public class EquipmentControllerImpl implements EquipmentController {
 
     private final EquipmentService equipmentService;
-
-//    @PostMapping
-//    public ResponseEntity<EquipmentDTO> addEquipment(@Valid @RequestBody EquipmentDTO equipmentDTO) {
-//        return new ResponseEntity<>(equipmentService.addEquipment(equipmentDTO), HttpStatus.CREATED);
-//    }
 
     @Override
     public ResponseEntity<EquipmentDTO> addEquipment(EquipmentDTO equipmentDTO, MultipartFile image) {
@@ -55,8 +49,8 @@ public class EquipmentControllerImpl implements EquipmentController {
     }
 
     @Override
-    public ResponseEntity<EquipmentDTO> updateEquipment(String id, EquipmentDTO equipmentDTO) {
-        return ResponseEntity.ok(equipmentService.updateEquipment(id, equipmentDTO));
+    public ResponseEntity<EquipmentDTO> updateEquipment(String id, EquipmentDTO equipmentDTO, MultipartFile image) {
+        return ResponseEntity.ok(equipmentService.updateEquipment(id, equipmentDTO, image));
     }
 
     @Override

@@ -1,12 +1,14 @@
-import { HttpInterceptorFn } from '@angular/common/http';
+import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { AuthService } from '../services/auth.service';
+import { catchError, switchMap, throwError } from 'rxjs';
+import { Router } from '@angular/router';
 
-// Attaches "Authorization: Bearer <token>" to every outgoing request once
-// the user is logged in. The api-gateway validates this JWT before routing
-// the request on to kisan-user / kisan-marketplace / kisan-knowledge.
+let isRefreshing = false;
+
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(AuthService);
+  const router = inject(Router);
   const token = auth.getToken();
 
   if (!token) return next(req);
@@ -14,5 +16,28 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const cloned = req.clone({
     setHeaders: { Authorization: `Bearer ${token}` },
   });
-  return next(cloned);
+
+  return next(cloned).pipe(
+    catchError((err) => {
+      if (err instanceof HttpErrorResponse && err.status === 401 && !isRefreshing) {
+        isRefreshing = true;
+        return auth.refreshToken().pipe(
+          switchMap((newToken) => {
+            isRefreshing = false;
+            const retry = req.clone({
+              setHeaders: { Authorization: `Bearer ${newToken}` },
+            });
+            return next(retry);
+          }),
+          catchError(() => {
+            isRefreshing = false;
+            auth.logout();
+            router.navigate(['/login']);
+            return throwError(() => err);
+          }),
+        );
+      }
+      return throwError(() => err);
+    }),
+  );
 };

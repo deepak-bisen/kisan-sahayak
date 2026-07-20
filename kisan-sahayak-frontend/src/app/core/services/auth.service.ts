@@ -41,6 +41,16 @@ export class AuthService {
     return localStorage.getItem(TOKEN_KEY);
   }
 
+  refreshToken(): Observable<string> {
+    const token = this.getToken();
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
+    return this.http.post<string>(`${this.baseUrl}/refresh`, token, { headers }).pipe(
+      tap((newToken) => {
+        localStorage.setItem(TOKEN_KEY, newToken);
+      }),
+    );
+  }
+
   hasRole(role: string): boolean {
     return this.currentUser()?.roles?.includes(role as any) ?? false;
   }
@@ -50,7 +60,7 @@ export class AuthService {
   }
 
   deleteUser(userId: string): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${userId}`);
+    return this.http.delete<void>(`${this.baseUrl}/delete/${userId}`);
   }
 
   updateProfile(userId: string, payload: Partial<UserDTO>): Observable<UserDTO> {

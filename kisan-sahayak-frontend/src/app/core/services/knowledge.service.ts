@@ -6,7 +6,15 @@ import { CropGuideDTO } from '../models/crop-guide.model';
 
 @Injectable({ providedIn: 'root' })
 export class KnowledgeService {
+  readonly baseUrl = environment.baseUrl;
   private readonly base = `${environment.apiUrl}/knowledge/guides`;
+
+  /** Resolve a relative image/video URL through the API gateway. */
+  resolveUrl(url: string | null | undefined): string | null {
+    if (!url) return null;
+    if (url.startsWith('http')) return url;
+    return `${this.baseUrl}${url}`;
+  }
 
   constructor(private http: HttpClient) {}
 

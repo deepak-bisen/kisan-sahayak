@@ -37,7 +37,7 @@
   <div *ngIf="!loading() && guides().length" class="guide-list">
     <div *ngFor="let g of guides()" class="guide-card">
       <div *ngIf="g.imageUrl" class="guide-media">
-        <img [src]="g.imageUrl" alt="{{ g.cropName }}" />
+        <img [src]="svc.resolveUrl(g.imageUrl)" alt="{{ g.cropName }}" />
       </div>
       <h3>{{ g.cropName }}</h3>
       <p class="meta">
@@ -54,7 +54,7 @@
       <div *ngIf="g.videoUrl" class="guide-section">
         <strong>Video</strong>
         <div class="guide-video">
-          <video [src]="g.videoUrl" controls class="guide-video__player"></video>
+          <video [src]="svc.resolveUrl(g.videoUrl)" controls class="guide-video__player"></video>
         </div>
       </div>
     </div>

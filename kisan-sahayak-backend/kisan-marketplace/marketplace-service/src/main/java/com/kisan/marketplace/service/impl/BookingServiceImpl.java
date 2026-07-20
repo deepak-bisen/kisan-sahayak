@@ -8,6 +8,7 @@ import com.kisan.marketplace.entity.Equipment;
 import com.kisan.marketplace.enums.Status;
 import com.kisan.marketplace.repository.BookingRepository;
 import com.kisan.marketplace.repository.EquipmentRepository;
+import com.kisan.marketplace.repository.NotificationRepository;
 import com.kisan.marketplace.service.BookingService;
 import com.kisan.marketplace.service.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final EquipmentRepository equipmentRepository;
+    private final NotificationRepository notificationRepository;
     private final UserClient userClient;
     private final NotificationService notificationService;
 
@@ -149,6 +151,16 @@ public class BookingServiceImpl implements BookingService {
         }
 
         return updated;
+    }
+
+    @Override
+    @Transactional
+    public void deleteBookingsByRenter(String renterId) {
+        List<Booking> bookings = bookingRepository.findByRenterId(renterId);
+        for (Booking b : bookings) {
+            notificationRepository.deleteByRelatedId(b.getId());
+        }
+        bookingRepository.deleteByRenterId(renterId);
     }
 
     @Override

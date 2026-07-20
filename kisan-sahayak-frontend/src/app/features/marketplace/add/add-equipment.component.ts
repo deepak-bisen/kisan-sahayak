@@ -121,13 +121,15 @@ export class AddEquipmentComponent implements OnInit, OnDestroy {
 
     const id = this.editingId();
 
+    const file = this.selectedFile() ?? undefined;
+
     const obs = id
-      ? this.svc.update(id, payload)
-      : this.svc.add(payload, this.selectedFile() ?? undefined);
+      ? this.svc.update(id, payload, file)
+      : this.svc.add(payload, file);
 
     obs.subscribe({
       next: () => this.router.navigate(['/marketplace']),
-      error: () => {},
+      error: () => alert('Failed to save equipment. Please try again.'),
     });
   }
 }
