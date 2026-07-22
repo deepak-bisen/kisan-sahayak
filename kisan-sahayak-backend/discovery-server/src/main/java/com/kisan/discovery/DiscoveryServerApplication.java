@@ -8,12 +8,7 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAut
 import org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration;
 import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 
-@SpringBootApplication(exclude = {
-    DataSourceAutoConfiguration.class,
-    SecurityAutoConfiguration.class,
-    SecurityFilterAutoConfiguration.class,
-    ManagementWebSecurityAutoConfiguration.class
-})
+@SpringBootApplication
 @EnableEurekaServer // This turns the app into a Discovery Server
 public class DiscoveryServerApplication {
     public static void main(String[] args) {
