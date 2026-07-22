@@ -56,7 +56,7 @@ export class AuthService {
   }
 
   getAllUsers(): Observable<UserDTO[]> {
-    return this.http.get<UserDTO[]>(`${this.baseUrl}/all`);
+    return this.http.get<UserDTO[]>(`${this.baseUrl}`);
   }
 
   deleteUser(userId: string): Observable<void> {

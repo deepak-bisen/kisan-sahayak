@@ -4,12 +4,21 @@
 
 .owner-group__title {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 12px;
   font-size: 1.1rem;
   margin-bottom: 10px;
   padding-bottom: 8px;
   border-bottom: 1px solid var(--color-border);
+}
+
+.owner-group__thumb {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid var(--color-border);
+  flex-shrink: 0;
 }
 
 .owner-group__title a {

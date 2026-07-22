@@ -42,6 +42,7 @@
               @if (notif.notifications().length > 0) {
                 <button class="notif-dropdown__action" (click)="notif.markAllAsRead()">Mark all as read</button>
               }
+              <a routerLink="/notifications" class="notif-dropdown__action" (click)="notif.closeDropdown()">View all notifications</a>
             </div>
           }
           <a routerLink="/dashboard" class="shell-nav__user">

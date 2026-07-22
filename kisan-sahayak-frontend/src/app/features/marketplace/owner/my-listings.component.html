@@ -26,11 +26,23 @@
         <p class="meta">{{ e.category }} · {{ e.villageName || e.district }}</p>
         <p class="rates">Hourly: ₹{{ e.hourlyRate }} &nbsp; · &nbsp; Daily: ₹{{ e.dailyRate }}</p>
       </a>
-      <div style="margin-top:8px; display:flex; gap:8px;">
-        <button class="btn btn-ghost" (click)="edit(e.equipmentId!)">Edit</button>
-        <button class="btn btn-ghost" (click)="promptDelete(e)" [disabled]="deletingId() === e.equipmentId">
-          {{ deletingId() === e.equipmentId ? 'Deleting...' : 'Delete' }}
-        </button>
+      <div class="listing-actions">
+        <label class="toggle" [class.toggle--loading]="togglingId() === e.equipmentId">
+          <input
+            type="checkbox"
+            [checked]="e.isAvailable"
+            [disabled]="togglingId() === e.equipmentId"
+            (change)="toggleAvailability(e.equipmentId!)"
+          />
+          <span class="toggle__slider"></span>
+          <span class="toggle__label">{{ e.isAvailable ? 'Available' : 'Unavailable' }}</span>
+        </label>
+        <div class="listing-buttons">
+          <button class="btn btn-ghost" (click)="edit(e.equipmentId!)">Edit</button>
+          <button class="btn btn-ghost" (click)="promptDelete(e)" [disabled]="deletingId() === e.equipmentId">
+            {{ deletingId() === e.equipmentId ? 'Deleting...' : 'Delete' }}
+          </button>
+        </div>
       </div>
     </li>
   </ul>

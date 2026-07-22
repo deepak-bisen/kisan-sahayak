@@ -26,6 +26,12 @@ export const routes: Routes = [
     title: 'Knowledge Hub — Kisan Sahayak',
   },
   {
+    path: 'knowledge/:id',
+    loadComponent: () =>
+      import('./features/knowledge/detail/knowledge-detail.component').then((m) => m.KnowledgeDetailComponent),
+    title: 'Crop Guide — Kisan Sahayak',
+  },
+  {
     path: 'profile',
     loadComponent: () =>
       import('./features/profile/profile.component').then((m) => m.ProfileComponent),
@@ -38,6 +44,13 @@ export const routes: Routes = [
       import('./features/dashboard/dashboard.component').then((m) => m.DashboardComponent),
     canActivate: [authGuard],
     title: 'Dashboard — Kisan Sahayak',
+  },
+  {
+    path: 'notifications',
+    loadComponent: () =>
+      import('./features/notifications/notifications.component').then((m) => m.NotificationsComponent),
+    canActivate: [authGuard],
+    title: 'Notifications — Kisan Sahayak',
   },
   {
     path: 'marketplace',

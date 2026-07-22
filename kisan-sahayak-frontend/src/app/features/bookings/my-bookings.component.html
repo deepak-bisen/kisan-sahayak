@@ -16,13 +16,16 @@
   <ul *ngIf="!loading() && bookings().length" class="booking-list">
     <li *ngFor="let item of bookings()" class="booking-card">
       <div class="booking-card__head">
-        <div>
-          <h3>{{ item.equipment?.name || 'Equipment' }}</h3>
-          <span class="booking-card__meta">
-            {{ item.equipment?.category || '' }}
-            {{ item.equipment?.category && (item.equipment?.villageName || item.equipment?.district) ? '·' : '' }}
-            {{ item.equipment?.villageName || item.equipment?.district || '' }}
-          </span>
+        <div class="booking-card__info">
+          <img *ngIf="item.equipment?.imageUrl" [src]="equipmentSvc.resolveImageUrl(item.equipment!.imageUrl)" alt="{{ item.equipment!.name }}" class="booking-card__thumb" />
+          <div>
+            <h3>{{ item.equipment?.name || 'Equipment' }}</h3>
+            <span class="booking-card__meta">
+              {{ item.equipment?.category || '' }}
+              {{ item.equipment?.category && (item.equipment?.villageName || item.equipment?.district) ? '·' : '' }}
+              {{ item.equipment?.villageName || item.equipment?.district || '' }}
+            </span>
+          </div>
         </div>
         <span class="booking-status" [style.--status-color]="statusColor(item.booking.status)">
           {{ item.booking.status }}
@@ -39,14 +42,22 @@
       </div>
       <div class="booking-card__actions">
         <a [routerLink]="['/marketplace', item.booking.equipmentId]" class="btn btn-ghost">View equipment</a>
-        <button
-          *ngIf="item.booking.status === 'REQUESTED'"
-          class="btn btn-danger btn-sm"
-          [disabled]="cancellingId() === item.booking.bookingId"
-          (click)="cancel(item.booking.bookingId!)"
-        >
-          {{ cancellingId() === item.booking.bookingId ? 'Cancelling…' : 'Cancel' }}
-        </button>
+        <ng-container [ngSwitch]="item.booking.status">
+          <button *ngSwitchCase="'REQUESTED'"
+            class="btn btn-danger btn-sm"
+            [disabled]="updatingId() === item.booking.bookingId"
+            (click)="cancel(item.booking.bookingId!)"
+          >
+            {{ updatingId() === item.booking.bookingId ? 'Cancelling…' : 'Cancel' }}
+          </button>
+          <button *ngSwitchCase="'CONFIRMED'"
+            class="btn btn-primary btn-sm"
+            [disabled]="updatingId() === item.booking.bookingId"
+            (click)="markCompleted(item.booking.bookingId!)"
+          >
+            {{ updatingId() === item.booking.bookingId ? 'Updating…' : 'Mark Completed' }}
+          </button>
+        </ng-container>
       </div>
     </li>
   </ul>

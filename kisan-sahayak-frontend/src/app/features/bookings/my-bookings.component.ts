@@ -24,11 +24,11 @@ interface BookingWithEquipment {
 export class MyBookingsComponent implements OnInit {
   readonly loading = signal(false);
   readonly bookings = signal<BookingWithEquipment[]>([]);
-  readonly cancellingId = signal<string | null>(null);
+  readonly updatingId = signal<string | null>(null);
 
   constructor(
     private bookingSvc: BookingService,
-    private equipmentSvc: EquipmentService,
+    public equipmentSvc: EquipmentService,
     public auth: AuthService,
   ) {}
 
@@ -58,7 +58,7 @@ export class MyBookingsComponent implements OnInit {
   cancel(bookingId: string): void {
     const user = this.auth.currentUser();
     if (!user?.userId) return;
-    this.cancellingId.set(bookingId);
+    this.updatingId.set(bookingId);
     this.bookingSvc.cancelByRenter(bookingId, user.userId).subscribe({
       next: () => {
         this.bookings.update((items) =>
@@ -68,9 +68,26 @@ export class MyBookingsComponent implements OnInit {
               : item
           )
         );
-        this.cancellingId.set(null);
+        this.updatingId.set(null);
       },
-      error: () => this.cancellingId.set(null),
+      error: () => this.updatingId.set(null),
+    });
+  }
+
+  markCompleted(bookingId: string): void {
+    this.updatingId.set(bookingId);
+    this.bookingSvc.updateStatus(bookingId, 'COMPLETED').subscribe({
+      next: () => {
+        this.bookings.update((items) =>
+          items.map((item) =>
+            item.booking.bookingId === bookingId
+              ? { ...item, booking: { ...item.booking, status: 'COMPLETED' as BookingStatus } }
+              : item
+          )
+        );
+        this.updatingId.set(null);
+      },
+      error: () => this.updatingId.set(null),
     });
   }
 

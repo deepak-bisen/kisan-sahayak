@@ -35,7 +35,7 @@
   </div>
 
   <div *ngIf="!loading() && guides().length" class="guide-list">
-    <div *ngFor="let g of guides()" class="guide-card">
+    <a *ngFor="let g of guides()" [routerLink]="['/knowledge', g.guideId]" class="guide-card">
       <div *ngIf="g.imageUrl" class="guide-media">
         <img [src]="svc.resolveUrl(g.imageUrl)" alt="{{ g.cropName }}" />
       </div>
@@ -57,6 +57,6 @@
           <video [src]="svc.resolveUrl(g.videoUrl)" controls class="guide-video__player"></video>
         </div>
       </div>
-    </div>
+    </a>
   </div>
 </div>

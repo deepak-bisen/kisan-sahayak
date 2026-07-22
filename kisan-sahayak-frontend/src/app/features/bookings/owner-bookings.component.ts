@@ -27,7 +27,7 @@ export class OwnerBookingsComponent implements OnInit {
   readonly items = signal<EquipmentWithBookings[]>([]);
 
   constructor(
-    private equipmentSvc: EquipmentService,
+    public equipmentSvc: EquipmentService,
     private bookingSvc: BookingService,
     public auth: AuthService,
   ) {}

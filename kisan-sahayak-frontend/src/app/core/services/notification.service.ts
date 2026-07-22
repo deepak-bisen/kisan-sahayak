@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy, signal } from '@angular/core';
+import { Injectable, OnDestroy, signal, effect } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap, interval, switchMap, startWith, Subscription } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -17,7 +17,8 @@ export class NotificationService implements OnDestroy {
   readonly showDropdown = signal(false);
 
   constructor(private http: HttpClient, private auth: AuthService) {
-    this.auth.currentUser.subscribe((user) => {
+    effect(() => {
+      const user = this.auth.currentUser();
       if (user) {
         this.startPolling();
       } else {

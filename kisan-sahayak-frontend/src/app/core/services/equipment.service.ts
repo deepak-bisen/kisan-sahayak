@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, tap, switchMap, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { EquipmentDTO } from '../models/equipment.model';
 import { AuthService } from './auth.service';
@@ -73,6 +73,18 @@ export class EquipmentService {
 
   searchByVillage(village: string) {
     return this.http.get<EquipmentDTO[]>(`${this.base}/search/village/${encodeURIComponent(village)}`);
+  }
+
+  toggleAvailability(id: string): Observable<EquipmentDTO> {
+    return this.getById(id).pipe(
+      switchMap((eq) => {
+        eq.isAvailable = !eq.isAvailable;
+        const formData = new FormData();
+        formData.append('equipment', new Blob([JSON.stringify(eq)], { type: 'application/json' }), 'equipment');
+        return this.http.put<EquipmentDTO>(`${this.base}/${id}`, formData, this.authHeaders());
+      }),
+      tap(() => this.cache.clearPrefix(this.cachePrefix)),
+    );
   }
 
   /** Resolve a relative image URL through the API gateway. */

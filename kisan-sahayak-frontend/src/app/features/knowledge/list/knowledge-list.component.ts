@@ -1,13 +1,14 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { KnowledgeService } from '../../../core/services/knowledge.service';
 import { CropGuideDTO } from '../../../core/models/crop-guide.model';
 
 @Component({
   selector: 'app-knowledge-list',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './knowledge-list.component.html',
 })
 export class KnowledgeListComponent implements OnInit {
