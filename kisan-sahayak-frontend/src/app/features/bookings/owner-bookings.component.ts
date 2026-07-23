@@ -2,18 +2,24 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
-import { switchMap, catchError } from 'rxjs/operators';
+import { switchMap, catchError, map } from 'rxjs/operators';
 import { BookingService } from '../../core/services/booking.service';
 import { EquipmentService } from '../../core/services/equipment.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ToastService } from '../../core/services/toast.service';
 import { BookingDTO, BookingStatus } from '../../core/models/booking.model';
 import { EquipmentDTO } from '../../core/models/equipment.model';
+import { UserDTO } from '../../core/models/user.model';
 import { BreadcrumbComponent } from '../../shared/breadcrumb/breadcrumb.component';
+
+interface BookingWithRenter {
+  booking: BookingDTO;
+  renterContact: UserDTO | null;
+}
 
 interface EquipmentWithBookings {
   equipment: EquipmentDTO;
-  bookings: BookingDTO[];
+  bookings: BookingWithRenter[];
 }
 
 @Component({
@@ -67,7 +73,7 @@ export class OwnerBookingsComponent implements OnInit {
           items.map((eq) => ({
             ...eq,
             bookings: eq.bookings.map((b) =>
-              b.bookingId === bookingId ? { ...b, status } : b
+              b.booking.bookingId === bookingId ? { ...b, booking: { ...b.booking, status } } : b
             ),
           }))
         );
@@ -89,7 +95,25 @@ export class OwnerBookingsComponent implements OnInit {
           equipmentList.map((eq) =>
             this.bookingSvc.getByEquipment(eq.equipmentId!).pipe(
               catchError(() => of([])),
-              switchMap((bookings) => of({ equipment: eq, bookings } as EquipmentWithBookings)),
+              switchMap((bookings) => {
+                const renterIds = [...new Set(bookings.map((b) => b.renterId))];
+                if (!renterIds.length) return of({ equipment: eq, bookings: bookings.map((b) => ({ booking: b, renterContact: null } as BookingWithRenter)) } as EquipmentWithBookings);
+                return forkJoin(
+                  renterIds.map((id) => this.auth.getUserById(id).pipe(catchError(() => of(null))))
+                ).pipe(
+                  map((renterUsers) => {
+                    const renterMap = new Map<string, UserDTO | null>();
+                    renterIds.forEach((id, i) => renterMap.set(id, renterUsers[i]));
+                    return {
+                      equipment: eq,
+                      bookings: bookings.map((b) => ({
+                        booking: b,
+                        renterContact: renterMap.get(b.renterId) ?? null,
+                      } as BookingWithRenter)),
+                    } as EquipmentWithBookings;
+                  }),
+                );
+              }),
             )
           ),
         );

@@ -7,13 +7,15 @@ import { AuthService } from '../../core/services/auth.service';
 import { ToastService } from '../../core/services/toast.service';
 import { BookingDTO, BookingStatus } from '../../core/models/booking.model';
 import { EquipmentDTO } from '../../core/models/equipment.model';
+import { UserDTO } from '../../core/models/user.model';
 import { forkJoin, of } from 'rxjs';
-import { switchMap, catchError } from 'rxjs/operators';
+import { switchMap, catchError, map } from 'rxjs/operators';
 import { BreadcrumbComponent } from '../../shared/breadcrumb/breadcrumb.component';
 
 interface BookingWithEquipment {
   booking: BookingDTO;
   equipment: EquipmentDTO | null;
+  ownerContact: UserDTO | null;
 }
 
 @Component({
@@ -110,9 +112,24 @@ export class MyBookingsComponent implements OnInit {
             ),
           ),
         ).pipe(
-          switchMap((equipments) =>
-            of(bookings.map((b, i) => ({ booking: b, equipment: equipments[i] } as BookingWithEquipment))),
-          ),
+          switchMap((equipments) => {
+            const ownerIds = [...new Set(equipments.filter((e): e is EquipmentDTO => !!e).map((e) => e.ownerId))];
+            if (!ownerIds.length) return of(bookings.map((b, i) => ({ booking: b, equipment: equipments[i], ownerContact: null } as BookingWithEquipment)));
+            return forkJoin(
+              ownerIds.map((id) =>
+                this.auth.getUserById(id).pipe(catchError(() => of(null))))
+            ).pipe(
+              map((ownerUsers) => {
+                const ownerMap = new Map<string, UserDTO | null>();
+                ownerIds.forEach((id, i) => ownerMap.set(id, ownerUsers[i]));
+                return bookings.map((b, i) => ({
+                  booking: b,
+                  equipment: equipments[i],
+                  ownerContact: equipments[i] ? ownerMap.get(equipments[i]!.ownerId) ?? null : null,
+                } as BookingWithEquipment));
+              }),
+            );
+          }),
         );
       }),
       catchError(() => of([])),

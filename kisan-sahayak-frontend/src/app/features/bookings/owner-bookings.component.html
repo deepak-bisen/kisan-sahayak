@@ -32,41 +32,45 @@
     </div>
 
     <ul *ngIf="item.bookings.length" class="booking-list">
-      <li *ngFor="let b of item.bookings" class="booking-card">
+      <li *ngFor="let bw of item.bookings" class="booking-card">
         <div class="booking-card__head">
-          <span class="booking-status" [style.--status-color]="statusColor(b.status)">
-            {{ b.status }}
+          <span class="booking-status" [style.--status-color]="statusColor(bw.booking.status)">
+            {{ bw.booking.status }}
           </span>
-          <span class="booking-card__cost" *ngIf="b.totalCost">₹{{ b.totalCost }}</span>
+          <span class="booking-card__cost" *ngIf="bw.booking.totalCost">₹{{ bw.booking.totalCost }}</span>
         </div>
         <div class="booking-card__body">
-          <span>{{ b.startDate }} → {{ b.endDate }}</span>
-          <span class="field-hint">{{ bookingDays(b) }} day{{ bookingDays(b) > 1 ? 's' : '' }}</span>
+          <span>{{ bw.booking.startDate }} → {{ bw.booking.endDate }}</span>
+          <span class="field-hint">{{ bookingDays(bw.booking) }} day{{ bookingDays(bw.booking) > 1 ? 's' : '' }}</span>
+        </div>
+        <div *ngIf="bw.renterContact" class="booking-card__contact">
+          <span class="contact-label">Renter:</span>
+          <span>{{ bw.renterContact.fullName }} · {{ bw.renterContact.phoneNumber }}</span>
         </div>
         <div class="booking-card__actions">
-          <ng-container [ngSwitch]="b.status">
+          <ng-container [ngSwitch]="bw.booking.status">
             <ng-container *ngSwitchCase="'REQUESTED'">
               <button
                 class="btn btn-primary"
-                [disabled]="updating() === b.bookingId"
-                (click)="updateStatus(b.bookingId!, 'CONFIRMED')"
+                [disabled]="updating() === bw.booking.bookingId"
+                (click)="updateStatus(bw.booking.bookingId!, 'CONFIRMED')"
               >
-                {{ updating() === b.bookingId ? 'Updating…' : 'Confirm' }}
+                {{ updating() === bw.booking.bookingId ? 'Updating…' : 'Confirm' }}
               </button>
               <button
                 class="btn btn-ghost"
-                [disabled]="updating() === b.bookingId"
-                (click)="updateStatus(b.bookingId!, 'CANCELLED')"
+                [disabled]="updating() === bw.booking.bookingId"
+                (click)="updateStatus(bw.booking.bookingId!, 'CANCELLED')"
               >
                 Cancel
               </button>
             </ng-container>
             <button *ngSwitchCase="'CONFIRMED'"
               class="btn btn-primary"
-              [disabled]="updating() === b.bookingId"
-              (click)="updateStatus(b.bookingId!, 'COMPLETED')"
+              [disabled]="updating() === bw.booking.bookingId"
+              (click)="updateStatus(bw.booking.bookingId!, 'COMPLETED')"
             >
-              {{ updating() === b.bookingId ? 'Updating…' : 'Mark Completed' }}
+              {{ updating() === bw.booking.bookingId ? 'Updating…' : 'Mark Completed' }}
             </button>
           </ng-container>
         </div>

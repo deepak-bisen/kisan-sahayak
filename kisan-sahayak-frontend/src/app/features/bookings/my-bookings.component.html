@@ -37,6 +37,10 @@
           {{ item.booking.status }}
         </span>
       </div>
+      <div *ngIf="item.ownerContact" class="booking-card__contact">
+        <span class="contact-label">Owner:</span>
+        <span>{{ item.ownerContact.fullName }} · {{ item.ownerContact.phoneNumber }}</span>
+      </div>
       <div class="booking-card__body">
         <span>
           {{ item.booking.startDate }} → {{ item.booking.endDate }}
