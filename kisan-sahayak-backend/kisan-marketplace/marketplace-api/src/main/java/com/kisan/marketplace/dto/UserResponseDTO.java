@@ -8,6 +8,7 @@ import java.util.List;
 public class UserResponseDTO {
     private String userId;
     private String fullName;
+    private String phoneNumber;
     private List<String> roles;
     private String villageName;
     private String district;

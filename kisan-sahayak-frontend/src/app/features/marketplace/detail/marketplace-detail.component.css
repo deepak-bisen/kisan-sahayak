@@ -59,6 +59,12 @@
   color: var(--color-cream-dim);
 }
 
+.owner-card__phone {
+  font-size: 0.9rem;
+  color: var(--color-text);
+  font-weight: 600;
+}
+
 .booking-section {
   margin-top: 32px;
   padding-top: 24px;

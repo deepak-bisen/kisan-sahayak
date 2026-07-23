@@ -19,6 +19,7 @@ import { BreadcrumbComponent } from '../../../shared/breadcrumb/breadcrumb.compo
 })
 export class MarketplaceDetailComponent implements OnInit {
   readonly equipment = signal<EquipmentDTO | null>(null);
+  readonly ownerPhone = signal<string | null>(null);
   readonly loading = signal(false);
   readonly loadError = signal<string | null>(null);
   readonly bookingLoading = signal(false);
@@ -90,6 +91,9 @@ export class MarketplaceDetailComponent implements OnInit {
         this.equipment.set(e);
         this.loading.set(false);
         this.loadBookings(id);
+        this.auth.getUserById(e.ownerId).subscribe({
+          next: (u) => this.ownerPhone.set(u.phoneNumber),
+        });
       },
       error: () => {
         this.loading.set(false);

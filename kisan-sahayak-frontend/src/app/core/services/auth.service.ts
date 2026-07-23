@@ -55,6 +55,10 @@ export class AuthService {
     return this.currentUser()?.roles?.includes(role as any) ?? false;
   }
 
+  getUserById(userId: string): Observable<UserDTO> {
+    return this.http.get<UserDTO>(`${this.baseUrl}/${userId}`);
+  }
+
   getAllUsers(): Observable<UserDTO[]> {
     return this.http.get<UserDTO[]>(`${this.baseUrl}`);
   }

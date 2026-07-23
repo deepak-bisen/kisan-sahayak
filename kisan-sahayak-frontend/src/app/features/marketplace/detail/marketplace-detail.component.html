@@ -32,6 +32,7 @@
       <div class="owner-card__info">
         <strong>{{ equipment()!.ownerName || 'Equipment Owner' }}</strong>
         <span>{{ equipment()!.villageName }}{{ equipment()!.villageName && equipment()!.district ? ' , ' : '' }}{{ equipment()!.district }}</span>
+        <span *ngIf="ownerPhone()" class="owner-card__phone">{{ ownerPhone() }}</span>
       </div>
     </div>
   </div>
