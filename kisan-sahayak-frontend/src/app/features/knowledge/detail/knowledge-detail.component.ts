@@ -3,13 +3,15 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { KnowledgeService } from '../../../core/services/knowledge.service';
 import { CropGuideDTO } from '../../../core/models/crop-guide.model';
+import { BreadcrumbComponent } from '../../../shared/breadcrumb/breadcrumb.component';
 
 @Component({
   selector: 'app-knowledge-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, BreadcrumbComponent],
   template: `
     <div class="knowledge-detail container">
+      <app-breadcrumb [items]="[{label:'Home',path:'/'},{label:'Knowledge Hub',path:'/knowledge'},{label: guide()?.cropName || 'Crop Guide'}]" />
       <a routerLink="/knowledge" class="btn btn-ghost" style="margin-bottom:16px">&larr; Back to Knowledge Hub</a>
 
       @if (loading()) {

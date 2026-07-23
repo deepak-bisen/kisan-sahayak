@@ -4,16 +4,18 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { KnowledgeService } from '../../../core/services/knowledge.service';
 import { CropGuideDTO } from '../../../core/models/crop-guide.model';
+import { BreadcrumbComponent } from '../../../shared/breadcrumb/breadcrumb.component';
 
 @Component({
   selector: 'app-knowledge-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, BreadcrumbComponent],
   templateUrl: './knowledge-list.component.html',
 })
 export class KnowledgeListComponent implements OnInit {
   readonly guides = signal<CropGuideDTO[]>([]);
   readonly loading = signal(false);
+  readonly loadError = signal<string | null>(null);
   readonly searchQuery = signal('');
   readonly selectedSeason = signal('');
 
@@ -27,15 +29,19 @@ export class KnowledgeListComponent implements OnInit {
 
   load(): void {
     this.loading.set(true);
+    this.loadError.set(null);
     const query = this.searchQuery().trim();
     const season = this.selectedSeason();
 
+    const onError = () => { this.loading.set(false); this.loadError.set('Could not load crop guides.'); };
+    const onNext = (r: CropGuideDTO[]) => { this.guides.set(r); this.loading.set(false); };
+
     if (season) {
-      this.svc.searchBySeason(season).subscribe({ next: (r) => { this.guides.set(r); this.loading.set(false); }, error: (e) => { console.error('Failed to load guides:', e); this.loading.set(false); } });
+      this.svc.searchBySeason(season).subscribe({ next: onNext, error: onError });
     } else if (query) {
-      this.svc.searchByCrop(query).subscribe({ next: (r) => { this.guides.set(r); this.loading.set(false); }, error: (e) => { console.error('Failed to search guides:', e); this.loading.set(false); } });
+      this.svc.searchByCrop(query).subscribe({ next: onNext, error: onError });
     } else {
-      this.svc.getAll().subscribe({ next: (r) => { this.guides.set(r); this.loading.set(false); }, error: (e) => { console.error('Failed to load guides:', e); this.loading.set(false); } });
+      this.svc.getAll().subscribe({ next: onNext, error: onError });
     }
   }
 }

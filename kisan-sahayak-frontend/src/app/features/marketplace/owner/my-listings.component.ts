@@ -2,6 +2,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EquipmentService } from '../../../core/services/equipment.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { EquipmentDTO } from '../../../core/models/equipment.model';
 import { RouterLink, Router } from '@angular/router';
 
@@ -31,11 +32,12 @@ import { RouterLink, Router } from '@angular/router';
 export class MyListingsComponent implements OnInit {
   readonly listings = signal<EquipmentDTO[]>([]);
   readonly loading = signal(false);
+  readonly loadError = signal<string | null>(null);
   readonly deletingId = signal<string | null>(null);
   readonly confirmDelete = signal<EquipmentDTO | null>(null);
   readonly togglingId = signal<string | null>(null);
 
-  constructor(public svc: EquipmentService, private auth: AuthService, private router: Router) {}
+  constructor(public svc: EquipmentService, public auth: AuthService, private router: Router, private toast: ToastService) {}
 
   ngOnInit(): void {
     const user = this.auth.currentUser();
@@ -45,9 +47,10 @@ export class MyListingsComponent implements OnInit {
 
   load(ownerId: string) {
     this.loading.set(true);
+    this.loadError.set(null);
     this.svc.getByOwner(ownerId).subscribe({
       next: (r: EquipmentDTO[]) => { this.listings.set(r || []); this.loading.set(false); },
-      error: () => this.loading.set(false),
+      error: () => { this.loading.set(false); this.loadError.set('Could not load your listings.'); },
     });
   }
 
@@ -61,8 +64,8 @@ export class MyListingsComponent implements OnInit {
     this.deletingId.set(id);
     this.confirmDelete.set(null);
     this.svc.delete(id).subscribe({
-      next: () => { this.deletingId.set(null); this.load(this.auth.currentUser()!.userId!); },
-      error: () => this.deletingId.set(null),
+      next: () => { this.deletingId.set(null); this.load(this.auth.currentUser()!.userId!); this.toast.success('Equipment deleted.'); },
+      error: () => { this.deletingId.set(null); this.toast.error('Failed to delete equipment.'); },
     });
   }
 
@@ -77,7 +80,7 @@ export class MyListingsComponent implements OnInit {
         );
         this.togglingId.set(null);
       },
-      error: () => this.togglingId.set(null),
+      error: () => { this.togglingId.set(null); this.toast.error('Failed to update availability.'); },
     });
   }
 }

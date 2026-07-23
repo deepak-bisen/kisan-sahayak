@@ -1,4 +1,5 @@
 <div class="marketplace container">
+  <app-breadcrumb [items]="[{label:'Home',path:'/'},{label:'Manage Bookings'}]" />
   <p class="eyebrow">बुकिंग प्रबंधन</p>
   <h1>Manage Bookings</h1>
   <p class="field-hint">Review and respond to booking requests for your equipment.</p>
@@ -10,7 +11,12 @@
     </div>
   </div>
 
-  <div *ngIf="!loading() && items().length === 0" class="empty-state">
+  <div *ngIf="loadError()" class="empty-state">
+    <p class="field-hint">{{ loadError() }}</p>
+    <button class="btn btn-primary" (click)="ngOnInit()">Try again</button>
+  </div>
+
+  <div *ngIf="!loading() && !loadError() && items().length === 0" class="empty-state">
     <p class="field-hint">No bookings for your equipment yet.</p>
   </div>
 

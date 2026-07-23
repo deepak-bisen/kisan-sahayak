@@ -12,7 +12,12 @@
     </div>
   </div>
 
-  <div *ngIf="!loading() && listings().length === 0" class="empty-state">
+  <div *ngIf="loadError()" class="empty-state">
+    <p class="field-hint">{{ loadError() }}</p>
+    <button class="btn btn-primary" (click)="load(auth.currentUser()!.userId!)">Try again</button>
+  </div>
+
+  <div *ngIf="!loading() && !loadError() && listings().length === 0" class="empty-state">
     <p class="field-hint">You haven't listed any equipment yet. <a routerLink="/marketplace/add">List your first equipment</a>.</p>
   </div>
 

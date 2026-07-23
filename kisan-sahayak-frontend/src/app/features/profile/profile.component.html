@@ -1,5 +1,6 @@
-<div class="auth-page">
-  <div class="auth-card">
+<div class="profile-page">
+  <div class="profile-card">
+    <app-breadcrumb [items]="[{label:'Home',path:'/'},{label:'Profile'}]" />
     <p class="eyebrow">प्रोफ़ाइल</p>
     <h1>Edit Profile</h1>
 
@@ -14,27 +15,42 @@
       <div class="field">
         <label for="fullName">Full name</label>
         <input id="fullName" formControlName="fullName" [class.invalid]="f.fullName.invalid && f.fullName.touched" />
+        @if (f.fullName.invalid && f.fullName.touched) {
+          <span class="field-error">Name must be at least 3 characters.</span>
+        }
       </div>
 
       <div class="auth-card__row">
         <div class="field">
           <label for="villageName">Village</label>
-          <input id="villageName" formControlName="villageName" />
+          <input id="villageName" formControlName="villageName" [class.invalid]="f.villageName.invalid && f.villageName.touched" />
+          @if (f.villageName.invalid && f.villageName.touched) {
+            <span class="field-error">Village name is required.</span>
+          }
         </div>
         <div class="field">
           <label for="district">District</label>
-          <input id="district" formControlName="district" />
+          <input id="district" formControlName="district" [class.invalid]="f.district.invalid && f.district.touched" />
+          @if (f.district.invalid && f.district.touched) {
+            <span class="field-error">District is required.</span>
+          }
         </div>
       </div>
 
       <div class="field">
         <label for="state">State</label>
-        <input id="state" formControlName="state" />
+        <input id="state" formControlName="state" [class.invalid]="f.state.invalid && f.state.touched" />
+        @if (f.state.invalid && f.state.touched) {
+          <span class="field-error">State is required.</span>
+        }
       </div>
 
       <div class="field">
         <label for="password">New password (leave blank to keep current)</label>
-        <input id="password" type="password" formControlName="password" placeholder="At least 6 characters" />
+        <input id="password" type="password" formControlName="password" placeholder="At least 6 characters" [class.invalid]="f.password.invalid && f.password.touched" />
+        @if (f.password.invalid && f.password.touched) {
+          <span class="field-error">Password must be at least 6 characters if provided.</span>
+        }
       </div>
 
       <button type="submit" class="btn btn-primary btn-block" [disabled]="loading()">

@@ -1,7 +1,7 @@
 import { Component, computed, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-type Audience = 'FARMER' | 'EQUIPMENT_OWNER';
+type Audience = 'FARMER' | 'OWNER';
 
 interface AudienceCopy {
   eyebrow: string;
@@ -27,7 +27,7 @@ export class HomeComponent {
       sub: 'Find tillers, tractors and harvesters listed by owners near your village, book them for the days you actually need, and read crop guides written for your soil and season.',
       cta: 'Find equipment near me',
     },
-    EQUIPMENT_OWNER: {
+    OWNER: {
       eyebrow: 'मेरे पास उपकरण है · For equipment owners',
       headline: 'Your machine sits idle half the season. Someone nearby needs it this week.',
       sub: 'List your tractor, thresher or plough once. Set your village and rate, and farmers nearby can find and book it directly — no middleman taking a cut.',

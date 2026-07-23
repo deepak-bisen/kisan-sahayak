@@ -42,7 +42,7 @@ export class LoginComponent {
       .subscribe({
         next: () => {
           this.loading.set(false);
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/marketplace']);
         },
         error: (err: HttpErrorResponse) => {
           this.loading.set(false);

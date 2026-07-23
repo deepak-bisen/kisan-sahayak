@@ -1,4 +1,5 @@
 <section class="dash container">
+  <app-breadcrumb [items]="[{label:'Home',path:'/'},{label:'Dashboard'}]" />
   <p class="eyebrow">आपका पैनल</p>
   <h1>Welcome, {{ auth.currentUser()?.fullName }}</h1>
   <p class="dash__sub">
@@ -12,6 +13,16 @@
       <div class="skeleton-line skeleton-line--h3"></div>
       <div class="skeleton-line"></div>
     </div>
+  </div>
+
+  <div *ngIf="!loading() && listingsCount() === 0 && myBookingsCount() === 0 && ownerRequestsCount() === 0" class="onboarding-card">
+    <h2>Welcome to Kisan Sahayak!</h2>
+    <p>Here's how to get started:</p>
+    <ul>
+      <li><strong>Browse equipment</strong> — head to the <a routerLink="/marketplace">Marketplace</a> to find tractors, tillers, pumps, and more near your village.</li>
+      <li><strong>List your equipment</strong> — own a tractor or other farm machinery? <a routerLink="/marketplace/add">List it for rent</a> and earn from your neighbours.</li>
+      <li><strong>Learn</strong> — visit the <a routerLink="/knowledge">Knowledge Hub</a> for crop guides and best practices.</li>
+    </ul>
   </div>
 
   <div *ngIf="!loading()" class="dash-grid">

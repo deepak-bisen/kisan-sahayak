@@ -20,16 +20,16 @@ export const routes: Routes = [
     title: 'Create account — Kisan Sahayak',
   },
   {
-    path: 'knowledge',
-    loadComponent: () =>
-      import('./features/knowledge/list/knowledge-list.component').then((m) => m.KnowledgeListComponent),
-    title: 'Knowledge Hub — Kisan Sahayak',
-  },
-  {
     path: 'knowledge/:id',
     loadComponent: () =>
       import('./features/knowledge/detail/knowledge-detail.component').then((m) => m.KnowledgeDetailComponent),
     title: 'Crop Guide — Kisan Sahayak',
+  },
+  {
+    path: 'knowledge',
+    loadComponent: () =>
+      import('./features/knowledge/list/knowledge-list.component').then((m) => m.KnowledgeListComponent),
+    title: 'Knowledge Hub — Kisan Sahayak',
   },
   {
     path: 'profile',
@@ -70,27 +70,27 @@ export const routes: Routes = [
     title: 'My Listings — Kisan Sahayak',
   },
   {
-    path: 'marketplace/:id',
-    loadComponent: () => import('./features/marketplace/detail/marketplace-detail.component').then((m) => m.MarketplaceDetailComponent),
-    title: 'Equipment — Kisan Sahayak',
-  },
-  {
     path: 'marketplace/:id/edit',
     loadComponent: () => import('./features/marketplace/add/add-equipment.component').then((m) => m.AddEquipmentComponent),
     canActivate: [authGuard],
     title: 'Edit Equipment — Kisan Sahayak'
   },
   {
-    path: 'bookings',
-    loadComponent: () => import('./features/bookings/my-bookings.component').then((m) => m.MyBookingsComponent),
-    canActivate: [authGuard],
-    title: 'My Bookings — Kisan Sahayak',
+    path: 'marketplace/:id',
+    loadComponent: () => import('./features/marketplace/detail/marketplace-detail.component').then((m) => m.MarketplaceDetailComponent),
+    title: 'Equipment — Kisan Sahayak',
   },
   {
     path: 'bookings/manage',
     loadComponent: () => import('./features/bookings/owner-bookings.component').then((m) => m.OwnerBookingsComponent),
     canActivate: [authGuard],
     title: 'Manage Bookings — Kisan Sahayak',
+  },
+  {
+    path: 'bookings',
+    loadComponent: () => import('./features/bookings/my-bookings.component').then((m) => m.MyBookingsComponent),
+    canActivate: [authGuard],
+    title: 'My Bookings — Kisan Sahayak',
   },
   {
     path: 'admin',

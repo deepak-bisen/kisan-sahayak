@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EquipmentService } from '../../../core/services/equipment.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
@@ -37,6 +38,7 @@ export class AddEquipmentComponent implements OnInit, OnDestroy {
     private auth: AuthService,
     private router: Router,
     private route: ActivatedRoute,
+    private toast: ToastService,
   ) {}
 
   ngOnInit(): void {
@@ -109,6 +111,8 @@ export class AddEquipmentComponent implements OnInit, OnDestroy {
     const user = this.auth.currentUser();
     if (!user) return;
 
+    this.loading.set(true);
+
     const fv = this.form.getRawValue();
     const payload = {
       name: fv.name!,
@@ -128,8 +132,14 @@ export class AddEquipmentComponent implements OnInit, OnDestroy {
       : this.svc.add(payload, file);
 
     obs.subscribe({
-      next: () => this.router.navigate(['/marketplace']),
-      error: () => alert('Failed to save equipment. Please try again.'),
+      next: () => {
+        this.toast.success(id ? 'Equipment updated.' : 'Equipment listed!');
+        this.router.navigate(['/marketplace']);
+      },
+      error: () => {
+        this.loading.set(false);
+        this.toast.error('Failed to save equipment. Please try again.');
+      },
     });
   }
 }

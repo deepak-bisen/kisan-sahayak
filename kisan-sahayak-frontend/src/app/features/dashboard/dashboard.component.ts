@@ -8,11 +8,12 @@ import { EquipmentService } from '../../core/services/equipment.service';
 import { BookingService } from '../../core/services/booking.service';
 import { BookingDTO } from '../../core/models/booking.model';
 import { EquipmentDTO } from '../../core/models/equipment.model';
+import { BreadcrumbComponent } from '../../shared/breadcrumb/breadcrumb.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, BreadcrumbComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
 })
@@ -87,7 +88,15 @@ export class DashboardComponent implements OnInit {
               : of([])
           ),
         ).subscribe((results) => {
-          this.ownerBookings.set(results.flat());
+          const all = results.flat();
+          const seen = new Set<string>();
+          const unique = all.filter((b) => {
+            const key = b.bookingId || `${b.equipmentId}-${b.renterId}-${b.startDate}`;
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return b.renterId !== user.userId;
+          });
+          this.ownerBookings.set(unique);
           this.loading.set(false);
         });
       } else {

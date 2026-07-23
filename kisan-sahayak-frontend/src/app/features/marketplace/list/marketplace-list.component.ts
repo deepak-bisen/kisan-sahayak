@@ -5,16 +5,18 @@ import { FormsModule } from '@angular/forms';
 import { EquipmentService } from '../../../core/services/equipment.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { EquipmentDTO } from '../../../core/models/equipment.model';
+import { BreadcrumbComponent } from '../../../shared/breadcrumb/breadcrumb.component';
 
 @Component({
   selector: 'app-marketplace-list',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink, FormsModule, BreadcrumbComponent],
   templateUrl: './marketplace-list.component.html',
 })
 export class MarketplaceListComponent implements OnInit {
   readonly equipments = signal<EquipmentDTO[]>([]);
   readonly loading = signal(false);
+  readonly loadError = signal<string | null>(null);
 
   readonly searchQuery = signal('');
   readonly selectedCategory = signal('');
@@ -80,12 +82,16 @@ export class MarketplaceListComponent implements OnInit {
 
   load(): void {
     this.loading.set(true);
+    this.loadError.set(null);
     this.svc.getAll().subscribe({
       next: (r) => {
         this.equipments.set(r || []);
         this.loading.set(false);
       },
-      error: () => this.loading.set(false),
+      error: () => {
+        this.loading.set(false);
+        this.loadError.set('Could not load equipment. Check your connection.');
+      },
     });
   }
 }

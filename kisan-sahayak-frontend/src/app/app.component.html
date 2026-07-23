@@ -11,23 +11,47 @@
       <span class="hamburger__line"></span>
     </button>
 
-    <nav class="shell-nav" [class.is-open]="menuOpen()">
-      <div class="shell-nav__inner" (click)="closeMenu()">
-        <a routerLink="/" class="btn btn-ghost">Home</a>
-        <a routerLink="/marketplace" class="btn btn-ghost">Marketplace</a>
-        <a routerLink="/knowledge" class="btn btn-ghost">Knowledge Hub</a>
+    <nav class="shell-nav" [class.is-open]="menuOpen()" (click)="closeMenu()" (keydown.escape)="closeMenu()">
+      <div class="shell-nav__inner" (click)="$event.stopPropagation()">
+        <div class="shell-nav__links">
+          <a routerLink="/" class="nav-link">Home</a>
+          <a routerLink="/marketplace" class="nav-link">Marketplace</a>
+          <a routerLink="/knowledge" class="nav-link">Knowledge Hub</a>
+        </div>
+
         @if (auth.isLoggedIn()) {
-          <a routerLink="/bookings" class="btn btn-ghost">My Bookings</a>
-          <a routerLink="/bookings/manage" class="btn btn-ghost">Manage</a>
-          <button class="btn btn-ghost notif-bell" (click)="notif.toggleDropdown()">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-            </svg>
-            @if (notif.unreadCount() > 0) {
-              <span class="notif-badge">{{ notif.unreadCount() }}</span>
-            }
-          </button>
+          <div class="shell-nav__divider" aria-hidden="true"></div>
+
+          <div class="shell-nav__account">
+            <div class="shell-nav__meta">
+              <a routerLink="/bookings" class="nav-link">Bookings</a>
+              <a routerLink="/bookings/manage" class="nav-link">Requests</a>
+              @if (auth.hasRole('ADMIN')) {
+                <a routerLink="/admin" class="nav-link">Admin</a>
+              }
+              <a routerLink="/profile" class="nav-link">Profile</a>
+            </div>
+
+            <div class="shell-nav__actions">
+              <button class="nav-link nav-link--icon notif-bell" (click)="notif.toggleDropdown()" aria-label="Notifications">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+                @if (notif.unreadCount() > 0) {
+                  <span class="notif-badge">{{ notif.unreadCount() }}</span>
+                }
+              </button>
+
+              <a routerLink="/dashboard" class="shell-nav__user">
+                <span class="shell-nav__dot"></span>
+                {{ auth.currentUser()?.fullName }}
+              </a>
+
+              <button class="nav-link nav-link--logout" (click)="logout()">Log out</button>
+            </div>
+          </div>
+
           @if (notif.showDropdown()) {
             <div class="notif-dropdown">
               @if (notif.notifications().length === 0) {
@@ -45,18 +69,11 @@
               <a routerLink="/notifications" class="notif-dropdown__action" (click)="notif.closeDropdown()">View all notifications</a>
             </div>
           }
-          <a routerLink="/dashboard" class="shell-nav__user">
-            <span class="shell-nav__dot"></span>
-            {{ auth.currentUser()?.fullName }}
-          </a>
-          @if (auth.hasRole('ADMIN')) {
-            <a routerLink="/admin" class="btn btn-ghost">Admin</a>
-          }
-          <a routerLink="/profile" class="btn btn-ghost">Profile</a>
-          <button class="btn btn-ghost" (click)="logout()">Log out</button>
         } @else {
-          <a routerLink="/login" class="btn btn-ghost">Log in</a>
-          <a routerLink="/register" class="btn btn-primary">Register</a>
+          <div class="shell-nav__links shell-nav__links--auth">
+            <a routerLink="/login" class="btn btn-primary btn-nav">Log in</a>
+            <a routerLink="/register" class="btn btn-primary btn-nav">Register</a>
+          </div>
         }
       </div>
     </nav>
@@ -66,6 +83,8 @@
 <main>
   <router-outlet />
 </main>
+
+<app-toast />
 
 <footer class="shell-footer">
   <div class="container shell-footer__row">

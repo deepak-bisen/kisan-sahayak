@@ -55,8 +55,8 @@
       <textarea id="description" formControlName="description" placeholder="Describe your equipment, condition, and any details a renter should know."></textarea>
     </div>
 
-    <button type="submit" class="btn btn-primary btn-block" [disabled]="form.invalid">
-      {{ editingId() ? 'Save changes' : 'List equipment' }}
+    <button type="submit" class="btn btn-primary btn-block" [disabled]="form.invalid || loading()">
+      {{ loading() ? 'Saving…' : editingId() ? 'Save changes' : 'List equipment' }}
     </button>
   </form>
 </div>

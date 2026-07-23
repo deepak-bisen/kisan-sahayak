@@ -1,4 +1,4 @@
-export type UserRole = 'FARMER' | 'EQUIPMENT_OWNER' | 'ADMIN';
+export type UserRole = 'FARMER' | 'OWNER' | 'ADMIN';
 
 export interface UserDTO {
   userId?: string;

@@ -1,4 +1,5 @@
 <div class="knowledge container">
+  <app-breadcrumb [items]="[{label:'Home',path:'/'},{label:'Knowledge Hub'}]" />
   <div class="marketplace__head">
     <h1>Knowledge Hub</h1>
     <p class="field-hint">Learn about crops, seasons, soil types, and best farming practices.</p>
@@ -30,8 +31,13 @@
     </div>
   </div>
 
-  <div *ngIf="!loading() && guides().length === 0" class="empty-state">
-    <p>No crop guides found.</p>
+  <div *ngIf="loadError()" class="empty-state">
+    <p>{{ loadError() }}</p>
+    <button class="btn btn-primary" (click)="load()">Try again</button>
+  </div>
+
+  <div *ngIf="!loading() && !loadError() && guides().length === 0" class="empty-state">
+    <p>No crop guides found. Try a different search term or season.</p>
   </div>
 
   <div *ngIf="!loading() && guides().length" class="guide-list">

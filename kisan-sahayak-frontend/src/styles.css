@@ -195,12 +195,12 @@ button, input, select, textarea {
 .form-banner.error {
   background: rgba(193, 112, 74, 0.1);
   border: 1px solid var(--color-clay);
-  color: #8B5E44;
+  color: #6B3A2A;
 }
 .form-banner.success {
   background: rgba(122, 154, 109, 0.1);
   border: 1px solid var(--color-leaf);
-  color: #4A6B3E;
+  color: #2D4F20;
 }
 
 /* --- skeleton loading --- */

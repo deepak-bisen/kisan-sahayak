@@ -8,7 +8,7 @@
       <div class="form-banner error">{{ serverError() }}</div>
     }
     @if (success()) {
-      <div class="form-banner success">Account created. Taking you to log in…</div>
+      <div class="form-banner success">Account created! You can now log in with your phone number and password. Redirecting to login…</div>
     }
 
     <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
@@ -26,8 +26,8 @@
           <button
             type="button"
             class="role-toggle__btn"
-            [class.is-active]="selectedRoles().includes('EQUIPMENT_OWNER')"
-            (click)="toggleRole('EQUIPMENT_OWNER')"
+            [class.is-active]="selectedRoles().includes('OWNER')"
+            (click)="toggleRole('OWNER')"
           >
             🚜 Equipment Owner
           </button>

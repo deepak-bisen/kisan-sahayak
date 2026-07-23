@@ -6,8 +6,10 @@ import { switchMap, catchError } from 'rxjs/operators';
 import { BookingService } from '../../core/services/booking.service';
 import { EquipmentService } from '../../core/services/equipment.service';
 import { AuthService } from '../../core/services/auth.service';
+import { ToastService } from '../../core/services/toast.service';
 import { BookingDTO, BookingStatus } from '../../core/models/booking.model';
 import { EquipmentDTO } from '../../core/models/equipment.model';
+import { BreadcrumbComponent } from '../../shared/breadcrumb/breadcrumb.component';
 
 interface EquipmentWithBookings {
   equipment: EquipmentDTO;
@@ -17,12 +19,13 @@ interface EquipmentWithBookings {
 @Component({
   selector: 'app-owner-bookings',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, BreadcrumbComponent],
   templateUrl: './owner-bookings.component.html',
   styleUrl: './owner-bookings.component.css',
 })
 export class OwnerBookingsComponent implements OnInit {
   readonly loading = signal(false);
+  readonly loadError = signal<string | null>(null);
   readonly updating = signal<string | null>(null);
   readonly items = signal<EquipmentWithBookings[]>([]);
 
@@ -30,6 +33,7 @@ export class OwnerBookingsComponent implements OnInit {
     public equipmentSvc: EquipmentService,
     private bookingSvc: BookingService,
     public auth: AuthService,
+    private toast: ToastService,
   ) {}
 
   ngOnInit(): void {
@@ -68,13 +72,16 @@ export class OwnerBookingsComponent implements OnInit {
           }))
         );
         this.updating.set(null);
+        const label = status === 'CONFIRMED' ? 'confirmed' : status === 'COMPLETED' ? 'completed' : 'cancelled';
+        this.toast.success(`Booking ${label}.`);
       },
-      error: () => this.updating.set(null),
+      error: () => { this.updating.set(null); this.toast.error('Failed to update booking.'); },
     });
   }
 
   private load(ownerId: string): void {
     this.loading.set(true);
+    this.loadError.set(null);
     this.equipmentSvc.getByOwner(ownerId).pipe(
       switchMap((equipmentList) => {
         if (!equipmentList.length) return of([]);
@@ -90,7 +97,7 @@ export class OwnerBookingsComponent implements OnInit {
       catchError(() => of([])),
     ).subscribe({
       next: (result) => { this.items.set(result); this.loading.set(false); },
-      error: () => this.loading.set(false),
+      error: () => { this.loading.set(false); this.loadError.set('Could not load bookings.'); },
     });
   }
 }

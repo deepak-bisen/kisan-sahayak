@@ -1,4 +1,11 @@
 <div class="marketplace container">
+  <app-breadcrumb [items]="[{label:'Home',path:'/'},{label:'Marketplace',path:'/marketplace'},{label: equipment()?.name || 'Equipment'}]" />
+  <div style="margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:8px">
+    <a routerLink="/marketplace" class="btn btn-ghost" style="display:inline-flex;align-items:center;gap:6px">
+      ← Back to listings
+    </a>
+    <button *ngIf="isOwner()" class="btn btn-primary" (click)="edit()">Edit listing</button>
+  </div>
   <div *ngIf="loading()" class="skeleton-card">
     <div class="skeleton-line skeleton-line--h1"></div>
     <div class="skeleton-line skeleton-line--short"></div>
@@ -6,7 +13,12 @@
     <div class="skeleton-line skeleton-line--short"></div>
   </div>
 
-  <div *ngIf="!loading() && equipment()" class="equipment-detail">
+  <div *ngIf="loadError()" class="empty-state">
+    <p class="field-hint">{{ loadError() }}</p>
+    <button class="btn btn-primary" (click)="ngOnInit()">Try again</button>
+  </div>
+
+  <div *ngIf="!loading() && !loadError() && equipment()" class="equipment-detail">
     <div class="media">
       <img *ngIf="equipment()!.imageUrl" [src]="svc.resolveImageUrl(equipment()!.imageUrl)" alt="{{ equipment()!.name }}" />
       <div *ngIf="!equipment()!.imageUrl" class="placeholder">{{ equipment()!.category }}</div>

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
 import { KnowledgeService } from '../../core/services/knowledge.service';
 import { EquipmentService } from '../../core/services/equipment.service';
+import { ToastService } from '../../core/services/toast.service';
 import { UserDTO } from '../../core/models/user.model';
 import { CropGuideDTO } from '../../core/models/crop-guide.model';
 import { EquipmentDTO } from '../../core/models/equipment.model';
@@ -182,6 +183,7 @@ export class AdminComponent implements OnInit {
     public auth: AuthService,
     private knowledgeSvc: KnowledgeService,
     private equipmentSvc: EquipmentService,
+    private toast: ToastService,
   ) {}
 
   ngOnInit(): void {
@@ -195,9 +197,18 @@ export class AdminComponent implements OnInit {
   }
 
   deleteUser(u: UserDTO): void {
-    if (!confirm(`Delete user "${u.fullName}"?`)) return;
     this.deletingUserId.set(u.userId!);
-    this.auth.deleteUser(u.userId!).subscribe({ next: () => { this.users.update((list) => list.filter((x) => x.userId !== u.userId)); this.deletingUserId.set(null); }, error: () => this.deletingUserId.set(null) });
+    this.auth.deleteUser(u.userId!).subscribe({
+      next: () => {
+        this.users.update((list) => list.filter((x) => x.userId !== u.userId));
+        this.deletingUserId.set(null);
+        this.toast.success(`User "${u.fullName}" deleted.`);
+      },
+      error: () => {
+        this.deletingUserId.set(null);
+        this.toast.error('Failed to delete user.');
+      },
+    });
   }
 
   // --- Guides ---
@@ -224,16 +235,31 @@ export class AdminComponent implements OnInit {
     this.guideSaving.set(true);
 
     if (g.guideId) {
-      this.knowledgeSvc.update(g.guideId, g).subscribe({ next: () => { this.guideSaving.set(false); this.editingGuide.set(null); this.loadGuides(); }, error: () => this.guideSaving.set(false) });
+      this.knowledgeSvc.update(g.guideId, g).subscribe({
+        next: () => { this.guideSaving.set(false); this.editingGuide.set(null); this.loadGuides(); this.toast.success('Guide updated.'); },
+        error: () => { this.guideSaving.set(false); this.toast.error('Failed to save guide.'); },
+      });
     } else {
-      this.knowledgeSvc.create(g).subscribe({ next: () => { this.guideSaving.set(false); this.editingGuide.set(null); this.loadGuides(); }, error: () => this.guideSaving.set(false) });
+      this.knowledgeSvc.create(g).subscribe({
+        next: () => { this.guideSaving.set(false); this.editingGuide.set(null); this.loadGuides(); this.toast.success('Guide created.'); },
+        error: () => { this.guideSaving.set(false); this.toast.error('Failed to create guide.'); },
+      });
     }
   }
 
   deleteGuide(g: CropGuideDTO): void {
-    if (!confirm(`Delete guide for "${g.cropName}"?`)) return;
     this.deletingGuideId.set(g.guideId!);
-    this.knowledgeSvc.delete(g.guideId!).subscribe({ next: () => { this.guides.update((list) => list.filter((x) => x.guideId !== g.guideId)); this.deletingGuideId.set(null); }, error: () => this.deletingGuideId.set(null) });
+    this.knowledgeSvc.delete(g.guideId!).subscribe({
+      next: () => {
+        this.guides.update((list) => list.filter((x) => x.guideId !== g.guideId));
+        this.deletingGuideId.set(null);
+        this.toast.success(`Guide "${g.cropName}" deleted.`);
+      },
+      error: () => {
+        this.deletingGuideId.set(null);
+        this.toast.error('Failed to delete guide.');
+      },
+    });
   }
 
   // --- Equipment ---
@@ -243,8 +269,17 @@ export class AdminComponent implements OnInit {
   }
 
   deleteEquipment(e: EquipmentDTO): void {
-    if (!confirm(`Delete equipment "${e.name}"?`)) return;
     this.deletingEqId.set(e.equipmentId!);
-    this.equipmentSvc.delete(e.equipmentId!).subscribe({ next: () => { this.equipmentList.update((list) => list.filter((x) => x.equipmentId !== e.equipmentId)); this.deletingEqId.set(null); }, error: () => this.deletingEqId.set(null) });
+    this.equipmentSvc.delete(e.equipmentId!).subscribe({
+      next: () => {
+        this.equipmentList.update((list) => list.filter((x) => x.equipmentId !== e.equipmentId));
+        this.deletingEqId.set(null);
+        this.toast.success(`Equipment "${e.name}" deleted.`);
+      },
+      error: () => {
+        this.deletingEqId.set(null);
+        this.toast.error('Failed to delete equipment.');
+      },
+    });
   }
 }

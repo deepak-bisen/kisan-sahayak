@@ -6,13 +6,15 @@ import { NotificationDTO } from '../../core/models/notification.model';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../../core/services/auth.service';
+import { BreadcrumbComponent } from '../../shared/breadcrumb/breadcrumb.component';
 
 @Component({
   selector: 'app-notifications',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, BreadcrumbComponent],
   template: `
     <div class="notifications-page container">
+      <app-breadcrumb [items]="[{label:'Home',path:'/'},{label:'Notifications'}]" />
       <div class="notifications-page__head">
         <h1>Notifications</h1>
         @if (notifications().length > 0) {
@@ -24,6 +26,11 @@ import { AuthService } from '../../core/services/auth.service';
         <div class="skeleton-card" *ngFor="let _ of [1,2,3]">
           <div class="skeleton-line skeleton-line--h3"></div>
           <div class="skeleton-line skeleton-line--short"></div>
+        </div>
+      } @else if (loadError()) {
+        <div class="empty-state">
+          <p>{{ loadError() }}</p>
+          <button class="btn btn-primary" (click)="ngOnInit()">Try again</button>
         </div>
       } @else if (notifications().length === 0) {
         <div class="empty-state">
@@ -65,6 +72,7 @@ import { AuthService } from '../../core/services/auth.service';
 export class NotificationsComponent implements OnInit {
   readonly notifications = signal<NotificationDTO[]>([]);
   readonly loading = signal(true);
+  readonly loadError = signal<string | null>(null);
   private readonly base = `${environment.apiUrl}/marketplace/notifications`;
 
   constructor(
@@ -80,9 +88,10 @@ export class NotificationsComponent implements OnInit {
   private loadAll(): void {
     const user = this.auth.currentUser();
     if (!user?.userId) { this.loading.set(false); return; }
+    this.loadError.set(null);
     this.http.get<NotificationDTO[]>(`${this.base}/user/${user.userId}`).subscribe({
       next: (list) => { this.notifications.set(list); this.loading.set(false); },
-      error: () => this.loading.set(false),
+      error: () => { this.loading.set(false); this.loadError.set('Could not load notifications.'); },
     });
   }
 

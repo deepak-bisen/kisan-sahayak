@@ -1,24 +1,26 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { EquipmentService } from '../../../core/services/equipment.service';
 import { EquipmentDTO } from '../../../core/models/equipment.model';
 import { BookingService } from '../../../core/services/booking.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { BookingDTO } from '../../../core/models/booking.model';
+import { BreadcrumbComponent } from '../../../shared/breadcrumb/breadcrumb.component';
 
 @Component({
   selector: 'app-marketplace-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, BreadcrumbComponent],
   templateUrl: './marketplace-detail.component.html',
   styleUrl: './marketplace-detail.component.css',
 })
 export class MarketplaceDetailComponent implements OnInit {
   readonly equipment = signal<EquipmentDTO | null>(null);
   readonly loading = signal(false);
+  readonly loadError = signal<string | null>(null);
   readonly bookingLoading = signal(false);
   readonly bookingSuccess = signal(false);
   readonly bookingError = signal<string | null>(null);
@@ -72,6 +74,7 @@ export class MarketplaceDetailComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     public svc: EquipmentService,
     private bookingSvc: BookingService,
     public auth: AuthService,
@@ -81,13 +84,17 @@ export class MarketplaceDetailComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) return;
     this.loading.set(true);
+    this.loadError.set(null);
     this.svc.getById(id).subscribe({
       next: (e) => {
         this.equipment.set(e);
         this.loading.set(false);
         this.loadBookings(id);
       },
-      error: () => this.loading.set(false),
+      error: () => {
+        this.loading.set(false);
+        this.loadError.set('Could not load equipment details.');
+      },
     });
   }
 
@@ -95,6 +102,11 @@ export class MarketplaceDetailComponent implements OnInit {
     this.bookingSvc.getByEquipment(equipmentId).subscribe({
       next: (list) => this.existingBookings.set(list),
     });
+  }
+
+  edit(): void {
+    const id = this.equipment()?.equipmentId;
+    if (id) this.router.navigate(['/marketplace', id, 'edit']);
   }
 
   book(): void {
