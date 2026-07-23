@@ -20,7 +20,13 @@ A full-stack microservice platform connecting farmers to rent and list agricultu
 - **Booking Alerts:** Automated notification delivery to owners and renters upon booking creation, approval, or status update.
 - **User Profiles:** Seamless management of farmer profiles, contact details, and listing history.
 ---
+## 📸 Screenshots
+ 
+| Home | Marketplace |
+|------|-------------|
+| ![Home page](docs/screenshots/home.png) | ![Marketplace listing](docs/screenshots/marketplace.png) |
 
+---
 ## Architecture
 
 ```
